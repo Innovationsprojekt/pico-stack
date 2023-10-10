@@ -1,7 +1,6 @@
 /**
- * Copyright (c) 2020 Raspberry Pi (Trading) Ltd.
- *
- * SPDX-License-Identifier: BSD-3-Clause
+ * @file run.h
+ * @author Noa Sendlhofer
  */
 
 #include "pico/stdlib.h"
@@ -9,7 +8,9 @@
 
 int main()
 {
-    Motor motor1(8);
+    Motor motor1(8,9);
+    motor1.setDirection(FORWARD);
+    motor1.setSpeed(200);
 
     const uint LED_PIN = PICO_DEFAULT_LED_PIN;
     gpio_init(LED_PIN);

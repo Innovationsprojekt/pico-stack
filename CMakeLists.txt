@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
 
-# Pull in SDK (must be before project)
 include(pico-sdk/pico_sdk_init.cmake)
 
 project(pico_motors C CXX ASM)
@@ -11,23 +10,24 @@ if (PICO_SDK_VERSION_STRING VERSION_LESS "1.3.0")
     message(FATAL_ERROR "Raspberry Pi Pico SDK version 1.3.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
 endif()
 
-# Initialize the SDK
 pico_sdk_init()
 
+# Motor Driver
 add_library(motor_driver
         src/motor/motor_driver.cpp)
-
 target_include_directories(motor_driver
         PUBLIC
         include/motor)
+target_link_libraries(motor_driver pico_stdlib hardware_pwm)
 
+# run
 add_executable(run
         src/run.cpp
         )
-
 target_link_libraries(run pico_stdlib motor_driver)
 
 pico_add_extra_outputs(run)
+
 
 add_compile_options(-Wall
         -Wno-format          # int != int32_t as far as the compiler is concerned because gcc has int32_t as long int
