@@ -5,12 +5,16 @@
 
 #include "pico/stdlib.h"
 #include "motor_driver.h"
+#include "sensor_manager.h"
 
 int main()
 {
     Motor motor1(8,9);
     motor1.setDirection(FORWARD);
     motor1.setSpeed(200);
+
+    SensorManager sensor_manager;
+    sensor_manager.readSensor(SENSOR_B1);
 
     const uint LED_PIN = PICO_DEFAULT_LED_PIN;
     gpio_init(LED_PIN);

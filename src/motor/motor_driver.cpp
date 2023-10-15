@@ -55,7 +55,6 @@ void Motor::writeDirection(MotorDirection direction) const
 {
     switch (direction)
     {
-
         case FORWARD:
             gpio_put(dir_pin, 1);
             break;

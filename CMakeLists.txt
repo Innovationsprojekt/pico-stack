@@ -10,7 +10,11 @@ if (PICO_SDK_VERSION_STRING VERSION_LESS "1.3.0")
     message(FATAL_ERROR "Raspberry Pi Pico SDK version 1.3.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
 endif()
 
+set(PICO_CXX_ENABLE_EXCEPTIONS 1)
+
 pico_sdk_init()
+
+add_subdirectory(ADS1x15_PICO)
 
 # Motor Driver
 add_library(motor_driver
@@ -20,11 +24,34 @@ target_include_directories(motor_driver
         include/motor)
 target_link_libraries(motor_driver pico_stdlib hardware_pwm)
 
+# ADCWrapper
+add_library(adc_wrapper
+        src/adc_wrapper/adc_wrapper.cpp)
+target_include_directories(adc_wrapper
+        PUBLIC
+        include/adc_wrapper)
+target_link_libraries(adc_wrapper pico_stdlib pico_ads1x15)
+
+# Sensor
+add_library(sensor
+        src/sensor/sensor.cpp)
+target_include_directories(sensor
+        PUBLIC
+        include/sensor)
+target_link_libraries(sensor pico_stdlib adc_wrapper)
+
+# SensorManager
+add_library(sensor_manager
+        src/sensor_manager/sensor_manager.cpp)
+target_include_directories(sensor_manager
+        PUBLIC
+        include/sensor_manager)
+target_link_libraries(sensor_manager pico_stdlib sensor adc_wrapper)
+
 # run
 add_executable(run
-        src/run.cpp
-        )
-target_link_libraries(run pico_stdlib motor_driver)
+        src/run.cpp)
+target_link_libraries(run pico_stdlib motor_driver sensor_manager)
 
 pico_add_extra_outputs(run)
 
