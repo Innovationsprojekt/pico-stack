@@ -4,3 +4,6 @@
 [submodule "ADS1x15_PICO"]
 	path = ADS1x15_PICO
 	url = git@github.com:Innovationsprojekt/ADS1x15_PICO.git
+[submodule "micro_ros_raspberrypi_pico_sdk"]
+	path = micro_ros_raspberrypi_pico_sdk
+	url = git@github.com:micro-ROS/micro_ros_raspberrypi_pico_sdk.git

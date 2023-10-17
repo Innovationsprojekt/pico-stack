@@ -3,26 +3,25 @@
  * @author Noa Sendlhofer
  */
 
+#include <stdexcept>
 #include "pico/stdlib.h"
 #include "motor_driver.h"
 #include "sensor_manager.h"
+#include "pico/cyw43_arch.h"
+#include "ros_wrapper.h"
 
 int main()
 {
-    Motor motor1(8,9);
-    motor1.setDirection(FORWARD);
-    motor1.setSpeed(200);
+    stdio_init_all();
+    if (cyw43_arch_init())
+        throw std::runtime_error("WIFI failed");
 
-    SensorManager sensor_manager;
-    sensor_manager.readSensor(SENSOR_B1);
+    ROSWrapper ros;
 
-    const uint LED_PIN = PICO_DEFAULT_LED_PIN;
-    gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
     while (true) {
-        gpio_put(LED_PIN, 1);
-        sleep_ms(250);
-        gpio_put(LED_PIN, 0);
+        cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
+        sleep_ms(1000);
+        cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
         sleep_ms(250);
     }
 }

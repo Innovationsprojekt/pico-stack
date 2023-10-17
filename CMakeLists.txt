@@ -12,7 +12,31 @@ endif()
 
 set(PICO_CXX_ENABLE_EXCEPTIONS 1)
 
+set(PICO_BOARD pico_w)
+
 pico_sdk_init()
+
+link_directories(micro_ros_raspberrypi_pico_sdk/libmicroros)
+
+if (PICO_CYW43_SUPPORTED)
+    if (NOT TARGET pico_cyw43_arch)
+        message("Skipping Pico W as support is not available")
+    else()
+
+        if (DEFINED ENV{WIFI_SSID} AND (NOT WIFI_SSID))
+            set(WIFI_SSID $ENV{WIFI_SSID})
+            message("Using WIFI_SSID from environment ('${WIFI_SSID}')")
+        endif()
+
+        if (DEFINED ENV{WIFI_PASSWORD} AND (NOT WIFI_PASSWORD))
+            set(WIFI_PASSWORD $ENV{WIFI_PASSWORD})
+            message("Using WIFI_PASSWORD from environment")
+        endif()
+
+        set(WIFI_SSID "${WIFI_SSID}" CACHE INTERNAL "WiFi SSID for examples")
+        set(WIFI_PASSWORD "${WIFI_PASSWORD}" CACHE INTERNAL "WiFi password for examples")
+    endif()
+endif()
 
 add_subdirectory(ADS1x15_PICO)
 
@@ -48,10 +72,30 @@ target_include_directories(sensor_manager
         include/sensor_manager)
 target_link_libraries(sensor_manager pico_stdlib sensor adc_wrapper)
 
+# ROSWrapper
+add_library(ros_wrapper
+        src/microros/ros_wrapper.cpp
+        src/microros/pico_udp_transport.cpp)
+target_include_directories(ros_wrapper
+        PUBLIC
+        include/microros
+        micro_ros_raspberrypi_pico_sdk/libmicroros/include
+        ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(ros_wrapper pico_stdlib pico_cyw43_arch_lwip_threadsafe_background microros)
+
 # run
 add_executable(run
         src/run.cpp)
-target_link_libraries(run pico_stdlib motor_driver sensor_manager)
+target_link_libraries(run pico_stdlib ros_wrapper motor_driver sensor sensor_manager)
+
+SET(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -ffunction-sections -fdata-sections")
+
+pico_enable_stdio_usb(run 1)
+pico_enable_stdio_uart(run 0)
+add_compile_definitions(PICO_UART_ENABLE_CRLF_SUPPORT=0)
+add_compile_definitions(PICO_STDIO_ENABLE_CRLF_SUPPORT=0)
+add_compile_definitions(PICO_STDIO_DEFAULT_CRLF=0)
 
 pico_add_extra_outputs(run)
 
