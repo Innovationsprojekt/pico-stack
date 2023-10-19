@@ -8,7 +8,10 @@
 #include "motor_driver.h"
 #include "sensor_manager.h"
 #include "pico/cyw43_arch.h"
+
+extern "C"{
 #include "ros_wrapper.h"
+}
 
 int main()
 {
@@ -16,7 +19,7 @@ int main()
     if (cyw43_arch_init())
         throw std::runtime_error("WIFI failed");
 
-    ROSWrapper ros;
+    ROSWrapper();
 
     while (true) {
         cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);

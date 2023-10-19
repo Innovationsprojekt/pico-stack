@@ -16,15 +16,9 @@
 #include <std_msgs/msg/int32.h>
 
 #include <rmw_microros/rmw_microros.h>
-#include <stdexcept>
 
 #include "pico/stdlib.h"
 
-class ROSWrapper
-{
-public:
-    ROSWrapper();
-private:
-};
+void ROSWrapper();
 
 #endif //PICO_MOTORS_ROS_WRAPPER_H_

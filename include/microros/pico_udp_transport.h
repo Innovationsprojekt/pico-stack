@@ -6,10 +6,10 @@
 #ifndef PICO_MOTORS_PICO_UDP_TRANSPORT_H_
 #define PICO_MOTORS_PICO_UDP_TRANSPORT_H_
 
-#include <cstdio>
-#include <cstdint>
-#include <cstring>
-#include <cstdlib>
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
