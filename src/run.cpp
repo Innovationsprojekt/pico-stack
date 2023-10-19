@@ -16,8 +16,6 @@ extern "C"{
 int main()
 {
     stdio_init_all();
-    if (cyw43_arch_init())
-        throw std::runtime_error("WIFI failed");
 
     ROSWrapper();
 

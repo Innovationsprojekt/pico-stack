@@ -17,7 +17,7 @@ void timer_callback(rcl_timer_t *timer, int64_t last_call_time)
 
 void ROSWrapper()
 {
-    set_microros_wifi_transports("WN-8EFE60", "47ec527533", "PC IP ADDRESS", 4444);
+    set_microros_wifi_transports("iPhone von Noa", "Noa15092002hng", "PC IP ADDRESS", 4444);
 
     rcl_timer_t timer;
     rcl_node_t node;
