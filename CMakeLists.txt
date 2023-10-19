@@ -56,8 +56,7 @@ target_link_libraries(ros_wrapper pico_stdlib hardware_pwm microros)
 target_include_directories(ros_wrapper
         PUBLIC
         include/microros
-        micro_ros_raspberrypi_pico_sdk/libmicroros/include
-        ${CMAKE_CURRENT_LIST_DIR})
+        micro_ros_raspberrypi_pico_sdk/libmicroros/include)
 target_link_libraries(ros_wrapper pico_cyw43_arch_lwip_threadsafe_background)
 
 # run
