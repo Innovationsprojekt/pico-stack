@@ -8,6 +8,7 @@
 #include "motor_driver.h"
 #include "sensor_manager.h"
 #include "pico/cyw43_arch.h"
+#include "motor_manager.h"
 
 extern "C"{
 #include "ros_wrapper.h"
@@ -17,12 +18,32 @@ int main()
 {
     stdio_init_all();
 
-    ROSWrapper();
+    MotorManager motor_manager;
 
-    while (true) {
-        cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
-        sleep_ms(1000);
-        cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
-        sleep_ms(250);
+    sleep_ms(2000);
+
+    motor_manager.setDirection(FORWARD);
+    motor_manager.setSpeed(20);
+
+    while(true)
+    {
+        for(int i = 0; i<10; i++)
+        {
+            sleep_ms(2000);
+            motor_manager.changeDirection();
+
+            sleep_ms(2000);
+            motor_manager.changeDirection();
+
+            /*
+            motor_manager.turn(90, true);
+            sleep_ms(5000);
+            motor_manager.turn(90, false);
+            sleep_ms(5000);
+             */
+
+        }
+        motor_manager.setDirection(STOP);
+        sleep_ms(20000);
     }
 }

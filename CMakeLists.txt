@@ -48,6 +48,14 @@ target_include_directories(sensor_manager
         include/sensor_manager)
 target_link_libraries(sensor_manager pico_stdlib sensor adc_wrapper)
 
+# MotorManager
+add_library(motor_manager
+        src/motor_manager/motor_manager.cpp)
+target_include_directories(motor_manager
+        PUBLIC
+        include/motor_manager)
+target_link_libraries(motor_manager pico_stdlib motor_driver)
+
 # ROSWrapper
 add_library(ros_wrapper
         src/microros/ros_wrapper.c
@@ -62,7 +70,7 @@ target_link_libraries(ros_wrapper pico_cyw43_arch_lwip_threadsafe_background)
 # run
 add_executable(run
         src/run.cpp)
-target_link_libraries(run pico_stdlib ros_wrapper motor_driver sensor sensor_manager)
+target_link_libraries(run pico_stdlib ros_wrapper motor_driver motor_manager sensor sensor_manager)
 
 SET(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -ffunction-sections -fdata-sections")

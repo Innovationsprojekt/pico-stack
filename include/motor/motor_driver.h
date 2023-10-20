@@ -22,7 +22,10 @@ class Motor
 public:
     Motor(uint8_t step_pin, uint8_t dir_pin);
     void setDirection(MotorDirection direction);
-    void setSpeed(uint8_t speed) const;
+    void setSpeed(uint8_t speed);
+    void changeDirection();
+    uint8_t getCurrentSpeed() const;
+    MotorDirection getCurrentDirection() const;
 
 private:
     void setEnabled(bool state);
@@ -35,6 +38,8 @@ private:
     uint pwm_channel;
 
     bool enabled = false;
+    uint8_t current_speed = 0;
+    MotorDirection current_dir = STOP;
 };
 
 #endif //PICO_MOTORS_MOTOR_DRIVER_H_

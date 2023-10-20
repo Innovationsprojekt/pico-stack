@@ -4,6 +4,7 @@
  */
 
 #include "motor_driver.h"
+#include <stdlib.h>
 
 Motor::Motor(uint8_t step_pin, uint8_t dir_pin)
     : step_pin(step_pin)
@@ -16,6 +17,9 @@ Motor::Motor(uint8_t step_pin, uint8_t dir_pin)
 
     slice_num = pwm_gpio_to_slice_num(step_pin);
     pwm_channel = pwm_gpio_to_channel(step_pin);
+
+    setSpeed(0);
+    setEnabled(true);
 }
 
 void Motor::setDirection(MotorDirection direction)
@@ -23,22 +27,24 @@ void Motor::setDirection(MotorDirection direction)
     switch (direction)
     {
         case FORWARD:
-            setEnabled(true);
             writeDirection(FORWARD);
+            this->current_dir = FORWARD;
+            break;
         case BACKWARD:
-            setEnabled(true);
             writeDirection(BACKWARD);
+            this->current_dir = BACKWARD;
             break;
         case STOP:
-            setEnabled(false);
+            setSpeed(0);
             break;
     }
 }
 
-void Motor::setSpeed(uint8_t speed) const
+void Motor::setSpeed(uint8_t speed)
 {
-    pwm_set_wrap(slice_num, speed);
-    pwm_set_chan_level(slice_num, pwm_channel, speed/2);
+    current_speed = speed;
+    pwm_set_wrap(slice_num, 10000);
+    pwm_set_chan_level(slice_num, pwm_channel, int(float(speed)/100.0*10000.0));
 }
 
 void Motor::setEnabled(bool state)
@@ -64,4 +70,22 @@ void Motor::writeDirection(MotorDirection direction) const
         default:
             break;
     }
+}
+
+void Motor::changeDirection()
+{
+    if (current_dir == FORWARD)
+        setDirection(BACKWARD);
+    else
+        setDirection(FORWARD);
+}
+
+uint8_t Motor::getCurrentSpeed() const
+{
+    return this->current_speed;
+}
+
+MotorDirection Motor::getCurrentDirection() const
+{
+    return current_dir;
 }
