@@ -40,14 +40,6 @@ target_include_directories(sensor
         include/sensor)
 target_link_libraries(sensor pico_stdlib adc_wrapper)
 
-# SensorManager
-add_library(sensor_manager
-        src/sensor_manager/sensor_manager.cpp)
-target_include_directories(sensor_manager
-        PUBLIC
-        include/sensor_manager)
-target_link_libraries(sensor_manager pico_stdlib sensor adc_wrapper)
-
 # MotorManager
 add_library(motor_manager
         src/motor_manager/motor_manager.cpp)
@@ -56,21 +48,37 @@ target_include_directories(motor_manager
         include/motor_manager)
 target_link_libraries(motor_manager pico_stdlib motor_driver)
 
+# SensorManager
+add_library(sensor_manager
+        src/sensor_manager/sensor_manager.cpp)
+target_include_directories(sensor_manager
+        PUBLIC
+        include/sensor_manager)
+target_link_libraries(sensor_manager pico_stdlib sensor adc_wrapper motor_manager)
+
 # ROSWrapper
 add_library(ros_wrapper
         src/microros/ros_wrapper.c
         src/microros/pico_udp_transport.c)
-target_link_libraries(ros_wrapper pico_stdlib hardware_pwm microros)
+target_link_libraries(ros_wrapper pico_stdlib hardware_pwm microros hardware_adc)
 target_include_directories(ros_wrapper
         PUBLIC
         include/microros
         micro_ros_raspberrypi_pico_sdk/libmicroros/include)
 target_link_libraries(ros_wrapper pico_cyw43_arch_lwip_threadsafe_background)
 
+# Controller
+add_library(controller
+        src/controller/controller.cpp)
+target_include_directories(controller
+        PUBLIC
+        include/controller)
+target_link_libraries(controller pico_stdlib motor_manager sensor_manager)
+
 # run
 add_executable(run
         src/run.cpp)
-target_link_libraries(run pico_stdlib ros_wrapper motor_driver motor_manager sensor sensor_manager)
+target_link_libraries(run pico_stdlib pico_multicore ros_wrapper motor_driver motor_manager sensor sensor_manager controller)
 
 SET(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -ffunction-sections -fdata-sections")

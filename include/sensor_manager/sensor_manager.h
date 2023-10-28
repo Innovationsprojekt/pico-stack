@@ -7,15 +7,17 @@
 #define PICO_MOTORS_SENSOR_MANAGER_H_
 
 #include <memory>
+#include <vector>
 #include "adc_wrapper.h"
 #include "sensor.h"
+#include "motor_manager.h";
 
 #define CLK_SPEED 100
 
 #define ADC1_I2C_ADDR ADSX_ADDRESS_GND
-#define ADC1_I2C_TYPE i2c1
-#define ADC1_SDA_PIN 18
-#define ADC1_SCL_PIN 19
+#define ADC1_I2C_TYPE i2c0
+#define ADC1_SDA_PIN 0
+#define ADC1_SCL_PIN 1
 
 #define ADC2_I2C_ADDR ADSX_ADDRESS_VDD
 #define ADC2_I2C_TYPE i2c1
@@ -26,6 +28,9 @@
 #define ADC3_I2C_TYPE i2c1
 #define ADC3_SDA_PIN 18
 #define ADC3_SCL_PIN 19
+
+#define WHITE 650
+#define BLACK 100
 
 enum SensorPosition
 {
@@ -53,12 +58,18 @@ enum SensorRow
 class SensorManager
 {
 public:
-    SensorManager();
-    int16_t readSensor(SensorPosition sensor);
-    int16_t getHorizontalPosition(SensorRow row);
+    SensorManager(std::shared_ptr<MotorManager> motor_manager);
+    int32_t readSensor(SensorPosition sensor);
+    int32_t getHorizontalPosition(SensorRow row);
+    void calibrate();
 
 private:
-    int16_t _calcHorizontalPosition(int16_t s1, int16_t s2, int16_t s3, int16_t s4);
+    int32_t _calcHorizontalPosition(int32_t s1, int32_t s2, int32_t s3, int32_t s4);
+    int32_t _mapDistance(int16_t s, std::pair<int16_t, int16_t> calib);
+
+    std::shared_ptr<MotorManager> motor_manager;
+
+    std::vector<std::pair<int16_t, int16_t>> calibration;
 
     std::shared_ptr<ADCWrapper> adc1;
     std::shared_ptr<ADCWrapper> adc2;

@@ -21,19 +21,13 @@ class MotorManager
 {
 public:
     MotorManager();
-    void setSpeed(uint8_t target_speed, uint16_t rate = 200);
+    void setSpeed(uint32_t target_speed, uint16_t rate = 200);
     void changeDirection();
     void setDirection(MotorDirection direction);
-    void turn(uint16_t degrees, bool direction);
+    void turn(uint16_t degrees, Direction direction);
 
-    void omniWheels(Direction direction);
-
-private:
     std::unique_ptr<Motor> motor1;
     std::unique_ptr<Motor> motor2;
-
-    std::unique_ptr<Motor> motor3;
-    std::unique_ptr<Motor> motor4;
 };
 
 

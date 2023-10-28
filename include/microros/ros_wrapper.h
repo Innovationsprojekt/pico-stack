@@ -20,5 +20,7 @@
 #include "pico/stdlib.h"
 
 void ROSWrapper();
+void spinROS();
+void publishData(uint32_t data);
 
 #endif //PICO_MOTORS_ROS_WRAPPER_H_

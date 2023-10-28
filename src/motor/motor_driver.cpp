@@ -40,11 +40,17 @@ void Motor::setDirection(MotorDirection direction)
     }
 }
 
-void Motor::setSpeed(uint8_t speed)
+void Motor::setSpeed(int32_t speed)
 {
+    if (speed > 5000)
+        speed = 5000;
+
+    if (speed < 0)
+        speed = 0;
+
     current_speed = speed;
     pwm_set_wrap(slice_num, 10000);
-    pwm_set_chan_level(slice_num, pwm_channel, int(float(speed)/100.0*10000.0));
+    pwm_set_chan_level(slice_num, pwm_channel, int(float(speed)/10000.0*10000.0));
 }
 
 void Motor::setEnabled(bool state)
