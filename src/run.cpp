@@ -63,6 +63,15 @@ int main()
 
     while(true)
     {
+        /*
+        int16_t s1 = sensor_manager->readSensor(SENSOR_F1);
+        int16_t s2 = sensor_manager->readSensor(SENSOR_F2);
+        int16_t s3 = sensor_manager->readSensor(SENSOR_C1);
+        int16_t s4 = sensor_manager->readSensor(SENSOR_C2);
+        int16_t s5 = sensor_manager->readSensor(SENSOR_B1);
+        int16_t s6 = sensor_manager->readSensor(SENSOR_B2);
+        printf("F1 %i, F2, %i, C1, %i, C2, %i, B1, %i, B2, %i\n\r", s1, s2, s3, s4, s5, s6);
+        */
         controller.spin(1000.0 / freq);
         sleep_ms(1000 / freq);
     }

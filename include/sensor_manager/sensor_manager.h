@@ -20,17 +20,18 @@
 #define ADC1_SCL_PIN 1
 
 #define ADC2_I2C_ADDR ADSX_ADDRESS_VDD
-#define ADC2_I2C_TYPE i2c1
-#define ADC2_SDA_PIN 18
-#define ADC2_SCL_PIN 19
+#define ADC2_I2C_TYPE i2c0
+#define ADC2_SDA_PIN 0
+#define ADC2_SCL_PIN 1
 
 #define ADC3_I2C_ADDR ADSX_ADDRESS_SCLK
 #define ADC3_I2C_TYPE i2c1
-#define ADC3_SDA_PIN 18
-#define ADC3_SCL_PIN 19
+#define ADC3_SDA_PIN 0
+#define ADC3_SCL_PIN 1
 
 #define WHITE 650
-#define BLACK 100
+#define BLACK 50
+#define ON_LINE 350
 
 enum SensorPosition
 {
@@ -60,16 +61,17 @@ class SensorManager
 public:
     SensorManager(std::shared_ptr<MotorManager> motor_manager);
     int32_t readSensor(SensorPosition sensor);
+    int32_t readRawSensor(SensorPosition sensor);
     int32_t getHorizontalPosition(SensorRow row);
     void calibrate();
 
 private:
-    int32_t _calcHorizontalPosition(int32_t s1, int32_t s2, int32_t s3, int32_t s4);
-    int32_t _mapDistance(int16_t s, std::pair<int16_t, int16_t> calib);
+    static int32_t _calcHorizontalPosition(int32_t s1, int32_t s2, int32_t s3, int32_t s4);
+    static int32_t _mapDistance(int32_t s, std::pair<int32_t, int32_t> calib);
 
     std::shared_ptr<MotorManager> motor_manager;
 
-    std::vector<std::pair<int16_t, int16_t>> calibration;
+    std::vector<std::pair<int32_t, int32_t>> calibration;
 
     std::shared_ptr<ADCWrapper> adc1;
     std::shared_ptr<ADCWrapper> adc2;

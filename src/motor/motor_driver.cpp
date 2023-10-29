@@ -42,8 +42,8 @@ void Motor::setDirection(MotorDirection direction)
 
 void Motor::setSpeed(int32_t speed)
 {
-    if (speed > 5000)
-        speed = 5000;
+    if (speed > 3000)
+        speed = 3000;
 
     if (speed < 0)
         speed = 0;

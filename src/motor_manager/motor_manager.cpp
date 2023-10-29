@@ -60,7 +60,6 @@ void MotorManager::changeDirection()
 void MotorManager::turn(uint16_t degrees, Direction direction)
 {
     uint8_t old_speed = motor1->getCurrentSpeed();
-    MotorDirection old_dir = motor1->getCurrentDirection();
     setSpeed(0);
 
     if (direction == DIR_LEFT)
@@ -77,10 +76,9 @@ void MotorManager::turn(uint16_t degrees, Direction direction)
         throw std::runtime_error("Invalid Direction");
 
     setSpeed(2000, 200);
-    sleep_ms(45000/degrees);
-    setSpeed(0, 100);
-    motor1->setDirection(old_dir);
-    motor2->setDirection(old_dir);
+    sleep_ms(MS_PER_DEG * degrees);
+
+    setDirection(STOP);
     setSpeed(old_speed);
 }
 
@@ -88,4 +86,13 @@ void MotorManager::setDirection(MotorDirection direction)
 {
     motor1->setDirection(direction);
     motor2->setDirection(direction);
+}
+
+void MotorManager::creepDistance(uint16_t distance, MotorDirection direction)
+{
+    motor1->setSpeed(1000);
+    motor2->setSpeed(1000);
+    setDirection(direction);
+    sleep_ms(distance * MS_PER_CM);
+    setDirection(STOP);
 }

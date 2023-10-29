@@ -17,6 +17,9 @@ enum Direction
     DIR_RIGHT,
 };
 
+#define MS_PER_CM 290
+#define MS_PER_DEG 18
+
 class MotorManager
 {
 public:
@@ -25,6 +28,7 @@ public:
     void changeDirection();
     void setDirection(MotorDirection direction);
     void turn(uint16_t degrees, Direction direction);
+    void creepDistance(uint16_t distance, MotorDirection direction);
 
     std::unique_ptr<Motor> motor1;
     std::unique_ptr<Motor> motor2;
