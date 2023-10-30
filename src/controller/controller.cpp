@@ -13,6 +13,7 @@ Controller::Controller(std::shared_ptr<MotorManager> motor_manager, std::shared_
     : motor_manager(std::move(motor_manager))
     , sensor_manager(std::move(sensor_manager))
 {
+    this->motor_manager->setDirection(BACKWARD);
 }
 
 void Controller::spin(double dt)
@@ -24,7 +25,6 @@ void Controller::spin(double dt)
 void Controller::_driveClosedLoop(double dt)
 {
     int32_t position_error = sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK);
-    printf("POS ERROR: %li\n\r", position_error);
 
     double Pout = _Kp * position_error;
 
@@ -35,14 +35,19 @@ void Controller::_driveClosedLoop(double dt)
 
     _last_error = position_error;
 
-    motor_manager->motor1->setSpeed(_base_speed - (int32_t)output / 10);
-    motor_manager->motor2->setSpeed(_base_speed + (int32_t)output / 10);
+    int32_t motor1_out = _base_speed - (int32_t)output / 10;
+    int32_t motor2_out = _base_speed + (int32_t)output / 10;
+
+    printf("pos_err: %li, Pout: %.2f, Dout %.2f, out %.2f, M1 %li, M2 %li\n\r", position_error, Pout, Dout, output, motor1_out, motor2_out);
+
+    motor_manager->motor1->setSpeed(motor1_out);
+    motor_manager->motor2->setSpeed(motor2_out);
 }
 
 void Controller::_alignTangential(Direction turn_direction)
 {
-    motor_manager->motor1->setSpeed(600);
-    motor_manager->motor2->setSpeed(600);
+    motor_manager->motor1->setSpeed(800);
+    motor_manager->motor2->setSpeed(800);
 
     printf("Sensor Row FRONT: %li\n\r", sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT));
     printf("Sensor Row BACK: %li\n\r", sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK));
@@ -58,7 +63,7 @@ void Controller::_alignTangential(Direction turn_direction)
     }
 
     while(abs(sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT) - sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK)) > OFFSET_ERROR_TANGENTIAL)
-        sleep_ms(2);
+        sleep_ms(1);
 
     motor_manager->setDirection(STOP);
 
@@ -99,12 +104,15 @@ void Controller::_checkGamePosition()
         switch (current_pos)
         {
             case STRAIGHT:
-                sleep_ms(500);
-                _alignTangential(__findTurnDirection());
-                sleep_ms(500);
-                _alignHorizontal();
-                sleep_ms(500);
-                _alignTangential(__findTurnDirection());
+                for (int i = 0; i < 2; i++)
+                {
+                    sleep_ms(500);
+                    _alignTangential(__findTurnDirection());
+                    sleep_ms(500);
+                    _alignHorizontal();
+                    sleep_ms(500);
+                    _alignTangential(__findTurnDirection());
+                }
 
                 sleep_ms(2000);
 
@@ -116,12 +124,15 @@ void Controller::_checkGamePosition()
             case TURN_RIGHT:
                 break;
             case TURN_LEFT:
-                sleep_ms(500);
-                _alignTangential(DIR_LEFT);
-                sleep_ms(500);
-                _alignHorizontal();
-                sleep_ms(500);
-                _alignTangential(__findTurnDirection());
+                for (int i = 0; i < 2; i++)
+                {
+                    sleep_ms(500);
+                    _alignTangential(DIR_LEFT);
+                    sleep_ms(500);
+                    _alignHorizontal();
+                    sleep_ms(500);
+                    _alignTangential(__findTurnDirection());
+                }
 
                 sleep_ms(2000);
 

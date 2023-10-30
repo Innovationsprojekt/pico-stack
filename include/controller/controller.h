@@ -43,9 +43,9 @@ private:
     int32_t _last_error = 0;
     const int16_t _Kd = 15;
     const int16_t _Kp = 30;
-    const uint32_t _base_speed = 1000;
+    const uint32_t _base_speed = 1500;
 
-    const std::vector<GamePosition> __game_configuration = {STRAIGHT, TURN_LEFT, TURN_LEFT, STRAIGHT};
+    const std::vector<GamePosition> __game_configuration = {STRAIGHT, STRAIGHT, TURN_LEFT, TURN_LEFT, STRAIGHT};
     uint16_t _current_position = 0;
 };
 
