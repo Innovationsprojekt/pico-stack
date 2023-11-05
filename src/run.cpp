@@ -5,39 +5,25 @@
 
 #include <stdexcept>
 #include "pico/stdlib.h"
-#include "motor_driver.h"
 #include "sensor_manager.h"
 #include "pico/cyw43_arch.h"
 #include "motor_manager.h"
 #include "controller.h"
+#include "game_executor.h"
+#include "game_controller.h"
 
 extern "C" {
 #include "ros_wrapper.h"
 }
 
-#include "pico/multicore.h"
-
-#include "hardware/adc.h"
 
 void core1_main()
 {
-    MotorManager motor_manager;
-    motor_manager.setSpeed(0);
+    GameController game;
 
     while(true)
     {
-        for (int i = 0; i < 100; i++)
-        {
-            multicore_fifo_push_blocking(motor_manager.motor1->getCurrentSpeed());
-            motor_manager.setSpeed(i);
-            sleep_ms(100);
-        }
-        for (int i = 100; i > 0; i--)
-        {
-            multicore_fifo_push_blocking(motor_manager.motor1->getCurrentSpeed());
-            motor_manager.setSpeed(i);
-            sleep_ms(100);
-        }
+        game.checkInbox();
     }
 }
 
@@ -54,11 +40,15 @@ int main()
     Controller controller(motor_manager, sensor_manager);
     const int16_t freq = 500;
 
+    GameExecutor executor(&controller);
+    controller.setExecutor(&executor);
+
     sleep_ms(1000);
 
     while(true)
     {
         controller.spin(1000.0 / freq);
+        executor.checkInbox();
         sleep_ms(1000 / freq);
     }
 }

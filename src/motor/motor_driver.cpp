@@ -3,57 +3,39 @@
  * @author Noa Sendlhofer
  */
 
+#include <stdexcept>
 #include "motor_driver.h"
-#include <stdlib.h>
 
-Motor::Motor(uint8_t step_pin, uint8_t dir_pin)
+MotorDriver::MotorDriver(uint8_t step_pin, uint8_t clk_div, uint16_t wrap)
     : step_pin(step_pin)
-    , dir_pin(dir_pin)
+    , clk_div(clk_div)
+    , wrap(wrap)
 {
     gpio_set_function(step_pin, GPIO_FUNC_PWM);
-
-    gpio_init(dir_pin);
-    gpio_set_dir(dir_pin, GPIO_OUT);
 
     slice_num = pwm_gpio_to_slice_num(step_pin);
     pwm_channel = pwm_gpio_to_channel(step_pin);
 
-    setSpeed(0);
-    setEnabled(true);
+    pwm_config config = pwm_get_default_config();
+    pwm_config_set_clkdiv(&config, clk_div);
+    pwm_config_set_wrap(&config, wrap);
+
+    pwm_init(slice_num, &config, true);
+
+    writePWM(0);
+    _setEnabled(true);
 }
 
-void Motor::setDirection(MotorDirection direction)
+void MotorDriver::writePWM(int32_t pwm_width)
 {
-    switch (direction)
-    {
-        case FORWARD:
-            writeDirection(FORWARD);
-            this->current_dir = FORWARD;
-            break;
-        case BACKWARD:
-            writeDirection(BACKWARD);
-            this->current_dir = BACKWARD;
-            break;
-        case STOP:
-            setSpeed(0);
-            break;
-    }
+    if (pwm_width < 0 || pwm_width > wrap)
+        throw(std::invalid_argument("pwm_width out of bounds"));
+
+    current_pwm = pwm_width;
+    pwm_set_chan_level(slice_num, pwm_channel, pwm_width);
 }
 
-void Motor::setSpeed(int32_t speed)
-{
-    if (speed > 3000)
-        speed = 3000;
-
-    if (speed < 0)
-        speed = 0;
-
-    current_speed = speed;
-    pwm_set_wrap(slice_num, 10000);
-    pwm_set_chan_level(slice_num, pwm_channel, int(float(speed)/10000.0*10000.0));
-}
-
-void Motor::setEnabled(bool state)
+void MotorDriver::_setEnabled(bool state)
 {
     if (state && !enabled)
         pwm_set_enabled(slice_num, true);
@@ -63,35 +45,7 @@ void Motor::setEnabled(bool state)
     enabled = state;
 }
 
-void Motor::writeDirection(MotorDirection direction) const
+uint32_t MotorDriver::getCurrentPWM() const
 {
-    switch (direction)
-    {
-        case FORWARD:
-            gpio_put(dir_pin, 1);
-            break;
-        case BACKWARD:
-            gpio_put(dir_pin, 0);
-            break;
-        default:
-            break;
-    }
-}
-
-void Motor::changeDirection()
-{
-    if (current_dir == FORWARD)
-        setDirection(BACKWARD);
-    else
-        setDirection(FORWARD);
-}
-
-uint8_t Motor::getCurrentSpeed() const
-{
-    return this->current_speed;
-}
-
-MotorDirection Motor::getCurrentDirection() const
-{
-    return current_dir;
+    return current_pwm;
 }

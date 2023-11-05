@@ -16,13 +16,27 @@ link_directories(micro_ros_raspberrypi_pico_sdk/libmicroros)
 
 add_subdirectory(ADS1x15_PICO)
 
+# Encoder
+add_library(encoder
+        src/encoder/encoder.cpp)
+target_include_directories(encoder
+        PUBLIC
+        include/encoder)
+target_link_libraries(encoder pico_stdlib hardware_pio)
+
+pico_generate_pio_header(encoder ${CMAKE_CURRENT_LIST_DIR}/src/encoder/pio_rotary_encoder.pio)
+
 # Motor Driver
 add_library(motor_driver
-        src/motor/motor_driver.cpp)
+        src/motor/motor_driver.cpp
+        src/motor/servo.cpp
+        src/motor/motor.cpp
+        src/motor/cl_motor.cpp
+)
 target_include_directories(motor_driver
         PUBLIC
         include/motor)
-target_link_libraries(motor_driver pico_stdlib hardware_pwm)
+target_link_libraries(motor_driver pico_stdlib encoder hardware_pwm hardware_clocks)
 
 # ADCWrapper
 add_library(adc_wrapper
@@ -67,18 +81,30 @@ target_include_directories(ros_wrapper
         micro_ros_raspberrypi_pico_sdk/libmicroros/include)
 target_link_libraries(ros_wrapper pico_cyw43_arch_lwip_threadsafe_background)
 
+# GameExecutor
+add_library(game_executor
+        src/game_controller/game_executor.cpp
+        src/game_controller/communication_manager.cpp
+        src/game_controller/game_controller.cpp
+)
+target_include_directories(game_executor
+        PUBLIC
+        include/game_controller)
+target_link_libraries(game_executor pico_stdlib pico_multicore controller)
+
 # Controller
 add_library(controller
-        src/controller/controller.cpp)
+        src/controller/controller.cpp
+)
 target_include_directories(controller
         PUBLIC
         include/controller)
-target_link_libraries(controller pico_stdlib motor_manager sensor_manager)
+target_link_libraries(controller pico_stdlib game_executor motor_manager sensor_manager)
 
 # run
 add_executable(run
         src/run.cpp)
-target_link_libraries(run pico_stdlib pico_multicore ros_wrapper motor_driver motor_manager sensor sensor_manager controller)
+target_link_libraries(run pico_stdlib ros_wrapper motor_driver motor_manager encoder sensor sensor_manager controller)
 
 SET(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -ffunction-sections -fdata-sections")
@@ -101,4 +127,3 @@ if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
 endif()
 
 # Hardware-specific examples in subdirectories:
-

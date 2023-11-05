@@ -190,7 +190,5 @@ int32_t SensorManager::_mapDistance(int32_t s, std::pair<int32_t, int32_t> calib
     double div = cb/wb*1000.0;
     auto ret = (int32_t)div;
 
-    //printf("raw: %i, c-b: %f, w-b: %f, fl: %f, ret %li\n\r", s, cb, wb, div, ret);
-
     return ret;
 }

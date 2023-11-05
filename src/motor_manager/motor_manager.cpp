@@ -12,14 +12,20 @@ MotorManager::MotorManager()
     motor1 = std::make_unique<Motor>(2,3);
     motor2 = std::make_unique<Motor>(4,5);
 
-    motor1->setSpeed(0);
-    motor1->setDirection(STOP);
+    crane_l_motor = std::make_unique<Motor>(6,7);
+    crane_r_motor = std::make_unique<Motor>(8,9);
 
-    motor2->setSpeed(0);
-    motor2->setDirection(STOP);
+    crane_l_servo = std::make_unique<Servo>(10);
+    crane_l_servo = std::make_unique<Servo>(12);
 }
 
-void MotorManager::setSpeed(uint32_t target_speed, uint16_t rate)
+void MotorManager::setSpeed(int32_t set_speed) const
+{
+    motor1->setSpeed(set_speed);
+    motor2->setSpeed(set_speed);
+}
+
+void MotorManager::rampSpeed(int32_t target_speed, uint16_t rate) const
 {
     uint32_t current_speed = motor1->getCurrentSpeed();
     if (current_speed-target_speed == 0)
@@ -48,18 +54,17 @@ void MotorManager::setSpeed(uint32_t target_speed, uint16_t rate)
     }
 }
 
-void MotorManager::changeDirection()
+void MotorManager::changeDirection() const
 {
     uint32_t old_speed = motor1->getCurrentSpeed();
-    setSpeed(0, 200);
+    rampSpeed(0, 200);
     motor1->changeDirection();
     motor2->changeDirection();
-    setSpeed(old_speed, 200);
+    rampSpeed(old_speed, 200);
 }
 
-void MotorManager::turn(uint16_t degrees, Direction direction)
+void MotorManager::turn(int16_t degrees, Direction direction) const
 {
-    uint8_t old_speed = motor1->getCurrentSpeed();
     setSpeed(0);
 
     if (direction == DIR_LEFT)
@@ -75,23 +80,21 @@ void MotorManager::turn(uint16_t degrees, Direction direction)
     else
         throw std::runtime_error("Invalid Direction");
 
-    setSpeed(2000, 200);
-    sleep_ms(MS_PER_DEG * degrees);
+    rampSpeed(TURN_SPEED, 200);
+    sleep_us(uint32_t(US_PER_DEG_PER_SPEED * degrees * TURN_SPEED));
 
     setDirection(STOP);
-    setSpeed(old_speed);
 }
 
-void MotorManager::setDirection(MotorDirection direction)
+void MotorManager::setDirection(MotorDirection direction) const
 {
     motor1->setDirection(direction);
     motor2->setDirection(direction);
 }
 
-void MotorManager::creepDistance(uint16_t distance, MotorDirection direction)
+void MotorManager::creepDistance(uint16_t distance, MotorDirection direction) const
 {
-    motor1->setSpeed(1000);
-    motor2->setSpeed(1000);
+    setSpeed(CREEP_SPEED);
     setDirection(direction);
     sleep_ms(distance * MS_PER_CM);
     setDirection(STOP);

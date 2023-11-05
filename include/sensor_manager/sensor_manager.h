@@ -10,7 +10,7 @@
 #include <vector>
 #include "adc_wrapper.h"
 #include "sensor.h"
-#include "motor_manager.h";
+#include "motor_manager.h"
 
 #define CLK_SPEED 100
 
@@ -25,13 +25,13 @@
 #define ADC2_SCL_PIN 1
 
 #define ADC3_I2C_ADDR ADSX_ADDRESS_SCLK
-#define ADC3_I2C_TYPE i2c1
+#define ADC3_I2C_TYPE i2c0
 #define ADC3_SDA_PIN 0
 #define ADC3_SCL_PIN 1
 
-#define WHITE 650
+#define WHITE 750
 #define BLACK 50
-#define ON_LINE 350
+#define ON_LINE 600
 
 enum SensorPosition
 {
