@@ -5,7 +5,6 @@
 
 #include "controller.h"
 
-#include <utility>
 #include <valarray>
 #include <stdexcept>
 
@@ -42,8 +41,8 @@ void Controller::_driveClosedLoop(double dt)
 
     printf("pos_err: %li, Pout: %.2f, Dout %.2f, out %.2f, M1 %li, M2 %li\n\r", position_error, Pout, Dout, output, motor1_out, motor2_out);
 
-    _motor_manager->motor1->setSpeed(motor1_out);
-    _motor_manager->motor2->setSpeed(motor2_out);
+    _motor_manager->drive_motor1->setSpeed(motor1_out);
+    _motor_manager->drive_motor2->setSpeed(motor2_out);
 }
 
 void Controller::_alignTangential(TurnDirection turn_direction)
@@ -55,12 +54,12 @@ void Controller::_alignTangential(TurnDirection turn_direction)
 
     if (turn_direction == LEFT)
     {
-        _motor_manager->motor1->setDirection(FORWARD);
-        _motor_manager->motor2->setDirection(BACKWARD);
+        _motor_manager->drive_motor1->setDirection(FORWARD);
+        _motor_manager->drive_motor2->setDirection(BACKWARD);
     } else
     {
-        _motor_manager->motor1->setDirection(BACKWARD);
-        _motor_manager->motor2->setDirection(FORWARD);
+        _motor_manager->drive_motor1->setDirection(BACKWARD);
+        _motor_manager->drive_motor2->setDirection(FORWARD);
     }
 
     while(abs(_sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK)) > OFFSET_ERROR_TANGENTIAL)
@@ -107,13 +106,13 @@ void Controller::__spinAlignTangential(double dt)
     if (motor_out > 0)
     {
         _motor_manager->setSpeed(motor_out);
-        _motor_manager->motor1->setDirection(BACKWARD);
-        _motor_manager->motor2->setDirection(FORWARD);
+        _motor_manager->drive_motor1->setDirection(BACKWARD);
+        _motor_manager->drive_motor2->setDirection(FORWARD);
     } else
     {
         _motor_manager->setSpeed(- motor_out);
-        _motor_manager->motor1->setDirection(FORWARD);
-        _motor_manager->motor2->setDirection(BACKWARD);
+        _motor_manager->drive_motor1->setDirection(FORWARD);
+        _motor_manager->drive_motor2->setDirection(BACKWARD);
     }
 
     printf("pos_err: %li, Pout: %.2f, Dout %.2f, out %.2f\n\r", position_error, Pout, Dout, output);
@@ -125,8 +124,8 @@ void Controller::_alignHorizontal()
     //int32_t s_c2 = sensor_manager->readSensor(SENSOR_C2);
     printf("Sensor C1: %li\n\r", s_c1);
 
-    _motor_manager->motor1->setSpeed(ALIGN_HOR_BASE_SPEED);
-    _motor_manager->motor2->setSpeed(ALIGN_HOR_BASE_SPEED);
+    _motor_manager->drive_motor1->setSpeed(ALIGN_HOR_BASE_SPEED);
+    _motor_manager->drive_motor2->setSpeed(ALIGN_HOR_BASE_SPEED);
 
     if (s_c1 < ON_LINE)
         _motor_manager->setDirection(FORWARD);

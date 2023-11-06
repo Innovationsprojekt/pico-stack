@@ -9,8 +9,8 @@
 
 MotorManager::MotorManager()
 {
-    motor1 = std::make_unique<Motor>(2,3);
-    motor2 = std::make_unique<Motor>(4,5);
+    drive_motor1 = std::make_unique<Motor>(2, 3);
+    drive_motor2 = std::make_unique<Motor>(4, 5);
 
     crane_l_motor = std::make_unique<Motor>(6,7);
     crane_r_motor = std::make_unique<Motor>(8,9);
@@ -21,13 +21,13 @@ MotorManager::MotorManager()
 
 void MotorManager::setSpeed(int32_t set_speed) const
 {
-    motor1->setSpeed(set_speed);
-    motor2->setSpeed(set_speed);
+    drive_motor1->setSpeed(set_speed);
+    drive_motor2->setSpeed(set_speed);
 }
 
 void MotorManager::rampSpeed(int32_t target_speed, uint16_t rate) const
 {
-    uint32_t current_speed = motor1->getCurrentSpeed();
+    uint32_t current_speed = drive_motor1->getCurrentSpeed();
     if (current_speed-target_speed == 0)
         return;
 
@@ -38,8 +38,8 @@ void MotorManager::rampSpeed(int32_t target_speed, uint16_t rate) const
     {
         for (uint32_t i = current_speed; i > target_speed; i--)
         {
-            motor1->setSpeed(i);
-            motor2->setSpeed(i);
+            drive_motor1->setSpeed(i);
+            drive_motor2->setSpeed(i);
             sleep_us(time_us);
         }
     }
@@ -47,8 +47,8 @@ void MotorManager::rampSpeed(int32_t target_speed, uint16_t rate) const
     {
         for (uint32_t i = current_speed; i <= target_speed; i++)
         {
-            motor1->setSpeed(i);
-            motor2->setSpeed(i);
+            drive_motor1->setSpeed(i);
+            drive_motor2->setSpeed(i);
             sleep_us(time_us);
         }
     }
@@ -56,10 +56,10 @@ void MotorManager::rampSpeed(int32_t target_speed, uint16_t rate) const
 
 void MotorManager::changeDirection() const
 {
-    uint32_t old_speed = motor1->getCurrentSpeed();
+    uint32_t old_speed = drive_motor1->getCurrentSpeed();
     rampSpeed(0, 200);
-    motor1->changeDirection();
-    motor2->changeDirection();
+    drive_motor1->changeDirection();
+    drive_motor2->changeDirection();
     rampSpeed(old_speed, 200);
 }
 
@@ -69,13 +69,13 @@ void MotorManager::turn(int16_t degrees, TurnDirection direction) const
 
     if (direction == LEFT)
     {
-        motor1->setDirection(FORWARD);
-        motor2->setDirection(BACKWARD);
+        drive_motor1->setDirection(FORWARD);
+        drive_motor2->setDirection(BACKWARD);
     }
     else if (direction == RIGHT)
     {
-        motor1->setDirection(BACKWARD);
-        motor2->setDirection(FORWARD);
+        drive_motor1->setDirection(BACKWARD);
+        drive_motor2->setDirection(FORWARD);
     }
     else
         throw std::runtime_error("Invalid Direction");
@@ -88,8 +88,8 @@ void MotorManager::turn(int16_t degrees, TurnDirection direction) const
 
 void MotorManager::setDirection(MotorDirection direction) const
 {
-    motor1->setDirection(direction);
-    motor2->setDirection(direction);
+    drive_motor1->setDirection(direction);
+    drive_motor2->setDirection(direction);
 }
 
 void MotorManager::creepDistance(uint16_t distance, MotorDirection direction) const

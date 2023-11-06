@@ -21,6 +21,7 @@ class MotorManager
 {
 public:
     MotorManager();
+    //drive
     void rampSpeed(int32_t target_speed, uint16_t rate = 200) const;
     void setSpeed(int32_t set_speed) const;
     void changeDirection() const;
@@ -28,8 +29,10 @@ public:
     void turn(int16_t degrees, TurnDirection direction) const;
     void creepDistance(uint16_t distance, MotorDirection direction) const;
 
-    std::unique_ptr<Motor> motor1;
-    std::unique_ptr<Motor> motor2;
+    //TODO pickup
+
+    std::unique_ptr<Motor> drive_motor1;
+    std::unique_ptr<Motor> drive_motor2;
 
     std::unique_ptr<Motor> crane_l_motor;
     std::unique_ptr<Motor> crane_r_motor;

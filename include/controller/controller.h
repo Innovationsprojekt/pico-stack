@@ -6,7 +6,6 @@
 #ifndef PICO_MOTORS_CONTROLLER_H_
 #define PICO_MOTORS_CONTROLLER_H_
 
-
 #include <memory>
 #include "motor_manager.h"
 #include "sensor_manager.h"
