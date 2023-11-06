@@ -6,16 +6,16 @@
 #ifndef PICO_MOTORS_ENUM_DEFINITIONS_H_
 #define PICO_MOTORS_ENUM_DEFINITIONS_H_
 
-enum DriveDirection
-{
-    DRIVE_FORWARD,
-    DRIVE_BACKWARD,
-};
-
 enum DriveSpeed
 {
     SPEED_STRAIGHT,
     SPEED_CURVE,
+};
+
+enum LineSide
+{
+    DETECT_LEFT,
+    DETECT_RIGHT,
 };
 
 enum PickUpSide
@@ -24,6 +24,89 @@ enum PickUpSide
     PICKUP_RIGHT,
 };
 
+enum TurnDirection
+{
+    LEFT,
+    RIGHT,
+};
+
+enum MotorDirection
+{
+    FORWARD,
+    BACKWARD,
+    STOP,
+};
+
+enum LineType
+{
+    STRAIGHT,
+    CURVE_LEFT,
+    CURVE_RIGHT,
+};
+
+enum GameMessage
+{
+    NOTIFY_READY,
+    NOTIFY_CALIBRATE,
+    NOTIFY_LINE,
+    NOTIFY_ALIGN,
+    NOTIFY_TRASH,
+    NOTIFY_RESUME,
+    NOTIFY_UNLOAD,
+    REQUEST_CALIBRATE,
+    REQUEST_DRIVE_STRAIGHT,
+    REQUEST_DRIVE_CURVE,
+    REQUEST_LINE_LEFT,
+    REQUEST_LINE_RIGHT,
+    REQUEST_ALIGN_STRAIGHT,
+    REQUEST_ALIGN_CURVE_LEFT,
+    REQUEST_ALIGN_CURVE_RIGHT,
+    REQUEST_RESUME_CURVE_LEFT,
+    REQUEST_RESUME_CURVE_RIGHT,
+    REQUEST_PICKUP_LEFT,
+    REQUEST_PICKUP_RIGHT,
+    REQUEST_UNLOAD,
+};
+
+enum GameItems
+{
+    CALIBRATE,
+    DRIVE_STRAIGHT,
+    DRIVE_CURVE,
+    DRIVE_GATE,
+    LINE_LEFT,
+    LINE_RIGHT,
+    ALIGN_STRAIGHT,
+    ALIGN_CURVE_LEFT,
+    ALIGN_CURVE_RIGHT,
+    RESUME_CURVE_LEFT,
+    RESUME_CURVE_RIGHT,
+    TRASH_LEFT,
+    TRASH_RIGHT,
+    UNLOAD,
+};
+
+enum SensorPosition
+{
+    SENSOR_F1,
+    SENSOR_F2,
+    SENSOR_F3,
+    SENSOR_F4,
+    SENSOR_C1,
+    SENSOR_C2,
+    SENSOR_C3,
+    SENSOR_C4,
+    SENSOR_B1,
+    SENSOR_B2,
+    SENSOR_B3,
+    SENSOR_B4,
+};
+
 enum SensorRow
+{
+    SENSOR_ROW_FRONT,
+    SENSOR_ROW_CENTER,
+    SENSOR_ROW_BACK,
+};
 
 #endif //PICO_MOTORS_ENUM_DEFINITIONS_H_

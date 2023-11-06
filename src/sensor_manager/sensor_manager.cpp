@@ -147,7 +147,7 @@ int32_t SensorManager::getHorizontalPosition(SensorRow row)
 void SensorManager::calibrate()
 {
     sleep_ms(2000);
-    motor_manager->turn(90, DIR_LEFT);
+    motor_manager->turn(90, LEFT);
 
     int32_t B1b = readRawSensor(SENSOR_B1);
     int32_t B2b = readRawSensor(SENSOR_B2);
@@ -169,7 +169,7 @@ void SensorManager::calibrate()
     int32_t C2w = readRawSensor(SENSOR_C2);
 
     motor_manager->creepDistance(15, FORWARD);
-    motor_manager->turn(90, DIR_RIGHT);
+    motor_manager->turn(90, RIGHT);
 
     calibration.emplace_back(F1b, F1w);
     calibration.emplace_back(F2b, F2w);

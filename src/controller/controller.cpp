@@ -9,22 +9,24 @@
 #include <valarray>
 #include <stdexcept>
 
-Controller::Controller(std::shared_ptr<MotorManager> motor_manager, std::shared_ptr<SensorManager> sensor_manager)
-    : motor_manager(std::move(motor_manager))
-    , sensor_manager(std::move(sensor_manager))
+Controller::Controller()
 {
-    this->motor_manager->setDirection(BACKWARD);
+    _motor_manager = std::make_shared<MotorManager>();
+    _sensor_manager = std::make_shared<SensorManager>(_motor_manager);
 }
 
 void Controller::spin(double dt)
 {
-    _driveClosedLoop(dt);
-    _checkGamePosition();
+    if (_enable_drive)
+        _driveClosedLoop(dt);
+
+    if (_enable_detection)
+        _detectLine();
 }
 
 void Controller::_driveClosedLoop(double dt)
 {
-    int32_t position_error = sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK);
+    int32_t position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK);
 
     double Pout = _drive_kp * position_error;
 
@@ -40,53 +42,53 @@ void Controller::_driveClosedLoop(double dt)
 
     printf("pos_err: %li, Pout: %.2f, Dout %.2f, out %.2f, M1 %li, M2 %li\n\r", position_error, Pout, Dout, output, motor1_out, motor2_out);
 
-    motor_manager->motor1->setSpeed(motor1_out);
-    motor_manager->motor2->setSpeed(motor2_out);
+    _motor_manager->motor1->setSpeed(motor1_out);
+    _motor_manager->motor2->setSpeed(motor2_out);
 }
 
-void Controller::_alignTangential(Direction turn_direction)
+void Controller::_alignTangential(TurnDirection turn_direction)
 {
-    motor_manager->setSpeed(ALIGN_TAN_BASE_SPEED);
+    _motor_manager->setSpeed(ALIGN_TAN_BASE_SPEED);
 
-    printf("Sensor Row FRONT: %li\n\r", sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT));
-    printf("Sensor Row BACK: %li\n\r", sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK));
+    printf("Sensor Row FRONT: %li\n\r", _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT));
+    printf("Sensor Row BACK: %li\n\r", _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK));
 
-    if (turn_direction == DIR_LEFT)
+    if (turn_direction == LEFT)
     {
-        motor_manager->motor1->setDirection(FORWARD);
-        motor_manager->motor2->setDirection(BACKWARD);
+        _motor_manager->motor1->setDirection(FORWARD);
+        _motor_manager->motor2->setDirection(BACKWARD);
     } else
     {
-        motor_manager->motor1->setDirection(BACKWARD);
-        motor_manager->motor2->setDirection(FORWARD);
+        _motor_manager->motor1->setDirection(BACKWARD);
+        _motor_manager->motor2->setDirection(FORWARD);
     }
 
-    while(abs(sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT) - sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK)) > OFFSET_ERROR_TANGENTIAL)
+    while(abs(_sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK)) > OFFSET_ERROR_TANGENTIAL)
         sleep_ms(1);
 
-    motor_manager->setDirection(STOP);
+    _motor_manager->setDirection(STOP);
 
-    printf("Sensor Row FRONT: %li\n\r", sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT));
-    printf("Sensor Row BACK: %li\n\r", sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK));
+    printf("Sensor Row FRONT: %li\n\r", _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT));
+    printf("Sensor Row BACK: %li\n\r", _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK));
 }
 
 void Controller::_alignTangentialPID()
 {
-    motor_manager->setSpeed(0);
+    _motor_manager->setSpeed(0);
 
-    while(abs(sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT) - sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK)) > OFFSET_ERROR_TANGENTIAL)
+    while(abs(_sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK)) > OFFSET_ERROR_TANGENTIAL)
     {
         __spinAlignTangential(1000.0 / ALIGN_TAN_FREQ);
         sleep_ms(1000 / ALIGN_TAN_FREQ);
     }
-    motor_manager->setDirection(STOP);
+    _motor_manager->setDirection(STOP);
     _integral_tan = 0;
     _last_error_tan = 0;
 }
 
 void Controller::__spinAlignTangential(double dt)
 {
-    int32_t position_error = sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT) - sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK);
+    int32_t position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK);
 
     double Pout = ALIGN_TAN_KP * position_error;
 
@@ -104,14 +106,14 @@ void Controller::__spinAlignTangential(double dt)
 
     if (motor_out > 0)
     {
-        motor_manager->setSpeed(motor_out);
-        motor_manager->motor1->setDirection(BACKWARD);
-        motor_manager->motor2->setDirection(FORWARD);
+        _motor_manager->setSpeed(motor_out);
+        _motor_manager->motor1->setDirection(BACKWARD);
+        _motor_manager->motor2->setDirection(FORWARD);
     } else
     {
-        motor_manager->setSpeed(- motor_out);
-        motor_manager->motor1->setDirection(FORWARD);
-        motor_manager->motor2->setDirection(BACKWARD);
+        _motor_manager->setSpeed(- motor_out);
+        _motor_manager->motor1->setDirection(FORWARD);
+        _motor_manager->motor2->setDirection(BACKWARD);
     }
 
     printf("pos_err: %li, Pout: %.2f, Dout %.2f, out %.2f\n\r", position_error, Pout, Dout, output);
@@ -119,123 +121,50 @@ void Controller::__spinAlignTangential(double dt)
 
 void Controller::_alignHorizontal()
 {
-    int32_t s_c1 = sensor_manager->readSensor(SENSOR_C1);
+    int32_t s_c1 = _sensor_manager->readSensor(SENSOR_C1);
     //int32_t s_c2 = sensor_manager->readSensor(SENSOR_C2);
     printf("Sensor C1: %li\n\r", s_c1);
 
-    motor_manager->motor1->setSpeed(ALIGN_HOR_BASE_SPEED);
-    motor_manager->motor2->setSpeed(ALIGN_HOR_BASE_SPEED);
+    _motor_manager->motor1->setSpeed(ALIGN_HOR_BASE_SPEED);
+    _motor_manager->motor2->setSpeed(ALIGN_HOR_BASE_SPEED);
 
     if (s_c1 < ON_LINE)
-        motor_manager->setDirection(FORWARD);
+        _motor_manager->setDirection(FORWARD);
     else
-        motor_manager->setDirection(BACKWARD);
+        _motor_manager->setDirection(BACKWARD);
 
-    while (abs(sensor_manager->readSensor(SENSOR_C1) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
+    while (abs(_sensor_manager->readSensor(SENSOR_C1) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
         sleep_ms(2);
 
-    motor_manager->setDirection(STOP);
-    s_c1 = sensor_manager->readSensor(SENSOR_C1);
+    _motor_manager->setDirection(STOP);
+    s_c1 = _sensor_manager->readSensor(SENSOR_C1);
     printf("Sensor C1: %li\n\r", s_c1);
 }
 
-void Controller::_checkGamePosition()
+void Controller::_detectLine()
 {
-    GamePosition current_pos = __game_configuration.at(_current_position);
-
-    if (__readLineSensor(current_pos) < BLACK)
+    if (_sensor_manager->readSensor(_line_sensor) < BLACK)
     {
-        motor_manager->setDirection(STOP);
+        _motor_manager->setDirection(STOP);
+        _enable_drive = false;
 
-        switch (current_pos)
-        {
-            case STRAIGHT:
-                for (int i = 0; i < 2; i++)
-                {
-                    sleep_ms(500);
-                    //_alignTangential(__findTurnDirection());
-                    _alignTangentialPID();
-                    sleep_ms(500);
-                    _alignHorizontal();
-                    sleep_ms(500);
-                    //_alignTangential(__findTurnDirection());
-                    _alignTangentialPID();
-                }
+        _enable_detection = false;
 
-                sleep_ms(2000);
-
-                motor_manager->creepDistance(3, BACKWARD);
-                break;
-            case TURN_RIGHT:
-                break;
-            case TURN_LEFT:
-                motor_manager->turn(10, DIR_LEFT);
-
-                    sleep_ms(500);
-                    //_alignTangential(DIR_LEFT);
-                    _alignTangentialPID();
-                    sleep_ms(500);
-                    _alignHorizontal();
-                    sleep_ms(500);
-                    _alignTangentialPID();
-                    //_alignTangential(__findTurnDirection());
-
-                sleep_ms(2000);
-
-                motor_manager->creepDistance(2, FORWARD);
-                motor_manager->setDirection(STOP);
-                sleep_ms(500);
-                motor_manager->turn(15, DIR_RIGHT);
-                sleep_ms(500);
-                motor_manager->creepDistance(4, BACKWARD);
-                break;
-        }
-
-        _current_position++;
-
-        switch (__game_configuration.at(_current_position))
-        {
-            case STRAIGHT:
-                _drive_speed = DRIVE_BASE_SPEED;
-                _drive_kd = DRIVE_KD;
-                _drive_kp = DRIVE_KP;
-                break;
-            default:
-                _drive_speed = DRIVE_CURVE_SPEED;
-                _drive_kd = DRIVE_CURVE_KD;
-                _drive_kp = DRIVE_CURVE_KP;
-                break;
-        }
+        _executor->notify(NOTIFY_LINE);
     }
 }
 
-int32_t Controller::__readLineSensor(GamePosition current_pos)
+void Controller::start()
 {
-    switch (current_pos)
-    {
-        case STRAIGHT:
-            return sensor_manager->readSensor(SENSOR_C1);
-        case TURN_LEFT:
-            return sensor_manager->readSensor(SENSOR_C1);
-        case TURN_RIGHT:
-            return sensor_manager->readSensor(SENSOR_C2);
-    }
+    _executor->notify(NOTIFY_READY);
 }
 
-Direction Controller::__findTurnDirection()
+void Controller::_pickup(PickUpSide side) const
 {
-    if (sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT) < sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK))
-        return DIR_LEFT;
-    else
-        return DIR_RIGHT;
+    //TODO implement pickup
 }
 
-void Controller::drive() const
+void Controller::_unload() const
 {
-    printf("GameController sent drive request!");
-}
-
-void Controller::pickTrash() const
-{
-    printf("GameController sent pickTrash request!");
+    //TODO implement unload
 }

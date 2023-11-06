@@ -5,9 +5,7 @@
 
 #include <stdexcept>
 #include "pico/stdlib.h"
-#include "sensor_manager.h"
 #include "pico/cyw43_arch.h"
-#include "motor_manager.h"
 #include "controller.h"
 #include "game_executor.h"
 #include "game_controller.h"
@@ -31,19 +29,19 @@ int main()
 {
     stdio_init_all();
 
-    std::shared_ptr<MotorManager> motor_manager = std::make_shared<MotorManager>();
-    std::shared_ptr<SensorManager> sensor_manager = std::make_shared<SensorManager>(motor_manager);
+    multicore_launch_core1(core1_main);
 
-    sleep_ms(2000);
-    sensor_manager->calibrate();
+    sleep_ms(2000); //TODO implement button press
 
-    Controller controller(motor_manager, sensor_manager);
+    Controller controller;
     const int16_t freq = 500;
 
     GameExecutor executor(&controller);
     controller.setExecutor(&executor);
 
     sleep_ms(1000);
+
+    controller.start();
 
     while(true)
     {

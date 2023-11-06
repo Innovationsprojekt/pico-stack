@@ -8,41 +8,35 @@
 
 #include <vector>
 #include "communication_manager.h"
+#include "enum_definitions.h"
 
 #define LINE_WAIT_TIME 1000
 
 #define CALIBRATION_TIME 2000
 #define LINE_TIME 2000
-#define TRASH_TIME 6000
+#define PICKUP_TIME 6000
 #define UNLOAD_TIME 10000
-
-enum GameItems
-{
-    CALIBRATE,
-    DRIVE_STRAIGHT,
-    DRIVE_CURVE,
-    DRIVE_GATE,
-    LINE_LEFT,
-    LINE_RIGHT,
-    TRASH_LEFT,
-    TRASH_RIGHT,
-    UNLOAD,
-};
 
 const std::vector<GameItems> game_plan
         = {CALIBRATE,
            DRIVE_STRAIGHT,
            LINE_RIGHT,
+           ALIGN_STRAIGHT,
            TRASH_RIGHT,
            DRIVE_STRAIGHT,
            LINE_LEFT,
+           ALIGN_STRAIGHT,
            TRASH_LEFT,
            DRIVE_CURVE,
            LINE_RIGHT,
+           ALIGN_CURVE_LEFT,
            TRASH_RIGHT,
+           RESUME_CURVE_LEFT,
            DRIVE_CURVE,
            LINE_RIGHT,
+           ALIGN_CURVE_LEFT,
            TRASH_LEFT,
+           RESUME_CURVE_LEFT,
            DRIVE_STRAIGHT,
            UNLOAD
         };

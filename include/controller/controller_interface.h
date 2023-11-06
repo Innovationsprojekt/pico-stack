@@ -17,8 +17,13 @@ public:
         _executor = executor;
     }
 
-    virtual void drive() const = 0;
-    virtual void pickTrash() const = 0; //TODO add all methods
+    virtual void calibrate() const = 0;
+    virtual void drive(MotorDirection direction, DriveSpeed speed) = 0;
+    virtual void detectLine(LineSide side) = 0;
+    virtual void align(LineType type) = 0;
+    virtual void pickTrash(PickUpSide side) const = 0;
+    virtual void resumeDrive(TurnDirection dir) = 0;
+    virtual void unload() const = 0;
 
 protected:
     GameExecutorInterface *_executor;

@@ -18,13 +18,19 @@ void GameController::checkInbox()
             _controller_ready = true;
             _nextMove(message);
             break;
-        case NOTIFY_LINE:
-            _nextMove(message);
-            break;
         case NOTIFY_CALIBRATE:
             _nextMove(message);
             break;
+        case NOTIFY_LINE:
+            _nextMove(message);
+            break;
+        case NOTIFY_ALIGN:
+            _nextMove(message);
+            break;
         case NOTIFY_TRASH:
+            _nextMove(message);
+            break;
+        case NOTIFY_RESUME:
             _nextMove(message);
             break;
         case NOTIFY_UNLOAD:
@@ -53,13 +59,17 @@ void GameController::_nextMove(GameMessage message)
         case NOTIFY_LINE:
             if (time_passed < LINE_TIME)
             {
-                _game_index = _game_index - 2;
+                _game_index = _game_index - 2; //TODO implement smarter method
                 _sendMove();
             }
             break;
+        case NOTIFY_ALIGN:
+            break;
         case NOTIFY_TRASH:
-            if (time_passed < TRASH_TIME)
+            if (time_passed < PICKUP_TIME)
                 throw(std::runtime_error("Trash pickup unsuccessful")); //TODO implement safe
+            break;
+        case NOTIFY_RESUME:
             break;
         case NOTIFY_UNLOAD:
             if (time_passed < UNLOAD_TIME)
@@ -110,11 +120,26 @@ void GameController::_sendMove()
         case LINE_RIGHT:
             CommunicationManager::sendMessage(REQUEST_LINE_RIGHT);
             break;
+        case ALIGN_STRAIGHT:
+            CommunicationManager::sendMessage(REQUEST_ALIGN_STRAIGHT);
+            break;
+        case ALIGN_CURVE_LEFT:
+            CommunicationManager::sendMessage(REQUEST_ALIGN_CURVE_LEFT);
+            break;
+        case ALIGN_CURVE_RIGHT:
+            CommunicationManager::sendMessage(REQUEST_ALIGN_CURVE_RIGHT);
+            break;
         case TRASH_LEFT:
-            CommunicationManager::sendMessage(REQUEST_TRASH_LEFT);
+            CommunicationManager::sendMessage(REQUEST_PICKUP_LEFT);
             break;
         case TRASH_RIGHT:
-            CommunicationManager::sendMessage(REQUEST_TRASH_RIGHT);
+            CommunicationManager::sendMessage(REQUEST_PICKUP_RIGHT);
+            break;
+        case RESUME_CURVE_LEFT:
+            CommunicationManager::sendMessage(REQUEST_RESUME_CURVE_LEFT);
+            break;
+        case RESUME_CURVE_RIGHT:
+            CommunicationManager::sendMessage(REQUEST_RESUME_CURVE_RIGHT);
             break;
         case UNLOAD:
             CommunicationManager::sendMessage(REQUEST_UNLOAD);

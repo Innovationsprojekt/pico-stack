@@ -25,56 +25,63 @@
 #define ALIGN_TAN_KI 1
 #define ALIGN_TAN_FREQ 500
 
-#define DRIVE_KD 25
-#define DRIVE_KP 50
-#define DRIVE_BASE_SPEED 6000
+#define DRIVE_STRAIGHT_KD 25
+#define DRIVE_STRAIGHT_KP 50
+#define DRIVE_STRAIGHT_SPEED 6000
 
 #define DRIVE_CURVE_KD 15
 #define DRIVE_CURVE_KP 30
 #define DRIVE_CURVE_SPEED 4000
 
-enum GamePosition
-{
-    STRAIGHT,
-    TURN_RIGHT,
-    TURN_LEFT,
-};
-
 class Controller : public ControllerInterface
 {
 public:
-    Controller(std::shared_ptr<MotorManager> motor_manager, std::shared_ptr<SensorManager> sensor_manager);
+    Controller();
+    void start();
     void spin(double dt);
 
-    void drive() const override;
-    void pickTrash() const override;
+    void calibrate() const override;
+    void drive(MotorDirection direction, DriveSpeed speed) override;
+    void detectLine(LineSide side) override;
+    void align(LineType type) override;
+    void pickTrash(PickUpSide side) const override;
+    void resumeDrive(TurnDirection dir) override;
+    void unload() const override;
 
 private:
-    std::shared_ptr<MotorManager> motor_manager;
-    std::shared_ptr<SensorManager> sensor_manager;
+    std::shared_ptr<MotorManager> _motor_manager;
+    std::shared_ptr<SensorManager> _sensor_manager;
 
-    void _driveClosedLoop(double dt);
-    void _checkGamePosition();
-
-    int32_t __readLineSensor(GamePosition current_pos);
-    Direction __findTurnDirection();
-
-    void _alignTangential(Direction turn_direction);
+    void _alignTangential(TurnDirection turn_direction);
     void _alignHorizontal();
 
     void _alignTangentialPID();
     void __spinAlignTangential(double dt);
 
-    uint16_t _drive_speed = DRIVE_BASE_SPEED;
-    uint8_t _drive_kd = DRIVE_KD;
-    uint8_t _drive_kp = DRIVE_KP;
+    // drive
+    void _driveClosedLoop(double dt);
+
+    bool _enable_drive = false;
+    uint16_t _drive_speed = DRIVE_STRAIGHT_SPEED;
+    uint8_t _drive_kd = DRIVE_STRAIGHT_KD;
+    uint8_t _drive_kp = DRIVE_STRAIGHT_KP;
     int32_t _last_error_drive = 0;
 
+    //detect line
+    void _detectLine();
+
+    bool _enable_detection = false;
+    SensorPosition _line_sensor = SENSOR_C1;
+
+    //align
     int32_t _last_error_tan = 0;
     int32_t _integral_tan = 0;
 
-    const std::vector<GamePosition> __game_configuration = {STRAIGHT, TURN_LEFT, TURN_LEFT, STRAIGHT};
-    uint16_t _current_position = 0;
+    //pick trash
+    void _pickup(PickUpSide side) const;
+
+    //unload
+    void _unload() const;
 };
 
 

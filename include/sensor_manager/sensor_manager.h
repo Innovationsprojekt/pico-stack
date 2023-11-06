@@ -11,6 +11,7 @@
 #include "adc_wrapper.h"
 #include "sensor.h"
 #include "motor_manager.h"
+#include "enum_definitions.h"
 
 #define CLK_SPEED 100
 
@@ -32,29 +33,6 @@
 #define WHITE 750
 #define BLACK 50
 #define ON_LINE 600
-
-enum SensorPosition
-{
-    SENSOR_F1 = 0,
-    SENSOR_F2 = 1,
-    SENSOR_F3 = 2,
-    SENSOR_F4 = 3,
-    SENSOR_C1 = 4,
-    SENSOR_C2 = 5,
-    SENSOR_C3 = 6,
-    SENSOR_C4 = 7,
-    SENSOR_B1 = 8,
-    SENSOR_B2 = 9,
-    SENSOR_B3 = 10,
-    SENSOR_B4 = 11,
-};
-
-enum SensorRow
-{
-    SENSOR_ROW_FRONT = 0,
-    SENSOR_ROW_CENTER = 1,
-    SENSOR_ROW_BACK = 2,
-};
 
 class SensorManager
 {

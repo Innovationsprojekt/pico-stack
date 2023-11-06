@@ -10,14 +10,7 @@
 #include <hardware/pwm.h>
 #include <pico/stdlib.h>
 
-#define CLOCK_SPEED 1.25e+8
-
-enum MotorDirection
-{
-    FORWARD = 0,
-    BACKWARD = 1,
-    STOP = 2,
-};
+#include "enum_definitions.h"
 
 class MotorDriver
 {

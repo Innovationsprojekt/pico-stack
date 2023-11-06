@@ -23,18 +23,45 @@ void GameExecutor::checkInbox()
     switch (message)
     {
         case REQUEST_CALIBRATE:
-            //TODO
+            _controller->calibrate();
             break;
         case REQUEST_DRIVE_STRAIGHT:
-            _controller->drive();
+            _controller->drive(BACKWARD, SPEED_STRAIGHT);
             break;
-        case REQUEST_PICKUP:
-            _controller->pickTrash();
+        case REQUEST_DRIVE_CURVE:
+            _controller->drive(BACKWARD, SPEED_CURVE);
+            break;
+        case REQUEST_LINE_LEFT:
+            _controller->detectLine(DETECT_LEFT);
+            break;
+        case REQUEST_LINE_RIGHT:
+            _controller->detectLine(DETECT_RIGHT);
+            break;
+        case REQUEST_ALIGN_STRAIGHT:
+            _controller->align(STRAIGHT);
+            break;
+        case REQUEST_ALIGN_CURVE_LEFT:
+            _controller->align(CURVE_LEFT);
+            break;
+        case REQUEST_ALIGN_CURVE_RIGHT:
+            _controller->align(CURVE_RIGHT);
+            break;
+        case REQUEST_RESUME_CURVE_LEFT:
+            _controller->resumeDrive(LEFT);
+            break;
+        case REQUEST_RESUME_CURVE_RIGHT:
+            _controller->resumeDrive(RIGHT);
+            break;
+        case REQUEST_PICKUP_LEFT:
+            _controller->pickTrash(PICKUP_LEFT);
+            break;
+        case REQUEST_PICKUP_RIGHT:
+            _controller->pickTrash(PICKUP_RIGHT);
             break;
         case REQUEST_UNLOAD:
-            //TODO
+            _controller->unload();
             break;
         default:
-            throw(std::runtime_error("Invalid Message"));
+            throw std::runtime_error("Invalid message");
     }
 }

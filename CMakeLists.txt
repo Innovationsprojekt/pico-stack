@@ -21,7 +21,9 @@ add_library(encoder
         src/encoder/encoder.cpp)
 target_include_directories(encoder
         PUBLIC
-        include/encoder)
+        include/encoder
+        include/enum_definitions
+)
 target_link_libraries(encoder pico_stdlib hardware_pio)
 
 pico_generate_pio_header(encoder ${CMAKE_CURRENT_LIST_DIR}/src/encoder/pio_rotary_encoder.pio)
@@ -35,50 +37,67 @@ add_library(motor_driver
 )
 target_include_directories(motor_driver
         PUBLIC
-        include/motor)
+        include/motor
+        include/enum_definitions
+)
 target_link_libraries(motor_driver pico_stdlib encoder hardware_pwm hardware_clocks)
 
 # ADCWrapper
 add_library(adc_wrapper
-        src/adc_wrapper/adc_wrapper.cpp)
+        src/adc_wrapper/adc_wrapper.cpp
+)
 target_include_directories(adc_wrapper
         PUBLIC
-        include/adc_wrapper)
+        include/adc_wrapper
+        include/enum_definitions
+)
 target_link_libraries(adc_wrapper pico_stdlib pico_ads1x15)
 
 # Sensor
 add_library(sensor
-        src/sensor/sensor.cpp)
+        src/sensor/sensor.cpp
+)
 target_include_directories(sensor
         PUBLIC
-        include/sensor)
+        include/sensor
+        include/enum_definitions
+)
 target_link_libraries(sensor pico_stdlib adc_wrapper)
 
 # MotorManager
 add_library(motor_manager
-        src/motor_manager/motor_manager.cpp)
+        src/motor_manager/motor_manager.cpp
+)
 target_include_directories(motor_manager
         PUBLIC
-        include/motor_manager)
+        include/motor_manager
+        include/enum_definitions
+)
 target_link_libraries(motor_manager pico_stdlib motor_driver)
 
 # SensorManager
 add_library(sensor_manager
-        src/sensor_manager/sensor_manager.cpp)
+        src/sensor_manager/sensor_manager.cpp
+)
 target_include_directories(sensor_manager
         PUBLIC
-        include/sensor_manager)
+        include/sensor_manager
+        include/enum_definitions
+)
 target_link_libraries(sensor_manager pico_stdlib sensor adc_wrapper motor_manager)
 
 # ROSWrapper
 add_library(ros_wrapper
         src/microros/ros_wrapper.c
-        src/microros/pico_udp_transport.c)
+        src/microros/pico_udp_transport.c
+)
 target_link_libraries(ros_wrapper pico_stdlib hardware_pwm microros hardware_adc)
 target_include_directories(ros_wrapper
         PUBLIC
         include/microros
-        micro_ros_raspberrypi_pico_sdk/libmicroros/include)
+        micro_ros_raspberrypi_pico_sdk/libmicroros/include
+        include/enum_definitions
+)
 target_link_libraries(ros_wrapper pico_cyw43_arch_lwip_threadsafe_background)
 
 # GameExecutor
@@ -89,16 +108,21 @@ add_library(game_executor
 )
 target_include_directories(game_executor
         PUBLIC
-        include/game_controller)
+        include/game_controller
+        include/enum_definitions
+)
 target_link_libraries(game_executor pico_stdlib pico_multicore controller)
 
 # Controller
 add_library(controller
         src/controller/controller.cpp
+        src/controller/controller_interface.cpp
 )
 target_include_directories(controller
         PUBLIC
-        include/controller)
+        include/controller
+        include/enum_definitions
+)
 target_link_libraries(controller pico_stdlib game_executor motor_manager sensor_manager)
 
 # run

@@ -63,16 +63,16 @@ void MotorManager::changeDirection() const
     rampSpeed(old_speed, 200);
 }
 
-void MotorManager::turn(int16_t degrees, Direction direction) const
+void MotorManager::turn(int16_t degrees, TurnDirection direction) const
 {
     setSpeed(0);
 
-    if (direction == DIR_LEFT)
+    if (direction == LEFT)
     {
         motor1->setDirection(FORWARD);
         motor2->setDirection(BACKWARD);
     }
-    else if (direction == DIR_RIGHT)
+    else if (direction == RIGHT)
     {
         motor1->setDirection(BACKWARD);
         motor2->setDirection(FORWARD);
