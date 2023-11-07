@@ -18,7 +18,7 @@ MotorManager::MotorManager()
     //crane_r_motor = std::make_unique<Motor>(6,7,20,21);
 
     crane_l_servo = std::make_unique<Servo>(12);
-    crane_l_servo = std::make_unique<Servo>(13);
+    crane_r_servo = std::make_unique<Servo>(13);
 }
 
 void MotorManager::setSpeed(int32_t set_speed) const
@@ -114,5 +114,36 @@ void MotorManager::setMixerSpeed(int32_t speed)
 
 void MotorManager::pickup(PickUpSide side)
 {
+    switch (side)
+    {
+        case PICKUP_RIGHT:
+            crane_l_servo->setAngle(150);
+            crane_l_motor->setPosition(5500, 10000);
+            crane_l_servo->setAngle(125);
+            sleep_ms(200);
+            crane_l_motor->setPosition(-8700, 9000);
+            crane_l_servo->setAngle(17);
+            sleep_ms(800);
+            crane_l_servo->setAngle(132);
+            crane_l_motor->setPosition(5000, 10000);
+            crane_l_servo->setAngle(150);
+            crane_l_motor->setPosition(0, 10000);
+            home(PICKUP_LEFT);
+            break;
+        case PICKUP_LEFT:
+            break;
+    }
+}
 
+void MotorManager::home(PickUpSide side)
+{
+    switch (side)
+    {
+        case PICKUP_LEFT:
+            crane_l_servo->setAngle(175);
+            break;
+        case PICKUP_RIGHT:
+            crane_r_servo->setAngle(175);
+            break;
+    }
 }

@@ -13,8 +13,8 @@
 #define LINE_WAIT_TIME 1000
 
 #define CALIBRATION_TIME 2000
-#define LINE_TIME 2000
-#define PICKUP_TIME 6000
+#define LINE_TIME 1000
+#define PICKUP_TIME 4000
 #define UNLOAD_TIME 10000
 
 const std::vector<GameItems> game_plan

@@ -66,14 +66,18 @@ void GameController::_nextMove(GameMessage message)
         case NOTIFY_ALIGN:
             break;
         case NOTIFY_TRASH:
+            /*
             if (time_passed < PICKUP_TIME)
                 throw(std::runtime_error("Trash pickup unsuccessful")); //TODO implement safe
+                */
             break;
         case NOTIFY_RESUME:
             break;
         case NOTIFY_UNLOAD:
+            /*
             if (time_passed < UNLOAD_TIME)
                 throw(std::runtime_error("Unload unsuccessful")); //TODO implement safe
+                */
             break;
         default:
             throw(std::runtime_error("Invalid message"));

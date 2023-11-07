@@ -39,8 +39,6 @@ int main()
     GameExecutor executor(&controller);
     controller.setExecutor(&executor);
 
-    sleep_ms(1000);
-
     controller.start();
 
     while(true)

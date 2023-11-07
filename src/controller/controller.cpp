@@ -12,6 +12,12 @@ Controller::Controller()
 {
     _motor_manager = std::make_shared<MotorManager>();
     _sensor_manager = std::make_shared<SensorManager>(_motor_manager);
+
+    _motor_manager->home(PICKUP_LEFT);
+    _motor_manager->home(PICKUP_RIGHT);
+
+    _motor_manager->setMixerDirection(FORWARD);
+    _motor_manager->setMixerSpeed(3000);
 }
 
 void Controller::spin(double dt)
@@ -160,7 +166,7 @@ void Controller::start()
 
 void Controller::_pickup(PickUpSide side) const
 {
-    //TODO implement pickup
+    _motor_manager->pickup(side);
 }
 
 void Controller::_unload() const

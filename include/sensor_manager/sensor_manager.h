@@ -17,20 +17,20 @@
 
 #define ADC1_I2C_ADDR ADSX_ADDRESS_GND
 #define ADC1_I2C_TYPE i2c0
-#define ADC1_SDA_PIN 0
-#define ADC1_SCL_PIN 1
+#define ADC1_SDA_PIN 16
+#define ADC1_SCL_PIN 17
 
 #define ADC2_I2C_ADDR ADSX_ADDRESS_VDD
 #define ADC2_I2C_TYPE i2c0
-#define ADC2_SDA_PIN 0
-#define ADC2_SCL_PIN 1
+#define ADC2_SDA_PIN 16
+#define ADC2_SCL_PIN 17
 
 #define ADC3_I2C_ADDR ADSX_ADDRESS_SCLK
 #define ADC3_I2C_TYPE i2c0
-#define ADC3_SDA_PIN 0
-#define ADC3_SCL_PIN 1
+#define ADC3_SDA_PIN 16
+#define ADC3_SCL_PIN 17
 
-#define WHITE 750
+#define WHITE 980
 #define BLACK 50
 #define ON_LINE 600
 

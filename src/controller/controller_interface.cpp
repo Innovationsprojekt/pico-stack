@@ -43,27 +43,27 @@ void Controller::align(LineType type)
     {
         case STRAIGHT:
             _alignTangentialPID();
-            sleep_ms(500);
+            sleep_ms(200);
             _alignHorizontal();
-            sleep_ms(500);
+            sleep_ms(200);
             _alignTangentialPID();
             break;
         case CURVE_LEFT:
             _motor_manager->turn(10, RIGHT);
 
             _alignTangentialPID();
-            sleep_ms(500);
+            sleep_ms(200);
             _alignHorizontal();
-            sleep_ms(500);
+            sleep_ms(200);
             _alignTangentialPID();
             break;
         case CURVE_RIGHT:
             _motor_manager->turn(10, LEFT);
 
             _alignTangentialPID();
-            sleep_ms(500);
+            sleep_ms(200);
             _alignHorizontal();
-            sleep_ms(500);
+            sleep_ms(200);
             _alignTangentialPID();
             break;
     }

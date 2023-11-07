@@ -32,6 +32,7 @@ public:
     void creepDistance(uint16_t distance, MotorDirection direction) const;
 
     //TODO pickup
+    void home(PickUpSide side);
     void pickup(PickUpSide side);
 
     //mixer

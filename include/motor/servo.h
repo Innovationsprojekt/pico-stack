@@ -21,12 +21,15 @@ public:
     Servo(uint8_t step_pin)
         : MotorDriver(step_pin, CLK_DIV, SERVO_WRAP)
     {
+        _setAngle(130);
     }
 
     void setAngle(double angle);
     double getCurrentAngle();
 
 private:
+    void _setAngle(double angle);
+
     static uint16_t _angleToPosition(double angle);
     static double _positionToAngle(uint16_t position);
 

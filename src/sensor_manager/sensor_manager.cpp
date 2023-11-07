@@ -14,20 +14,20 @@ SensorManager::SensorManager(std::shared_ptr<MotorManager> motor_manager) : moto
     adc2 = std::make_shared<ADCWrapper>(ADC2_I2C_ADDR, ADC2_I2C_TYPE, CLK_SPEED, ADC2_SDA_PIN, ADC2_SCL_PIN);
     //adc3 = std::make_shared<ADCWrapper>(ADC3_I2C_ADDR, ADC3_I2C_TYPE, CLK_SPEED, ADC3_SDA_PIN, ADC3_SCL_PIN);
 
-    sensor1 = std::make_unique<Sensor>(adc1, ADSX_AIN0);
-    sensor2 = std::make_unique<Sensor>(adc1, ADSX_AIN1);
+    sensor1 = std::make_unique<Sensor>(adc1, ADSX_AIN1);
+    sensor2 = std::make_unique<Sensor>(adc1, ADSX_AIN0);
     /*
     sensor3 = std::make_unique<Sensor>(adc1, ADSX_AIN2);
     sensor4 = std::make_unique<Sensor>(adc1, ADSX_AIN3);
      */
-    sensor5 = std::make_unique<Sensor>(adc1, ADSX_AIN2);
-    sensor6 = std::make_unique<Sensor>(adc1, ADSX_AIN3);
+    sensor5 = std::make_unique<Sensor>(adc1, ADSX_AIN3);
+    sensor6 = std::make_unique<Sensor>(adc1, ADSX_AIN2);
     /*
     sensor7 = std::make_unique<Sensor>(adc2, ADSX_AIN2);
     sensor8 = std::make_unique<Sensor>(adc2, ADSX_AIN3);
      */
-    sensor9 = std::make_unique<Sensor>(adc2, ADSX_AIN0);
-    sensor10 = std::make_unique<Sensor>(adc2, ADSX_AIN1);
+    sensor9 = std::make_unique<Sensor>(adc2, ADSX_AIN1);
+    sensor10 = std::make_unique<Sensor>(adc2, ADSX_AIN0);
     /*
     sensor11 = std::make_unique<Sensor>(adc3, ADSX_AIN2);
     sensor12 = std::make_unique<Sensor>(adc3, ADSX_AIN3);
@@ -135,6 +135,7 @@ int32_t SensorManager::getHorizontalPosition(SensorRow row)
     if (row == SENSOR_ROW_BACK && s1 > WHITE && s2 > WHITE)
     {
         motor_manager->setDirection(STOP);
+        printf("END OF TRACK: s1 %li, s2 %li", s1, s2);
         throw std::runtime_error("END OF TRACK");
     }
 
@@ -146,13 +147,13 @@ int32_t SensorManager::getHorizontalPosition(SensorRow row)
 
 void SensorManager::calibrate()
 {
-    sleep_ms(2000);
     motor_manager->turn(90, LEFT);
+    motor_manager->creepDistance(1, FORWARD);
 
     int32_t B1b = readRawSensor(SENSOR_B1);
     int32_t B2b = readRawSensor(SENSOR_B2);
 
-    motor_manager->creepDistance(8, BACKWARD);
+    motor_manager->creepDistance(6, BACKWARD);
 
     int32_t B1w = readRawSensor(SENSOR_B1);
     int32_t B2w = readRawSensor(SENSOR_B2);
@@ -161,14 +162,14 @@ void SensorManager::calibrate()
     int32_t F1w = readRawSensor(SENSOR_F1);
     int32_t F2w = readRawSensor(SENSOR_F2);
 
-    motor_manager->creepDistance(7, BACKWARD);
+    motor_manager->creepDistance(5, BACKWARD);
 
     int32_t F1b = readRawSensor(SENSOR_F1);
     int32_t F2b = readRawSensor(SENSOR_F2);
     int32_t C1w = readRawSensor(SENSOR_C1);
     int32_t C2w = readRawSensor(SENSOR_C2);
 
-    motor_manager->creepDistance(15, FORWARD);
+    motor_manager->creepDistance(10, FORWARD);
     motor_manager->turn(90, RIGHT);
 
     calibration.emplace_back(F1b, F1w);

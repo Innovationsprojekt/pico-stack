@@ -22,7 +22,6 @@ MotorDriver::MotorDriver(uint8_t step_pin, uint8_t clk_div, uint16_t wrap)
 
     pwm_init(slice_num, &config, true);
 
-    writePWM(0);
     _setEnabled(true);
 }
 
