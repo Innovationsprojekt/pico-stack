@@ -9,14 +9,16 @@
 
 MotorManager::MotorManager()
 {
-    drive_motor1 = std::make_unique<Motor>(2, 3);
-    drive_motor2 = std::make_unique<Motor>(4, 5);
+    drive_motor1 = std::make_unique<Motor>(0, 1);
+    drive_motor2 = std::make_unique<Motor>(2, 3);
 
-    crane_l_motor = std::make_unique<Motor>(6,7);
-    crane_r_motor = std::make_unique<Motor>(8,9);
+    mixer_speed = std::make_unique<Motor>(6, 7);
 
-    crane_l_servo = std::make_unique<Servo>(10);
+    crane_l_motor = std::make_unique<CLMotor>(4,5, 18, 19);
+    //crane_r_motor = std::make_unique<Motor>(6,7,20,21);
+
     crane_l_servo = std::make_unique<Servo>(12);
+    crane_l_servo = std::make_unique<Servo>(13);
 }
 
 void MotorManager::setSpeed(int32_t set_speed) const
@@ -98,4 +100,19 @@ void MotorManager::creepDistance(uint16_t distance, MotorDirection direction) co
     setDirection(direction);
     sleep_ms(distance * MS_PER_CM);
     setDirection(STOP);
+}
+
+void MotorManager::setMixerDirection(MotorDirection direction)
+{
+    mixer_speed->setDirection(direction);
+}
+
+void MotorManager::setMixerSpeed(int32_t speed)
+{
+    mixer_speed->setSpeed(speed);
+}
+
+void MotorManager::pickup(PickUpSide side)
+{
+
 }

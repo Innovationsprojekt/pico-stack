@@ -9,6 +9,7 @@
 #include <memory>
 #include "motor.h"
 #include "servo.h"
+#include "cl_motor.h"
 #include "enum_definitions.h"
 
 #define MS_PER_CM 260
@@ -21,6 +22,7 @@ class MotorManager
 {
 public:
     MotorManager();
+
     //drive
     void rampSpeed(int32_t target_speed, uint16_t rate = 200) const;
     void setSpeed(int32_t set_speed) const;
@@ -30,12 +32,19 @@ public:
     void creepDistance(uint16_t distance, MotorDirection direction) const;
 
     //TODO pickup
+    void pickup(PickUpSide side);
+
+    //mixer
+    void setMixerDirection(MotorDirection direction);
+    void setMixerSpeed(int32_t speed);
 
     std::unique_ptr<Motor> drive_motor1;
     std::unique_ptr<Motor> drive_motor2;
 
-    std::unique_ptr<Motor> crane_l_motor;
-    std::unique_ptr<Motor> crane_r_motor;
+    std::unique_ptr<Motor> mixer_speed;
+
+    std::unique_ptr<CLMotor> crane_l_motor;
+    std::unique_ptr<CLMotor> crane_r_motor;
 
     std::unique_ptr<Servo> crane_l_servo;
     std::unique_ptr<Servo> crane_r_servo;
