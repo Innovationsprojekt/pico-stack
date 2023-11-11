@@ -55,18 +55,18 @@ private:
     std::shared_ptr<ADCWrapper> adc2;
     std::shared_ptr<ADCWrapper> adc3;
 
-    std::unique_ptr<Sensor> sensor1;
-    std::unique_ptr<Sensor> sensor2;
-    std::unique_ptr<Sensor> sensor3;
-    std::unique_ptr<Sensor> sensor4;
-    std::unique_ptr<Sensor> sensor5;
-    std::unique_ptr<Sensor> sensor6;
-    std::unique_ptr<Sensor> sensor7;
-    std::unique_ptr<Sensor> sensor8;
-    std::unique_ptr<Sensor> sensor9;
-    std::unique_ptr<Sensor> sensor10;
-    std::unique_ptr<Sensor> sensor11;
-    std::unique_ptr<Sensor> sensor12;
+    std::unique_ptr<Sensor> sensorFLI;
+    std::unique_ptr<Sensor> sensorFRI;
+    std::unique_ptr<Sensor> sensorFLO;
+    std::unique_ptr<Sensor> sensorFRO;
+    std::unique_ptr<Sensor> sensorCLI;
+    std::unique_ptr<Sensor> sensorCRI;
+    std::unique_ptr<Sensor> sensorCLO;
+    std::unique_ptr<Sensor> sensorCRO;
+    std::unique_ptr<Sensor> sensorBLI;
+    std::unique_ptr<Sensor> sensorBRI;
+    std::unique_ptr<Sensor> sensorBLO;
+    std::unique_ptr<Sensor> sensorBRO;
 };
 
 

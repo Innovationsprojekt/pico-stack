@@ -13,11 +13,23 @@ Controller::Controller()
     _motor_manager = std::make_shared<MotorManager>();
     _sensor_manager = std::make_shared<SensorManager>(_motor_manager);
 
+    /*
+    while (true)
+    {
+        printf("FL %li, FR %li, CL %li, CR, %li, BL %li, BR %li\n\r",
+               _sensor_manager->readRawSensor(SENSOR_FLI),
+               _sensor_manager->readRawSensor(SENSOR_FRI),
+               _sensor_manager->readRawSensor(SENSOR_CLI),
+               _sensor_manager->readRawSensor(SENSOR_CRI),
+               _sensor_manager->readRawSensor(SENSOR_BLI),
+               _sensor_manager->readRawSensor(SENSOR_BRI));
+    }
+     */
+
     _motor_manager->home(PICKUP_LEFT);
     _motor_manager->home(PICKUP_RIGHT);
 
-    _motor_manager->setMixerDirection(FORWARD);
-    _motor_manager->setMixerSpeed(3000);
+    _motor_manager->setMixerDirection(STOP);
 }
 
 void Controller::spin(double dt)
@@ -81,14 +93,15 @@ void Controller::_alignTangentialPID()
 {
     _motor_manager->setSpeed(0);
 
+    _integral_tan = 0;
+    _last_error_tan = 0;
+
     while(abs(_sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK)) > OFFSET_ERROR_TANGENTIAL)
     {
         __spinAlignTangential(1000.0 / ALIGN_TAN_FREQ);
         sleep_ms(1000 / ALIGN_TAN_FREQ);
     }
     _motor_manager->setDirection(STOP);
-    _integral_tan = 0;
-    _last_error_tan = 0;
 }
 
 void Controller::__spinAlignTangential(double dt)
@@ -126,7 +139,7 @@ void Controller::__spinAlignTangential(double dt)
 
 void Controller::_alignHorizontal()
 {
-    int32_t s_c1 = _sensor_manager->readSensor(SENSOR_C1);
+    int32_t s_c1 = _sensor_manager->readSensor(SENSOR_CLI);
     //int32_t s_c2 = sensor_manager->readSensor(SENSOR_C2);
     printf("Sensor C1: %li\n\r", s_c1);
 
@@ -138,11 +151,11 @@ void Controller::_alignHorizontal()
     else
         _motor_manager->setDirection(BACKWARD);
 
-    while (abs(_sensor_manager->readSensor(SENSOR_C1) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
+    while (abs(_sensor_manager->readSensor(SENSOR_CLI) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
         sleep_ms(2);
 
     _motor_manager->setDirection(STOP);
-    s_c1 = _sensor_manager->readSensor(SENSOR_C1);
+    s_c1 = _sensor_manager->readSensor(SENSOR_CLI);
     printf("Sensor C1: %li\n\r", s_c1);
 }
 
@@ -171,5 +184,29 @@ void Controller::_pickup(PickUpSide side) const
 
 void Controller::_unload() const
 {
+    _motor_manager->creepDistance(6.5, FORWARD);
+
+    _motor_manager->drive_motor1->setDirection(STOP);
+
+    _motor_manager->drive_motor2->setSpeed(6000);
+    _motor_manager->drive_motor2->setDirection(BACKWARD);
+
+    sleep_ms(1000);
+
+    _motor_manager->drive_motor2->setDirection(STOP);
+
+    _motor_manager->creepDistance(2, BACKWARD);
+
+
+    _motor_manager->drive_motor1->setDirection(STOP);
+
+    _motor_manager->drive_motor2->setSpeed(6000);
+    _motor_manager->drive_motor2->setDirection(BACKWARD);
+
+    sleep_ms(4100);
+
+    _motor_manager->drive_motor2->setDirection(STOP);
+
+    _motor_manager->creepDistance(7, FORWARD);
     //TODO implement unload
 }

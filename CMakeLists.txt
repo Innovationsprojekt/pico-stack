@@ -8,11 +8,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(PICO_CXX_ENABLE_EXCEPTIONS 1)
 
-set(PICO_BOARD pico_w CACHE STRING "Board type")
+#set(PICO_BOARD pico_w CACHE STRING "Board type")
 
 pico_sdk_init()
 
-link_directories(micro_ros_raspberrypi_pico_sdk/libmicroros)
+#link_directories(micro_ros_raspberrypi_pico_sdk/libmicroros)
 
 add_subdirectory(ADS1x15_PICO)
 
@@ -25,7 +25,6 @@ target_include_directories(encoder
         include/enum_definitions
 )
 target_link_libraries(encoder pico_stdlib hardware_pio)
-
 pico_generate_pio_header(encoder ${CMAKE_CURRENT_LIST_DIR}/src/encoder/pio_rotary_encoder.pio)
 
 # Motor Driver
@@ -87,18 +86,18 @@ target_include_directories(sensor_manager
 target_link_libraries(sensor_manager pico_stdlib sensor adc_wrapper motor_manager)
 
 # ROSWrapper
-add_library(ros_wrapper
-        src/microros/ros_wrapper.c
-        src/microros/pico_udp_transport.c
-)
-target_link_libraries(ros_wrapper pico_stdlib hardware_pwm microros hardware_adc)
-target_include_directories(ros_wrapper
-        PUBLIC
-        include/microros
-        micro_ros_raspberrypi_pico_sdk/libmicroros/include
-        include/enum_definitions
-)
-target_link_libraries(ros_wrapper pico_cyw43_arch_lwip_threadsafe_background)
+#add_library(ros_wrapper
+#        src/microros/ros_wrapper.c
+#        src/microros/pico_udp_transport.c
+#)
+#target_link_libraries(ros_wrapper pico_stdlib hardware_pwm microros hardware_adc)
+#target_include_directories(ros_wrapper
+#        PUBLIC
+#        include/microros
+#        micro_ros_raspberrypi_pico_sdk/libmicroros/include
+#        include/enum_definitions
+#)
+#target_link_libraries(ros_wrapper pico_cyw43_arch_lwip_threadsafe_background)
 
 # GameExecutor
 add_library(game_executor
@@ -125,10 +124,20 @@ target_include_directories(controller
 )
 target_link_libraries(controller pico_stdlib game_executor motor_manager sensor_manager)
 
+#Button
+add_library(button
+        src/button/button.cpp
+)
+target_include_directories(button
+        PUBLIC
+        include/button
+)
+target_link_libraries(button pico_stdlib)
+
 # run
 add_executable(run
         src/run.cpp)
-target_link_libraries(run pico_stdlib ros_wrapper motor_driver motor_manager encoder sensor sensor_manager controller)
+target_link_libraries(run pico_stdlib button motor_driver motor_manager encoder sensor sensor_manager controller)
 
 SET(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -ffunction-sections -fdata-sections")

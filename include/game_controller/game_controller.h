@@ -19,25 +19,32 @@
 
 const std::vector<GameItems> game_plan
     = {CALIBRATE,
+
        DRIVE_STRAIGHT,
        LINE_RIGHT,
        ALIGN_STRAIGHT,
+       MIXER_ON,
        TRASH_RIGHT,
+
        DRIVE_STRAIGHT,
        LINE_LEFT,
        ALIGN_STRAIGHT,
        TRASH_LEFT,
+
        DRIVE_CURVE,
-       LINE_RIGHT,
+       LINE_LEFT,
        ALIGN_CURVE_LEFT,
        TRASH_RIGHT,
        RESUME_CURVE_LEFT,
+
        DRIVE_CURVE,
-       LINE_RIGHT,
+       LINE_LEFT,
        ALIGN_CURVE_LEFT,
        TRASH_LEFT,
        RESUME_CURVE_LEFT,
+
        DRIVE_STRAIGHT,
+       MIXER_OFF,
        UNLOAD
     };
 

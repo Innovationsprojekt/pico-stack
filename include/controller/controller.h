@@ -13,24 +13,30 @@
 
 #include "enum_definitions.h"
 
+#define ENABLE_PICKUP true
+#define ENABLE_UNLOAD true
+#define ENABLE_MIXER true
+
 #define OFFSET_ERROR_TANGENTIAL 50
 #define OFFSET_ERROR_HORIZONTAL 50
 
-#define ALIGN_TAN_BASE_SPEED 1200
-#define ALIGN_HOR_BASE_SPEED 1500
+#define ALIGN_TAN_BASE_SPEED 800
+#define ALIGN_HOR_BASE_SPEED 1000
 
 #define ALIGN_TAN_KD 5
 #define ALIGN_TAN_KP 7
 #define ALIGN_TAN_KI 1
 #define ALIGN_TAN_FREQ 500
 
-#define DRIVE_STRAIGHT_KD 38
-#define DRIVE_STRAIGHT_KP 70
-#define DRIVE_STRAIGHT_SPEED 9000
+#define DRIVE_STRAIGHT_KD 45
+#define DRIVE_STRAIGHT_KP 80
+#define DRIVE_STRAIGHT_SPEED 7000
 
 #define DRIVE_CURVE_KD 20
 #define DRIVE_CURVE_KP 40
-#define DRIVE_CURVE_SPEED 6000
+#define DRIVE_CURVE_SPEED 5000
+
+#define MIXER_SPEED 3000
 
 class Controller : public ControllerInterface
 {
@@ -46,6 +52,7 @@ public:
     void pickTrash(PickUpSide side) const override;
     void resumeDrive(TurnDirection dir) override;
     void unload() const override;
+    void setMixer(bool enabled) override;
 
 private:
     std::shared_ptr<MotorManager> _motor_manager;
@@ -66,20 +73,20 @@ private:
     uint8_t _drive_kp = DRIVE_STRAIGHT_KP;
     int32_t _last_error_drive = 0;
 
-    //detect line
+    // detect line
     void _detectLine();
 
     bool _enable_detection = false;
-    SensorPosition _line_sensor = SENSOR_C1;
+    SensorPosition _line_sensor = SENSOR_CLI;
 
-    //align
+    // align
     int32_t _last_error_tan = 0;
     int32_t _integral_tan = 0;
 
-    //pick trash
+    // pick trash
     void _pickup(PickUpSide side) const;
 
-    //unload
+    // unload
     void _unload() const;
 };
 

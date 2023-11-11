@@ -94,11 +94,11 @@ void MotorManager::setDirection(MotorDirection direction) const
     drive_motor2->setDirection(direction);
 }
 
-void MotorManager::creepDistance(uint16_t distance, MotorDirection direction) const
+void MotorManager::creepDistance(double distance, MotorDirection direction) const
 {
     setSpeed(CREEP_SPEED);
     setDirection(direction);
-    sleep_ms(distance * MS_PER_CM);
+    sleep_ms(int16_t(distance * MS_PER_CM));
     setDirection(STOP);
 }
 

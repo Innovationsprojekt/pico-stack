@@ -5,15 +5,16 @@
 
 #include <stdexcept>
 #include "pico/stdlib.h"
-#include "pico/cyw43_arch.h"
 #include "controller.h"
 #include "game_executor.h"
 #include "game_controller.h"
+#include "button.h"
 
+/*
 extern "C" {
 #include "ros_wrapper.h"
 }
-
+ */
 
 void core1_main()
 {
@@ -31,13 +32,16 @@ int main()
 
     multicore_launch_core1(core1_main);
 
-    sleep_ms(2000); //TODO implement button press
-
     Controller controller;
     const int16_t freq = 500;
 
     GameExecutor executor(&controller);
     controller.setExecutor(&executor);
+
+    while(!Button::waitForButton())
+        sleep_ms(50);
+
+    sleep_ms(1000);
 
     controller.start();
 

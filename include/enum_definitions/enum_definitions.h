@@ -66,6 +66,8 @@ enum GameMessage
     REQUEST_PICKUP_LEFT,
     REQUEST_PICKUP_RIGHT,
     REQUEST_UNLOAD,
+    REQUEST_MIXER_ON,
+    REQUEST_MIXER_OFF,
 };
 
 enum GameItems
@@ -84,22 +86,24 @@ enum GameItems
     TRASH_LEFT,
     TRASH_RIGHT,
     UNLOAD,
+    MIXER_ON,
+    MIXER_OFF,
 };
 
 enum SensorPosition
 {
-    SENSOR_F1,
-    SENSOR_F2,
-    SENSOR_F3,
-    SENSOR_F4,
-    SENSOR_C1,
-    SENSOR_C2,
-    SENSOR_C3,
-    SENSOR_C4,
-    SENSOR_B1,
-    SENSOR_B2,
-    SENSOR_B3,
-    SENSOR_B4,
+    SENSOR_FLI,
+    SENSOR_FRI,
+    SENSOR_FLO,
+    SENSOR_FRO,
+    SENSOR_CLI,
+    SENSOR_CRI,
+    SENSOR_CLO,
+    SENSOR_CRO,
+    SENSOR_BLI,
+    SENSOR_BRI,
+    SENSOR_BLO,
+    SENSOR_BRO,
 };
 
 enum SensorRow

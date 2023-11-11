@@ -23,19 +23,19 @@ class MotorManager
 public:
     MotorManager();
 
-    //drive
+    // drive
     void rampSpeed(int32_t target_speed, uint16_t rate = 200) const;
     void setSpeed(int32_t set_speed) const;
     void changeDirection() const;
     void setDirection(MotorDirection direction) const;
     void turn(int16_t degrees, TurnDirection direction) const;
-    void creepDistance(uint16_t distance, MotorDirection direction) const;
+    void creepDistance(double distance, MotorDirection direction) const;
 
-    //TODO pickup
+    // pickup
     void home(PickUpSide side);
     void pickup(PickUpSide side);
 
-    //mixer
+    // mixer
     void setMixerDirection(MotorDirection direction);
     void setMixerSpeed(int32_t speed);
 

@@ -61,6 +61,12 @@ void GameExecutor::checkInbox()
         case REQUEST_UNLOAD:
             _controller->unload();
             break;
+        case REQUEST_MIXER_ON:
+            _controller->setMixer(true);
+            break;
+        case REQUEST_MIXER_OFF:
+            _controller->setMixer(false);
+            break;
         default:
             throw std::runtime_error("Invalid message");
     }

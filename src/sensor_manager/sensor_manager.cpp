@@ -14,20 +14,20 @@ SensorManager::SensorManager(std::shared_ptr<MotorManager> motor_manager) : moto
     adc2 = std::make_shared<ADCWrapper>(ADC2_I2C_ADDR, ADC2_I2C_TYPE, CLK_SPEED, ADC2_SDA_PIN, ADC2_SCL_PIN);
     //adc3 = std::make_shared<ADCWrapper>(ADC3_I2C_ADDR, ADC3_I2C_TYPE, CLK_SPEED, ADC3_SDA_PIN, ADC3_SCL_PIN);
 
-    sensor1 = std::make_unique<Sensor>(adc1, ADSX_AIN1);
-    sensor2 = std::make_unique<Sensor>(adc1, ADSX_AIN0);
+    sensorFLI = std::make_unique<Sensor>(adc1, ADSX_AIN0);
+    sensorFRI = std::make_unique<Sensor>(adc1, ADSX_AIN1);
     /*
     sensor3 = std::make_unique<Sensor>(adc1, ADSX_AIN2);
     sensor4 = std::make_unique<Sensor>(adc1, ADSX_AIN3);
      */
-    sensor5 = std::make_unique<Sensor>(adc1, ADSX_AIN3);
-    sensor6 = std::make_unique<Sensor>(adc1, ADSX_AIN2);
+    sensorCLI = std::make_unique<Sensor>(adc1, ADSX_AIN2);
+    sensorCRI = std::make_unique<Sensor>(adc1, ADSX_AIN3);
     /*
     sensor7 = std::make_unique<Sensor>(adc2, ADSX_AIN2);
     sensor8 = std::make_unique<Sensor>(adc2, ADSX_AIN3);
      */
-    sensor9 = std::make_unique<Sensor>(adc2, ADSX_AIN1);
-    sensor10 = std::make_unique<Sensor>(adc2, ADSX_AIN0);
+    sensorBLI = std::make_unique<Sensor>(adc2, ADSX_AIN0);
+    sensorBRI = std::make_unique<Sensor>(adc2, ADSX_AIN1);
     /*
     sensor11 = std::make_unique<Sensor>(adc3, ADSX_AIN2);
     sensor12 = std::make_unique<Sensor>(adc3, ADSX_AIN3);
@@ -38,30 +38,30 @@ int32_t SensorManager::readSensor(SensorPosition sensor)
 {
     switch (sensor)
     {
-        case SENSOR_F1:
-            return _mapDistance(sensor1->getSensorValue(), calibration.at(0));
-        case SENSOR_F2:
-            return _mapDistance(sensor2->getSensorValue(), calibration.at(1));
-        case SENSOR_F3:
-            return sensor3->getSensorValue();
-        case SENSOR_F4:
-            return sensor4->getSensorValue();
-        case SENSOR_C1:
-            return _mapDistance(sensor5->getSensorValue(), calibration.at(2));
-        case SENSOR_C2:
-            return _mapDistance(sensor6->getSensorValue(), calibration.at(3));
-        case SENSOR_C3:
-            return sensor7->getSensorValue();
-        case SENSOR_C4:
-            return sensor8->getSensorValue();
-        case SENSOR_B1:
-            return _mapDistance(sensor9->getSensorValue(), calibration.at(4));
-        case SENSOR_B2:
-            return _mapDistance(sensor10->getSensorValue(), calibration.at(5));
-        case SENSOR_B3:
-            return sensor11->getSensorValue();
-        case SENSOR_B4:
-            return sensor12->getSensorValue();
+        case SENSOR_FLI:
+            return _mapDistance(sensorFLI->getSensorValue(), calibration.at(0));
+        case SENSOR_FRI:
+            return _mapDistance(sensorFRI->getSensorValue(), calibration.at(1));
+        case SENSOR_FLO:
+            return sensorFLO->getSensorValue();
+        case SENSOR_FRO:
+            return sensorFRO->getSensorValue();
+        case SENSOR_CLI:
+            return _mapDistance(sensorCLI->getSensorValue(), calibration.at(2));
+        case SENSOR_CRI:
+            return _mapDistance(sensorCRI->getSensorValue(), calibration.at(3));
+        case SENSOR_CLO:
+            return sensorCLO->getSensorValue();
+        case SENSOR_CRO:
+            return sensorCRO->getSensorValue();
+        case SENSOR_BLI:
+            return _mapDistance(sensorBLI->getSensorValue(), calibration.at(4));
+        case SENSOR_BRI:
+            return _mapDistance(sensorBRI->getSensorValue(), calibration.at(5));
+        case SENSOR_BLO:
+            return sensorBLO->getSensorValue();
+        case SENSOR_BRO:
+            return sensorBRO->getSensorValue();
         default:
             throw std::runtime_error("Invalid Sensor");
     }
@@ -71,30 +71,30 @@ int32_t SensorManager::readRawSensor(SensorPosition sensor)
 {
     switch (sensor)
     {
-        case SENSOR_F1:
-            return sensor1->getSensorValue();
-        case SENSOR_F2:
-            return sensor2->getSensorValue();
-        case SENSOR_F3:
-            return sensor3->getSensorValue();
-        case SENSOR_F4:
-            return sensor4->getSensorValue();
-        case SENSOR_C1:
-            return sensor5->getSensorValue();
-        case SENSOR_C2:
-            return sensor6->getSensorValue();
-        case SENSOR_C3:
-            return sensor7->getSensorValue();
-        case SENSOR_C4:
-            return sensor8->getSensorValue();
-        case SENSOR_B1:
-            return sensor9->getSensorValue();
-        case SENSOR_B2:
-            return sensor10->getSensorValue();
-        case SENSOR_B3:
-            return sensor11->getSensorValue();
-        case SENSOR_B4:
-            return sensor12->getSensorValue();
+        case SENSOR_FLI:
+            return sensorFLI->getSensorValue();
+        case SENSOR_FRI:
+            return sensorFRI->getSensorValue();
+        case SENSOR_FLO:
+            return sensorFLO->getSensorValue();
+        case SENSOR_FRO:
+            return sensorFRO->getSensorValue();
+        case SENSOR_CLI:
+            return sensorCLI->getSensorValue();
+        case SENSOR_CRI:
+            return sensorCRI->getSensorValue();
+        case SENSOR_CLO:
+            return sensorCLO->getSensorValue();
+        case SENSOR_CRO:
+            return sensorCRO->getSensorValue();
+        case SENSOR_BLI:
+            return sensorBLI->getSensorValue();
+        case SENSOR_BRI:
+            return sensorBRI->getSensorValue();
+        case SENSOR_BLO:
+            return sensorBLO->getSensorValue();
+        case SENSOR_BRO:
+            return sensorBRO->getSensorValue();
         default:
             throw std::runtime_error("Invalid Sensor");
     }
@@ -113,20 +113,20 @@ int32_t SensorManager::getHorizontalPosition(SensorRow row)
     switch (row)
     {
         case SENSOR_ROW_FRONT:
-            s1 = readSensor(SENSOR_F1);
-            s2 = readSensor(SENSOR_F2);
+            s1 = readSensor(SENSOR_FLI);
+            s2 = readSensor(SENSOR_FRI);
             s3 = 0;
             s4 = 0;
             break;
         case SENSOR_ROW_CENTER:
-            s1 = readSensor(SENSOR_C1);
-            s2 = readSensor(SENSOR_C2);
+            s1 = readSensor(SENSOR_CLI);
+            s2 = readSensor(SENSOR_CRI);
             s3 = 0; //sensor7->getSensorValue();
             s4 = 0; //sensor8->getSensorValue();
             break;
         case SENSOR_ROW_BACK:
-            s1 = readSensor(SENSOR_B1);
-            s2 = readSensor(SENSOR_B2);
+            s1 = readSensor(SENSOR_BLI);
+            s2 = readSensor(SENSOR_BRI);
             s3 = 0; //sensor11->getSensorValue();
             s4 = 0; //sensor12->getSensorValue();
             break;
@@ -150,24 +150,24 @@ void SensorManager::calibrate()
     motor_manager->turn(90, LEFT);
     motor_manager->creepDistance(1, FORWARD);
 
-    int32_t B1b = readRawSensor(SENSOR_B1);
-    int32_t B2b = readRawSensor(SENSOR_B2);
+    int32_t B1b = readRawSensor(SENSOR_BLI);
+    int32_t B2b = readRawSensor(SENSOR_BRI);
 
     motor_manager->creepDistance(6, BACKWARD);
 
-    int32_t B1w = readRawSensor(SENSOR_B1);
-    int32_t B2w = readRawSensor(SENSOR_B2);
-    int32_t C1b = readRawSensor(SENSOR_C1);
-    int32_t C2b = readRawSensor(SENSOR_C2);
-    int32_t F1w = readRawSensor(SENSOR_F1);
-    int32_t F2w = readRawSensor(SENSOR_F2);
+    int32_t B1w = readRawSensor(SENSOR_BLI);
+    int32_t B2w = readRawSensor(SENSOR_BRI);
+    int32_t C1b = readRawSensor(SENSOR_CLI);
+    int32_t C2b = readRawSensor(SENSOR_CRI);
+    int32_t F1w = readRawSensor(SENSOR_FLI);
+    int32_t F2w = readRawSensor(SENSOR_FRI);
 
     motor_manager->creepDistance(5, BACKWARD);
 
-    int32_t F1b = readRawSensor(SENSOR_F1);
-    int32_t F2b = readRawSensor(SENSOR_F2);
-    int32_t C1w = readRawSensor(SENSOR_C1);
-    int32_t C2w = readRawSensor(SENSOR_C2);
+    int32_t F1b = readRawSensor(SENSOR_FLI);
+    int32_t F2b = readRawSensor(SENSOR_FRI);
+    int32_t C1w = readRawSensor(SENSOR_CLI);
+    int32_t C2w = readRawSensor(SENSOR_CRI);
 
     motor_manager->creepDistance(10, FORWARD);
     motor_manager->turn(90, RIGHT);

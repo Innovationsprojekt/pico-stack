@@ -34,6 +34,15 @@ void Controller::drive(MotorDirection direction, DriveSpeed speed)
 
 void Controller::detectLine(LineSide side)
 {
+    switch (side)
+    {
+        case DETECT_LEFT:
+            _line_sensor = SENSOR_CLI;
+            break;
+        case DETECT_RIGHT:
+            _line_sensor = SENSOR_CRI;
+            break;
+    }
     _enable_detection = true;
 }
 
@@ -73,14 +82,16 @@ void Controller::align(LineType type)
 
 void Controller::pickTrash(PickUpSide side) const
 {
-    _pickup(side);
+    if (ENABLE_PICKUP)
+        _pickup(side);
 
     _executor->notify(NOTIFY_TRASH);
 }
 
 void Controller::unload() const
 {
-    _unload();
+    if (ENABLE_UNLOAD)
+        _unload();
 
     _executor->notify(NOTIFY_UNLOAD);
 }
@@ -92,20 +103,30 @@ void Controller::resumeDrive(TurnDirection dir)
         case LEFT:
             _motor_manager->creepDistance(2, FORWARD);
             _motor_manager->setDirection(STOP);
-            sleep_ms(500);
             _motor_manager->turn(15, RIGHT);
-            sleep_ms(500);
             _motor_manager->creepDistance(4, BACKWARD);
             break;
         case RIGHT:
             _motor_manager->creepDistance(2, FORWARD);
             _motor_manager->setDirection(STOP);
-            sleep_ms(500);
             _motor_manager->turn(15, LEFT);
-            sleep_ms(500);
             _motor_manager->creepDistance(4, BACKWARD);
             break;
     }
 
     _executor->notify(NOTIFY_RESUME);
+}
+
+void Controller::setMixer(bool enabled)
+{
+    if (!ENABLE_MIXER)
+        return;
+
+    if (enabled)
+    {
+        _motor_manager->setMixerSpeed(MIXER_SPEED);
+        _motor_manager->setMixerDirection(FORWARD);
+    }
+    else
+        _motor_manager->setMixerDirection(STOP);
 }

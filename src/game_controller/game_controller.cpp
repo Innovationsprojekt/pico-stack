@@ -148,6 +148,16 @@ void GameController::_sendMove()
         case UNLOAD:
             CommunicationManager::sendMessage(REQUEST_UNLOAD);
             break;
+        case MIXER_ON:
+            CommunicationManager::sendMessage(REQUEST_MIXER_ON);
+            _game_index++;
+            _sendMove();
+            return;
+        case MIXER_OFF:
+            CommunicationManager::sendMessage(REQUEST_MIXER_OFF);
+            _game_index++;
+            _sendMove();
+            return;
     }
 
     _last_action_timestamp = _getTimestamp();
