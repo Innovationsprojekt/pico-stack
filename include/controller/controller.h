@@ -75,7 +75,6 @@ private:
 
     // detect line
     void _detectLine();
-
     bool _enable_detection = false;
     SensorPosition _line_sensor = SENSOR_CLI;
 

@@ -28,7 +28,7 @@ void Button::callback(uint gpio, uint32_t events)
         enabled = true;
 }
 
-bool Button::waitForButton()
+bool Button::isPressed()
 {
     return enabled;
 }

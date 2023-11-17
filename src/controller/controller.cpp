@@ -16,13 +16,21 @@ Controller::Controller()
     /*
     while (true)
     {
-        printf("FL %li, FR %li, CL %li, CR, %li, BL %li, BR %li\n\r",
+        printf("FLO %li, FLI %li, FRI %li, FRO %li\n\r
+                CLO %li, CLI %li, CRI %li, CRO %li\n\r
+                BLO %li, BLI %li, BRI %li, BRO %li\n\r",
+               _sensor_manager->readRawSensor(SENSOR_FLO),
                _sensor_manager->readRawSensor(SENSOR_FLI),
                _sensor_manager->readRawSensor(SENSOR_FRI),
+               _sensor_manager->readRawSensor(SENSOR_FRO),
+               _sensor_manager->readRawSensor(SENSOR_CLO),
                _sensor_manager->readRawSensor(SENSOR_CLI),
                _sensor_manager->readRawSensor(SENSOR_CRI),
+               _sensor_manager->readRawSensor(SENSOR_CRO),
+               _sensor_manager->readRawSensor(SENSOR_BLO),
                _sensor_manager->readRawSensor(SENSOR_BLI),
-               _sensor_manager->readRawSensor(SENSOR_BRI));
+               _sensor_manager->readRawSensor(SENSOR_BRI),
+               _sensor_manager->readRawSensor(SENSOR_BRO),);
     }
      */
 
@@ -43,7 +51,7 @@ void Controller::spin(double dt)
 
 void Controller::_driveClosedLoop(double dt)
 {
-    int32_t position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK);
+    int32_t position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT);
 
     double Pout = _drive_kp * position_error;
 
@@ -96,7 +104,7 @@ void Controller::_alignTangentialPID()
     _integral_tan = 0;
     _last_error_tan = 0;
 
-    while(abs(_sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK)) > OFFSET_ERROR_TANGENTIAL)
+    while(abs(_sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT)) > OFFSET_ERROR_TANGENTIAL)
     {
         __spinAlignTangential(1000.0 / ALIGN_TAN_FREQ);
         sleep_ms(1000 / ALIGN_TAN_FREQ);
@@ -106,7 +114,7 @@ void Controller::_alignTangentialPID()
 
 void Controller::__spinAlignTangential(double dt)
 {
-    int32_t position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK);
+    int32_t position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT);
 
     double Pout = ALIGN_TAN_KP * position_error;
 
@@ -139,7 +147,7 @@ void Controller::__spinAlignTangential(double dt)
 
 void Controller::_alignHorizontal()
 {
-    int32_t s_c1 = _sensor_manager->readSensor(SENSOR_CLI);
+    int32_t s_c1 = _sensor_manager->readSensor(_line_sensor);
     //int32_t s_c2 = sensor_manager->readSensor(SENSOR_C2);
     printf("Sensor C1: %li\n\r", s_c1);
 
@@ -151,11 +159,11 @@ void Controller::_alignHorizontal()
     else
         _motor_manager->setDirection(BACKWARD);
 
-    while (abs(_sensor_manager->readSensor(SENSOR_CLI) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
+    while (abs(_sensor_manager->readSensor(_line_sensor) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
         sleep_ms(2);
 
     _motor_manager->setDirection(STOP);
-    s_c1 = _sensor_manager->readSensor(SENSOR_CLI);
+    s_c1 = _sensor_manager->readSensor(_line_sensor);
     printf("Sensor C1: %li\n\r", s_c1);
 }
 
@@ -208,5 +216,4 @@ void Controller::_unload() const
     _motor_manager->drive_motor2->setDirection(STOP);
 
     _motor_manager->creepDistance(7, FORWARD);
-    //TODO implement unload
 }

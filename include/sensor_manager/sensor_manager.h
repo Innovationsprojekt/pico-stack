@@ -67,6 +67,8 @@ private:
     std::unique_ptr<Sensor> sensorBRI;
     std::unique_ptr<Sensor> sensorBLO;
     std::unique_ptr<Sensor> sensorBRO;
+
+    bool calibrated = false;
 };
 
 

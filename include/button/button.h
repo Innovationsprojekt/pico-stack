@@ -17,7 +17,7 @@ class Button
 public:
     explicit Button(uint8_t pin);
 
-    static bool waitForButton();
+    static bool isPressed();
 
     static void callback(uint gpio, uint32_t events);
     static bool enabled;
