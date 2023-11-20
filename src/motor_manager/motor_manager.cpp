@@ -18,7 +18,7 @@ MotorManager::MotorManager()
     //crane_r_motor = std::make_unique<Motor>(6,7,20,21);
 
     crane_l_servo = std::make_unique<Servo>(12);
-    crane_r_servo = std::make_unique<Servo>(13);
+    crane_r_servo = std::make_unique<Servo>(14);
 }
 
 void MotorManager::setSpeed(int32_t set_speed) const
@@ -128,14 +128,14 @@ void MotorManager::pickup(PickUpSide side)
             crane_l_motor->setPosition(5000, 10000);
             crane_l_servo->setAngle(150);
             crane_l_motor->setPosition(0, 10000);
-            home(PICKUP_LEFT);
+            homePickup(PICKUP_LEFT);
             break;
         case PICKUP_LEFT:
             break;
     }
 }
 
-void MotorManager::home(PickUpSide side)
+void MotorManager::homePickup(PickUpSide side) const
 {
     switch (side)
     {

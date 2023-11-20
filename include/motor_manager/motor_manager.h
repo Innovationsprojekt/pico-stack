@@ -32,7 +32,7 @@ public:
     void creepDistance(double distance, MotorDirection direction) const;
 
     // pickup
-    void home(PickUpSide side);
+    void homePickup(PickUpSide side) const;
     void pickup(PickUpSide side);
 
     // mixer

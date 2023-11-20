@@ -14,11 +14,11 @@ Controller::Controller()
     _sensor_manager = std::make_shared<SensorManager>(_motor_manager);
 
     /*
-    while (true)
+    while (ENABLE_SENSOR_CALIB)
     {
-        printf("FLO %li, FLI %li, FRI %li, FRO %li\n\r
-                CLO %li, CLI %li, CRI %li, CRO %li\n\r
-                BLO %li, BLI %li, BRI %li, BRO %li\n\r",
+        printf("FLO %li, FLI %li, FRI %li, FRO %li\n\r"
+               "CLO %li, CLI %li, CRI %li, CRO %li\n\r"
+               "BLO %li, BLI %li, BRI %li, BRO %li\n\r",
                _sensor_manager->readRawSensor(SENSOR_FLO),
                _sensor_manager->readRawSensor(SENSOR_FLI),
                _sensor_manager->readRawSensor(SENSOR_FRI),
@@ -30,12 +30,12 @@ Controller::Controller()
                _sensor_manager->readRawSensor(SENSOR_BLO),
                _sensor_manager->readRawSensor(SENSOR_BLI),
                _sensor_manager->readRawSensor(SENSOR_BRI),
-               _sensor_manager->readRawSensor(SENSOR_BRO),);
+               _sensor_manager->readRawSensor(SENSOR_BRO));
     }
-     */
+    */
 
-    _motor_manager->home(PICKUP_LEFT);
-    _motor_manager->home(PICKUP_RIGHT);
+    //_motor_manager->homePickup(PICKUP_LEFT);
+    _motor_manager->homePickup(PICKUP_RIGHT);
 
     _motor_manager->setMixerDirection(STOP);
 }

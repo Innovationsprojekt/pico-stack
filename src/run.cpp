@@ -18,11 +18,13 @@ extern "C" {
 
 void core1_main()
 {
-    GameController game;
+
+    //GameController game;
 
     while(true)
     {
-        game.checkInbox();
+        //game.checkInbox();
+        sleep_ms(1000);
     }
 }
 
@@ -38,8 +40,10 @@ int main()
     GameExecutor executor(&controller);
     controller.setExecutor(&executor);
 
+    /*
     while(!Button::isPressed())
         sleep_ms(50);
+        */
 
     sleep_ms(1000);
 
@@ -48,7 +52,7 @@ int main()
     while(true)
     {
         controller.spin(1000.0 / freq);
-        executor.checkInbox();
+        //executor.checkInbox();
         sleep_ms(1000 / freq);
     }
 }

@@ -9,8 +9,6 @@
 
 void GameExecutor::notify(GameMessage status) const
 {
-    printf("Controller has notified!");
-
     CommunicationManager::sendMessage(status);
 }
 

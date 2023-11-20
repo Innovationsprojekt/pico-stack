@@ -13,6 +13,7 @@
 
 #include "enum_definitions.h"
 
+#define ENABLE_SENSOR_CALIB true
 #define ENABLE_PICKUP true
 #define ENABLE_UNLOAD true
 #define ENABLE_MIXER true
