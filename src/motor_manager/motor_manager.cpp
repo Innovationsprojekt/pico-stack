@@ -9,13 +9,16 @@
 
 MotorManager::MotorManager()
 {
-    drive_motor1 = std::make_unique<Motor>(0, 1);
-    drive_motor2 = std::make_unique<Motor>(2, 3);
+    drive_motor2 = std::make_unique<Motor>(0, 1);
+    drive_motor1 = std::make_unique<Motor>(2, 3);
 
     mixer_speed = std::make_unique<Motor>(6, 7);
 
-    crane_l_motor = std::make_unique<CLMotor>(4,5, 18, 19);
-    //crane_r_motor = std::make_unique<Motor>(6,7,20,21);
+    std::shared_ptr<RotaryEncoder> encoder1 = std::make_shared<RotaryEncoder>(18, 19);
+    std::shared_ptr<RotaryEncoder1> encoder2 = std::make_shared<RotaryEncoder1>(20, 21);
+
+    crane_r_motor = std::make_unique<CLMotor>(4,5, encoder1);
+    crane_l_motor = std::make_unique<CLMotor>(8,9,encoder2);
 
     crane_l_servo = std::make_unique<Servo>(12);
     crane_r_servo = std::make_unique<Servo>(14);
@@ -117,20 +120,32 @@ void MotorManager::pickup(PickUpSide side)
     switch (side)
     {
         case PICKUP_RIGHT:
-            crane_l_servo->setAngle(150);
-            crane_l_motor->setPosition(5500, 10000);
-            crane_l_servo->setAngle(125);
+            crane_r_servo->setAngle(140);
+            crane_r_motor->setPosition(5500, 7000);
+            crane_r_servo->setAngle(115);
             sleep_ms(200);
-            crane_l_motor->setPosition(-8700, 9000);
-            crane_l_servo->setAngle(17);
+            crane_r_motor->setPosition(-7000, 7000);
+            crane_r_servo->setAngle(17);
             sleep_ms(800);
-            crane_l_servo->setAngle(132);
-            crane_l_motor->setPosition(5000, 10000);
-            crane_l_servo->setAngle(150);
-            crane_l_motor->setPosition(0, 10000);
-            homePickup(PICKUP_LEFT);
+            crane_r_servo->setAngle(120);
+            crane_r_motor->setPosition(5000, 7000);
+            crane_r_servo->setAngle(140);
+            crane_r_motor->setPosition(0, 7000);
+            homePickup(PICKUP_RIGHT);
             break;
         case PICKUP_LEFT:
+            crane_l_servo->setAngle(40);
+            crane_l_motor->setPosition(5500, 7000);
+            crane_l_servo->setAngle(60);
+            sleep_ms(200);
+            crane_l_motor->setPosition(-7000, 7000);
+            crane_l_servo->setAngle(160);
+            sleep_ms(800);
+            crane_l_servo->setAngle(55);
+            crane_l_motor->setPosition(5000, 7000);
+            crane_l_servo->setAngle(40);
+            crane_l_motor->setPosition(0, 7000);
+            homePickup(PICKUP_LEFT);
             break;
     }
 }
@@ -140,7 +155,7 @@ void MotorManager::homePickup(PickUpSide side) const
     switch (side)
     {
         case PICKUP_LEFT:
-            crane_l_servo->setAngle(175);
+            crane_l_servo->setAngle(0);
             break;
         case PICKUP_RIGHT:
             crane_r_servo->setAngle(175);

@@ -19,12 +19,11 @@ extern "C" {
 void core1_main()
 {
 
-    //GameController game;
+    GameController game;
 
     while(true)
     {
-        //game.checkInbox();
-        sleep_ms(1000);
+        game.checkInbox();
     }
 }
 
@@ -52,7 +51,7 @@ int main()
     while(true)
     {
         controller.spin(1000.0 / freq);
-        //executor.checkInbox();
+        executor.checkInbox();
         sleep_ms(1000 / freq);
     }
 }

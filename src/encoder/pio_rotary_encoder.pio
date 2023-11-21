@@ -3,10 +3,10 @@
 .origin 0        ; The jump table has to start at 0
                  ; it contains the correct jumps for each of the 16
                  ; combination of 4 bits formed by A'B'AB
-                 ; A = current reading of pin_A of the rotary encoder
-                 ; A' = previous reading of pin_A of the rotary encoder
-                 ; B = current reading of pin_B of the rotary encoder
-                 ; B' = previous reading of pin_B of the rotary encoder
+                 ; A = current reading of pin_A of the rotary _encoder
+                 ; A' = previous reading of pin_A of the rotary _encoder
+                 ; B = current reading of pin_B of the rotary _encoder
+                 ; B' = previous reading of pin_B of the rotary _encoder
     jmp read     ; 0000 = from 00 to 00 = no change in reading
     jmp CW       ; 0001 = from 00 to 01 = clockwise rotation
     jmp CCW      ; 0010 = from 00 to 10 = counter clockwise rotation

@@ -58,8 +58,18 @@ This can be implemented by adding additional code to hangle the switch interrupt
 
 #include "pio_rotary_encoder.pio.h"
 
+class BaseEncoder
+{
+public:
+    // set the current rotation to a specific value
+    virtual void set_rotation(int _rotation) = 0;
+
+    // get the current rotation
+    virtual int get_rotation(void) = 0;
+};
+
 // class to read the rotation of the rotary encoder
-class RotaryEncoder
+class RotaryEncoder : public BaseEncoder
 {
 public:
     // constructor
@@ -68,13 +78,13 @@ public:
     RotaryEncoder(uint8_t rotary_encoder_A, uint8_t rotary_encoder_B);
 
     // set the current rotation to a specific value
-    void set_rotation(int _rotation)
+    void set_rotation(int _rotation) override
     {
         rotation = _rotation;
     }
 
     // get the current rotation
-    int get_rotation(void)
+    int get_rotation(void) override
     {
         return rotation;
     }
@@ -94,6 +104,51 @@ private:
         }
         // clear both interrupts
         pio0_hw->irq = 3;
+    }
+
+    // the pio instance
+    PIO pio;
+    // the state machine
+    uint sm;
+    // the current location of rotation
+    static int rotation;
+};
+
+class RotaryEncoder1 : public BaseEncoder
+{
+public:
+    // constructor
+    // rotary_encoder_A is the pin for the A of the rotary encoder.
+    // The B of the rotary encoder has to be connected to the next GPIO.
+    RotaryEncoder1(uint8_t rotary_encoder_A, uint8_t rotary_encoder_B);
+
+    // set the current rotation to a specific value
+    void set_rotation(int _rotation) override
+    {
+        rotation = _rotation;
+    }
+
+    // get the current rotation
+    int get_rotation(void) override
+    {
+        return rotation;
+    }
+
+private:
+    static void pio_irq_handler()
+    {
+        // test if irq 0 was raised
+        if (pio1_hw->irq & 1)
+        {
+            rotation = rotation - 1;
+        }
+        // test if irq 1 was raised
+        if (pio1_hw->irq & 2)
+        {
+            rotation = rotation + 1;
+        }
+        // clear both interrupts
+        pio1_hw->irq = 3;
     }
 
     // the pio instance

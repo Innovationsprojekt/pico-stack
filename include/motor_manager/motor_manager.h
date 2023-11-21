@@ -12,11 +12,11 @@
 #include "cl_motor.h"
 #include "enum_definitions.h"
 
-#define MS_PER_CM 260
+#define MS_PER_CM 220
 #define CREEP_SPEED 4000
 
 #define TURN_SPEED 6000
-#define US_PER_DEG_PER_SPEED 4.3
+#define US_PER_DEG_PER_SPEED 3.6
 
 class MotorManager
 {

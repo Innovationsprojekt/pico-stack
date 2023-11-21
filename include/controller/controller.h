@@ -13,7 +13,7 @@
 
 #include "enum_definitions.h"
 
-#define ENABLE_SENSOR_CALIB true
+#define ENABLE_SENSOR_CALIB false
 #define ENABLE_PICKUP true
 #define ENABLE_UNLOAD true
 #define ENABLE_MIXER true
@@ -29,13 +29,13 @@
 #define ALIGN_TAN_KI 1
 #define ALIGN_TAN_FREQ 500
 
-#define DRIVE_STRAIGHT_KD 45
-#define DRIVE_STRAIGHT_KP 80
-#define DRIVE_STRAIGHT_SPEED 7000
+#define DRIVE_STRAIGHT_KD 35
+#define DRIVE_STRAIGHT_KP 75
+#define DRIVE_STRAIGHT_SPEED 5000
 
 #define DRIVE_CURVE_KD 20
 #define DRIVE_CURVE_KP 40
-#define DRIVE_CURVE_SPEED 5000
+#define DRIVE_CURVE_SPEED 4000
 
 #define MIXER_SPEED 3000
 
@@ -77,7 +77,7 @@ private:
     // detect line
     void _detectLine();
     bool _enable_detection = false;
-    SensorPosition _line_sensor = SENSOR_CLI;
+    SensorPosition _line_sensor = SENSOR_CLO;
 
     // align
     int32_t _last_error_tan = 0;

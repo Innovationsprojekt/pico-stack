@@ -6,16 +6,18 @@
 #include <valarray>
 #include "cl_motor.h"
 
-CLMotor::CLMotor(uint8_t step_pin, uint8_t dir_pin, uint8_t enc_pin_a, uint8_t enc_pin_b)
+CLMotor::CLMotor(uint8_t step_pin, uint8_t dir_pin, std::shared_ptr<BaseEncoder> encoder)
     : MotorDriver(step_pin, 0, BASE_WRAP)
     , _dir_pin(dir_pin)
+    , _encoder(std::move(encoder))
+
 {
     gpio_init(dir_pin);
     gpio_set_dir(dir_pin, GPIO_OUT);
     _setDirection(STOP);
 
-    encoder = std::make_unique<RotaryEncoder>(enc_pin_a, enc_pin_b);
-    encoder->set_rotation(0);
+    //encoder = std::make_unique<RotaryEncoder>(enc_pin_a, enc_pin_b);
+    _encoder->set_rotation(0);
 }
 
 void CLMotor::setPosition(int32_t position, int32_t speed)
@@ -37,7 +39,7 @@ void CLMotor::setPosition(int32_t position, int32_t speed)
 
 int32_t CLMotor::getCurrentPosition()
 {
-    return encoder->get_rotation();
+    return _encoder->get_rotation();
 }
 
 void CLMotor::spinController(double dt)

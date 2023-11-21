@@ -34,7 +34,7 @@ Controller::Controller()
     }
     */
 
-    //_motor_manager->homePickup(PICKUP_LEFT);
+    _motor_manager->homePickup(PICKUP_LEFT);
     _motor_manager->homePickup(PICKUP_RIGHT);
 
     _motor_manager->setMixerDirection(STOP);
@@ -42,6 +42,28 @@ Controller::Controller()
 
 void Controller::spin(double dt)
 {
+    if (ENABLE_SENSOR_CALIB && _sensor_manager->isCalibrated())
+    {
+        /*
+        printf("FLO %li, FLI %li, FRI %li, FRO %li\n\r"
+               "CLO %li, CLI %li, CRI %li, CRO %li\n\r"
+               "BLO %li, BLI %li, BRI %li, BRO %li\n\r",
+               _sensor_manager->readSensor(SENSOR_FLO),
+               _sensor_manager->readSensor(SENSOR_FLI),
+               _sensor_manager->readSensor(SENSOR_FRI),
+               _sensor_manager->readSensor(SENSOR_FRO),
+               _sensor_manager->readSensor(SENSOR_CLO),
+               _sensor_manager->readSensor(SENSOR_CLI),
+               _sensor_manager->readSensor(SENSOR_CRI),
+               _sensor_manager->readSensor(SENSOR_CRO),
+               _sensor_manager->readSensor(SENSOR_BLO),
+               _sensor_manager->readSensor(SENSOR_BLI),
+               _sensor_manager->readSensor(SENSOR_BRI),
+               _sensor_manager->readSensor(SENSOR_BRO));
+        return;
+         */
+    }
+
     if (_enable_drive)
         _driveClosedLoop(dt);
 
@@ -62,8 +84,8 @@ void Controller::_driveClosedLoop(double dt)
 
     _last_error_drive = position_error;
 
-    int32_t motor1_out = _drive_speed - (int32_t)output / 4;
-    int32_t motor2_out = _drive_speed + (int32_t)output / 4;
+    int32_t motor1_out = _drive_speed + (int32_t)output / 4;
+    int32_t motor2_out = _drive_speed - (int32_t)output / 4;
 
     printf("pos_err: %li, Pout: %.2f, Dout %.2f, out %.2f, M1 %li, M2 %li\n\r", position_error, Pout, Dout, output, motor1_out, motor2_out);
 
@@ -133,13 +155,13 @@ void Controller::__spinAlignTangential(double dt)
     if (motor_out > 0)
     {
         _motor_manager->setSpeed(motor_out);
-        _motor_manager->drive_motor1->setDirection(BACKWARD);
-        _motor_manager->drive_motor2->setDirection(FORWARD);
+        _motor_manager->drive_motor1->setDirection(FORWARD);
+        _motor_manager->drive_motor2->setDirection(BACKWARD);
     } else
     {
         _motor_manager->setSpeed(- motor_out);
-        _motor_manager->drive_motor1->setDirection(FORWARD);
-        _motor_manager->drive_motor2->setDirection(BACKWARD);
+        _motor_manager->drive_motor1->setDirection(BACKWARD);
+        _motor_manager->drive_motor2->setDirection(FORWARD);
     }
 
     printf("pos_err: %li, Pout: %.2f, Dout %.2f, out %.2f\n\r", position_error, Pout, Dout, output);

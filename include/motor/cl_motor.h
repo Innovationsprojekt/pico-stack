@@ -24,7 +24,7 @@
 class CLMotor : MotorDriver
 {
 public:
-    CLMotor(uint8_t step_pin, uint8_t dir_pin, uint8_t enc_pin_a, uint8_t enc_pin_b);
+    CLMotor(uint8_t step_pin, uint8_t dir_pin, std::shared_ptr<BaseEncoder> encoder);
 
     void setPosition(int32_t position, int32_t speed);
     int32_t getCurrentPosition();
@@ -39,7 +39,8 @@ private:
     void _driveOpenLoop();
     void _driveClosedLoop(double dt);
 
-    std::unique_ptr<RotaryEncoder> encoder;
+    //std::unique_ptr<RotaryEncoder> encoder;
+    std::shared_ptr<BaseEncoder> _encoder;
 
     const uint8_t _dir_pin;
     MotorDirection _current_dir = STOP;

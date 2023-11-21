@@ -35,15 +35,14 @@ const std::vector<GameItems> game_plan
        LINE_LEFT,
        ALIGN_CURVE_LEFT,
        TRASH_RIGHT,
-       RESUME_CURVE_LEFT,
 
        DRIVE_CURVE,
        LINE_LEFT,
        ALIGN_CURVE_LEFT,
        TRASH_LEFT,
-       RESUME_CURVE_LEFT,
 
        DRIVE_STRAIGHT,
+       LINE_LEFT,
        MIXER_OFF,
        UNLOAD
     };

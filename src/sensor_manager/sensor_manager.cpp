@@ -38,29 +38,29 @@ int32_t SensorManager::readSensor(SensorPosition sensor)
     switch (sensor)
     {
         case SENSOR_FLO:
-            return _mapDistance(sensorFLI->getSensorValue(), calibration.at(0));
+            return _mapDistance(sensorFLO->getSensorValue(), calibration.at(0));
         case SENSOR_FLI:
             return _mapDistance(sensorFLI->getSensorValue(), calibration.at(1));
         case SENSOR_FRI:
             return _mapDistance(sensorFRI->getSensorValue(), calibration.at(2));
         case SENSOR_FRO:
-            return _mapDistance(sensorFLI->getSensorValue(), calibration.at(3));
+            return _mapDistance(sensorFRO->getSensorValue(), calibration.at(3));
         case SENSOR_CLO:
-            return _mapDistance(sensorFLI->getSensorValue(), calibration.at(4));
+            return _mapDistance(sensorCLO->getSensorValue(), calibration.at(4));
         case SENSOR_CLI:
             return _mapDistance(sensorCLI->getSensorValue(), calibration.at(5));
         case SENSOR_CRI:
             return _mapDistance(sensorCRI->getSensorValue(), calibration.at(6));
         case SENSOR_CRO:
-            return _mapDistance(sensorCRI->getSensorValue(), calibration.at(7));
+            return _mapDistance(sensorCRO->getSensorValue(), calibration.at(7));
         case SENSOR_BLO:
-            return _mapDistance(sensorCRI->getSensorValue(), calibration.at(8));
+            return _mapDistance(sensorBLO->getSensorValue(), calibration.at(8));
         case SENSOR_BLI:
             return _mapDistance(sensorBLI->getSensorValue(), calibration.at(9));
         case SENSOR_BRI:
             return _mapDistance(sensorBRI->getSensorValue(), calibration.at(10));
         case SENSOR_BRO:
-            return _mapDistance(sensorCRI->getSensorValue(), calibration.at(11));
+            return _mapDistance(sensorBRO->getSensorValue(), calibration.at(11));
         default:
             throw std::runtime_error("Invalid Sensor");
     }
@@ -216,4 +216,9 @@ int32_t SensorManager::_mapDistance(int32_t s, std::pair<int32_t, int32_t> calib
     auto ret = (int32_t)div;
 
     return ret;
+}
+
+bool SensorManager::isCalibrated()
+{
+    return calibrated;
 }

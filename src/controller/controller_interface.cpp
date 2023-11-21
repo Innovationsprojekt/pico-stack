@@ -37,10 +37,10 @@ void Controller::detectLine(LineSide side)
     switch (side)
     {
         case DETECT_LEFT:
-            _line_sensor = SENSOR_CLI;
+            _line_sensor = SENSOR_CLO;
             break;
         case DETECT_RIGHT:
-            _line_sensor = SENSOR_CRI;
+            _line_sensor = SENSOR_CRO;
             break;
     }
     _enable_detection = true;
@@ -104,13 +104,13 @@ void Controller::resumeDrive(TurnDirection dir)
             _motor_manager->creepDistance(2, FORWARD);
             _motor_manager->setDirection(STOP);
             _motor_manager->turn(15, RIGHT);
-            _motor_manager->creepDistance(4, BACKWARD);
+            _motor_manager->creepDistance(2, BACKWARD);
             break;
         case RIGHT:
             _motor_manager->creepDistance(2, FORWARD);
             _motor_manager->setDirection(STOP);
             _motor_manager->turn(15, LEFT);
-            _motor_manager->creepDistance(4, BACKWARD);
+            _motor_manager->creepDistance(2, BACKWARD);
             break;
     }
 
