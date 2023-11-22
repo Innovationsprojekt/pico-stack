@@ -13,31 +13,31 @@
 
 #include "enum_definitions.h"
 
-#define ENABLE_SENSOR_CALIB false
-#define ENABLE_PICKUP true
-#define ENABLE_UNLOAD true
-#define ENABLE_MIXER true
+//#define ENABLE_SENSOR_CALIB
+#define ENABLE_PICKUP
+#define ENABLE_UNLOAD
+#define ENABLE_MIXER
 
-#define OFFSET_ERROR_TANGENTIAL 50
-#define OFFSET_ERROR_HORIZONTAL 50
+#define OFFSET_ERROR_TANGENTIAL 70
+#define OFFSET_ERROR_HORIZONTAL 70
 
-#define ALIGN_TAN_BASE_SPEED 800
-#define ALIGN_HOR_BASE_SPEED 1000
+#define ALIGN_TAN_BASE_SPEED 1000
+#define ALIGN_HOR_BASE_SPEED 1700
 
-#define ALIGN_TAN_KD 5
-#define ALIGN_TAN_KP 7
+#define ALIGN_TAN_KD 7
+#define ALIGN_TAN_KP 8
 #define ALIGN_TAN_KI 1
 #define ALIGN_TAN_FREQ 500
 
-#define DRIVE_STRAIGHT_KD 35
-#define DRIVE_STRAIGHT_KP 75
-#define DRIVE_STRAIGHT_SPEED 5000
+#define DRIVE_STRAIGHT_KD 70
+#define DRIVE_STRAIGHT_KP 85
+#define DRIVE_STRAIGHT_SPEED 7000
 
-#define DRIVE_CURVE_KD 20
-#define DRIVE_CURVE_KP 40
-#define DRIVE_CURVE_SPEED 4000
+#define DRIVE_CURVE_KD 35
+#define DRIVE_CURVE_KP 55
+#define DRIVE_CURVE_SPEED 6000
 
-#define MIXER_SPEED 3000
+#define MIXER_SPEED 1800
 
 class Controller : public ControllerInterface
 {
@@ -59,7 +59,6 @@ private:
     std::shared_ptr<MotorManager> _motor_manager;
     std::shared_ptr<SensorManager> _sensor_manager;
 
-    void _alignTangential(TurnDirection turn_direction);
     void _alignHorizontal();
 
     void _alignTangentialPID();

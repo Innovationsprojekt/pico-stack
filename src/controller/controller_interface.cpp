@@ -42,6 +42,9 @@ void Controller::detectLine(LineSide side)
         case DETECT_RIGHT:
             _line_sensor = SENSOR_CRO;
             break;
+        case DETECT_UNLOAD:
+            _line_sensor = SENSOR_FLO;
+            break;
     }
     _enable_detection = true;
 }
@@ -82,16 +85,18 @@ void Controller::align(LineType type)
 
 void Controller::pickTrash(PickUpSide side) const
 {
-    if (ENABLE_PICKUP)
+    #ifdef ENABLE_PICKUP
         _pickup(side);
+    #endif
 
     _executor->notify(NOTIFY_TRASH);
 }
 
 void Controller::unload() const
 {
-    if (ENABLE_UNLOAD)
+    #ifdef ENABLE_UNLOAD
         _unload();
+    #endif
 
     _executor->notify(NOTIFY_UNLOAD);
 }
@@ -119,14 +124,13 @@ void Controller::resumeDrive(TurnDirection dir)
 
 void Controller::setMixer(bool enabled)
 {
-    if (!ENABLE_MIXER)
-        return;
-
-    if (enabled)
-    {
-        _motor_manager->setMixerSpeed(MIXER_SPEED);
-        _motor_manager->setMixerDirection(FORWARD);
-    }
-    else
-        _motor_manager->setMixerDirection(STOP);
+    #ifdef ENABLE_MIXER
+        if (enabled)
+        {
+            _motor_manager->setMixerSpeed(MIXER_SPEED);
+            _motor_manager->setMixerDirection(BACKWARD);
+        }
+        else
+            _motor_manager->setMixerDirection(STOP);
+    #endif
 }

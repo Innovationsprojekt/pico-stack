@@ -33,16 +33,16 @@ public:
 
     // pickup
     void homePickup(PickUpSide side) const;
-    void pickup(PickUpSide side);
+    void pickup(PickUpSide side) const;
 
     // mixer
-    void setMixerDirection(MotorDirection direction);
-    void setMixerSpeed(int32_t speed);
+    void setMixerDirection(MotorDirection direction) const;
+    void setMixerSpeed(int32_t speed) const;
 
     std::unique_ptr<Motor> drive_motor1;
     std::unique_ptr<Motor> drive_motor2;
 
-    std::unique_ptr<Motor> mixer_speed;
+    std::unique_ptr<Motor> mixer_motor;
 
     std::unique_ptr<CLMotor> crane_l_motor;
     std::unique_ptr<CLMotor> crane_r_motor;

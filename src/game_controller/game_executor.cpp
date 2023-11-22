@@ -35,6 +35,9 @@ void GameExecutor::checkInbox()
         case REQUEST_LINE_RIGHT:
             _controller->detectLine(DETECT_RIGHT);
             break;
+        case REQUEST_LINE_UNLOAD:
+            _controller->detectLine(DETECT_UNLOAD);
+            break;
         case REQUEST_ALIGN_STRAIGHT:
             _controller->align(STRAIGHT);
             break;

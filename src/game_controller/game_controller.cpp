@@ -124,6 +124,9 @@ void GameController::_sendMove()
         case LINE_RIGHT:
             CommunicationManager::sendMessage(REQUEST_LINE_RIGHT);
             break;
+        case LINE_UNLOAD:
+            CommunicationManager::sendMessage(REQUEST_LINE_UNLOAD);
+            break;
         case ALIGN_STRAIGHT:
             CommunicationManager::sendMessage(REQUEST_ALIGN_STRAIGHT);
             break;

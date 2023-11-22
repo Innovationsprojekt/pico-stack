@@ -42,7 +42,7 @@ const std::vector<GameItems> game_plan
        TRASH_LEFT,
 
        DRIVE_STRAIGHT,
-       LINE_LEFT,
+       LINE_UNLOAD,
        MIXER_OFF,
        UNLOAD
     };

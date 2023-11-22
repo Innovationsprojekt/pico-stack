@@ -12,7 +12,7 @@ MotorManager::MotorManager()
     drive_motor2 = std::make_unique<Motor>(0, 1);
     drive_motor1 = std::make_unique<Motor>(2, 3);
 
-    mixer_speed = std::make_unique<Motor>(6, 7);
+    mixer_motor = std::make_unique<Motor>(10, 11);
 
     std::shared_ptr<RotaryEncoder> encoder1 = std::make_shared<RotaryEncoder>(18, 19);
     std::shared_ptr<RotaryEncoder1> encoder2 = std::make_shared<RotaryEncoder1>(20, 21);
@@ -105,46 +105,46 @@ void MotorManager::creepDistance(double distance, MotorDirection direction) cons
     setDirection(STOP);
 }
 
-void MotorManager::setMixerDirection(MotorDirection direction)
+void MotorManager::setMixerDirection(MotorDirection direction) const
 {
-    mixer_speed->setDirection(direction);
+    mixer_motor->setDirection(direction);
 }
 
-void MotorManager::setMixerSpeed(int32_t speed)
+void MotorManager::setMixerSpeed(int32_t speed) const
 {
-    mixer_speed->setSpeed(speed);
+    mixer_motor->setSpeed(speed);
 }
 
-void MotorManager::pickup(PickUpSide side)
+void MotorManager::pickup(PickUpSide side) const
 {
     switch (side)
     {
         case PICKUP_RIGHT:
             crane_r_servo->setAngle(140);
-            crane_r_motor->setPosition(5500, 7000);
-            crane_r_servo->setAngle(115);
+            crane_r_motor->setPosition(5500, 9000);
+            crane_r_servo->setAngle(112);
             sleep_ms(200);
-            crane_r_motor->setPosition(-7000, 7000);
-            crane_r_servo->setAngle(17);
+            crane_r_motor->setPosition(-7000, 8000);
+            crane_r_servo->setAngle(15);
             sleep_ms(800);
-            crane_r_servo->setAngle(120);
-            crane_r_motor->setPosition(5000, 7000);
+            crane_r_servo->setAngle(125);
+            crane_r_motor->setPosition(5000, 9000);
             crane_r_servo->setAngle(140);
-            crane_r_motor->setPosition(0, 7000);
+            crane_r_motor->setPosition(0, 9000);
             homePickup(PICKUP_RIGHT);
             break;
         case PICKUP_LEFT:
             crane_l_servo->setAngle(40);
-            crane_l_motor->setPosition(5500, 7000);
-            crane_l_servo->setAngle(60);
+            crane_l_motor->setPosition(5500, 9000);
+            crane_l_servo->setAngle(62);
             sleep_ms(200);
-            crane_l_motor->setPosition(-7000, 7000);
+            crane_l_motor->setPosition(-7000, 8000);
             crane_l_servo->setAngle(160);
             sleep_ms(800);
-            crane_l_servo->setAngle(55);
-            crane_l_motor->setPosition(5000, 7000);
+            crane_l_servo->setAngle(52);
+            crane_l_motor->setPosition(5000, 9000);
             crane_l_servo->setAngle(40);
-            crane_l_motor->setPosition(0, 7000);
+            crane_l_motor->setPosition(0, 9000);
             homePickup(PICKUP_LEFT);
             break;
     }

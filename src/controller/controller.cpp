@@ -13,27 +13,6 @@ Controller::Controller()
     _motor_manager = std::make_shared<MotorManager>();
     _sensor_manager = std::make_shared<SensorManager>(_motor_manager);
 
-    /*
-    while (ENABLE_SENSOR_CALIB)
-    {
-        printf("FLO %li, FLI %li, FRI %li, FRO %li\n\r"
-               "CLO %li, CLI %li, CRI %li, CRO %li\n\r"
-               "BLO %li, BLI %li, BRI %li, BRO %li\n\r",
-               _sensor_manager->readRawSensor(SENSOR_FLO),
-               _sensor_manager->readRawSensor(SENSOR_FLI),
-               _sensor_manager->readRawSensor(SENSOR_FRI),
-               _sensor_manager->readRawSensor(SENSOR_FRO),
-               _sensor_manager->readRawSensor(SENSOR_CLO),
-               _sensor_manager->readRawSensor(SENSOR_CLI),
-               _sensor_manager->readRawSensor(SENSOR_CRI),
-               _sensor_manager->readRawSensor(SENSOR_CRO),
-               _sensor_manager->readRawSensor(SENSOR_BLO),
-               _sensor_manager->readRawSensor(SENSOR_BLI),
-               _sensor_manager->readRawSensor(SENSOR_BRI),
-               _sensor_manager->readRawSensor(SENSOR_BRO));
-    }
-    */
-
     _motor_manager->homePickup(PICKUP_LEFT);
     _motor_manager->homePickup(PICKUP_RIGHT);
 
@@ -42,9 +21,9 @@ Controller::Controller()
 
 void Controller::spin(double dt)
 {
-    if (ENABLE_SENSOR_CALIB && _sensor_manager->isCalibrated())
+    #ifdef ENABLE_SENSOR_CALIB
+    if (_sensor_manager->isCalibrated())
     {
-        /*
         printf("FLO %li, FLI %li, FRI %li, FRO %li\n\r"
                "CLO %li, CLI %li, CRI %li, CRO %li\n\r"
                "BLO %li, BLI %li, BRI %li, BRO %li\n\r",
@@ -61,8 +40,8 @@ void Controller::spin(double dt)
                _sensor_manager->readSensor(SENSOR_BRI),
                _sensor_manager->readSensor(SENSOR_BRO));
         return;
-         */
     }
+    #endif
 
     if (_enable_drive)
         _driveClosedLoop(dt);
@@ -91,32 +70,6 @@ void Controller::_driveClosedLoop(double dt)
 
     _motor_manager->drive_motor1->setSpeed(motor1_out);
     _motor_manager->drive_motor2->setSpeed(motor2_out);
-}
-
-void Controller::_alignTangential(TurnDirection turn_direction)
-{
-    _motor_manager->setSpeed(ALIGN_TAN_BASE_SPEED);
-
-    printf("Sensor Row FRONT: %li\n\r", _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT));
-    printf("Sensor Row BACK: %li\n\r", _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK));
-
-    if (turn_direction == LEFT)
-    {
-        _motor_manager->drive_motor1->setDirection(FORWARD);
-        _motor_manager->drive_motor2->setDirection(BACKWARD);
-    } else
-    {
-        _motor_manager->drive_motor1->setDirection(BACKWARD);
-        _motor_manager->drive_motor2->setDirection(FORWARD);
-    }
-
-    while(abs(_sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK)) > OFFSET_ERROR_TANGENTIAL)
-        sleep_ms(1);
-
-    _motor_manager->setDirection(STOP);
-
-    printf("Sensor Row FRONT: %li\n\r", _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT));
-    printf("Sensor Row BACK: %li\n\r", _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK));
 }
 
 void Controller::_alignTangentialPID()
@@ -170,7 +123,6 @@ void Controller::__spinAlignTangential(double dt)
 void Controller::_alignHorizontal()
 {
     int32_t s_c1 = _sensor_manager->readSensor(_line_sensor);
-    //int32_t s_c2 = sensor_manager->readSensor(SENSOR_C2);
     printf("Sensor C1: %li\n\r", s_c1);
 
     _motor_manager->drive_motor1->setSpeed(ALIGN_HOR_BASE_SPEED);
@@ -215,27 +167,21 @@ void Controller::_pickup(PickUpSide side) const
 void Controller::_unload() const
 {
     _motor_manager->creepDistance(6.5, FORWARD);
-
     _motor_manager->drive_motor1->setDirection(STOP);
 
     _motor_manager->drive_motor2->setSpeed(6000);
     _motor_manager->drive_motor2->setDirection(BACKWARD);
-
-    sleep_ms(1000);
-
+    sleep_ms(800);
     _motor_manager->drive_motor2->setDirection(STOP);
 
     _motor_manager->creepDistance(2, BACKWARD);
-
-
     _motor_manager->drive_motor1->setDirection(STOP);
 
     _motor_manager->drive_motor2->setSpeed(6000);
     _motor_manager->drive_motor2->setDirection(BACKWARD);
-
-    sleep_ms(4100);
-
+    sleep_ms(3500);
     _motor_manager->drive_motor2->setDirection(STOP);
 
     _motor_manager->creepDistance(7, FORWARD);
+
 }
