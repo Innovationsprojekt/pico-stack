@@ -17,11 +17,13 @@ MotorManager::MotorManager()
     std::shared_ptr<RotaryEncoder> encoder1 = std::make_shared<RotaryEncoder>(18, 19);
     std::shared_ptr<RotaryEncoder1> encoder2 = std::make_shared<RotaryEncoder1>(20, 21);
 
-    crane_r_motor = std::make_unique<CLMotor>(4,5, encoder1);
-    crane_l_motor = std::make_unique<CLMotor>(8,9,encoder2);
+    crane_r_motor = std::make_unique<CLMotor>(8,9, encoder1);
+    crane_l_motor = std::make_unique<CLMotor>(6,7,encoder2);
 
     crane_l_servo = std::make_unique<Servo>(12);
     crane_r_servo = std::make_unique<Servo>(14);
+
+    unload_servo = std::make_unique<Servo>(13);
 }
 
 void MotorManager::setSpeed(int32_t set_speed) const
@@ -101,7 +103,7 @@ void MotorManager::creepDistance(double distance, MotorDirection direction) cons
 {
     setSpeed(CREEP_SPEED);
     setDirection(direction);
-    sleep_ms(int16_t(distance * MS_PER_CM));
+    sleep_us(int64_t(distance * US_PER_CM));
     setDirection(STOP);
 }
 
@@ -120,31 +122,94 @@ void MotorManager::pickup(PickUpSide side) const
     switch (side)
     {
         case PICKUP_RIGHT:
-            crane_r_servo->setAngle(140);
-            crane_r_motor->setPosition(5500, 9000);
-            crane_r_servo->setAngle(112);
+            crane_r_servo->setAngle(PR_DOWN_POS);
+            crane_r_motor->setPosition(PLIFT_PICKUP, 10000);
+            crane_r_servo->setAngle(PR_GRAB_POS);
             sleep_ms(200);
-            crane_r_motor->setPosition(-7000, 8000);
-            crane_r_servo->setAngle(15);
+            crane_r_motor->setPosition(PLIFT_UNLOAD, 10000);
+            crane_r_servo->setAngle(PR_UP_POS, 3);
             sleep_ms(800);
-            crane_r_servo->setAngle(125);
-            crane_r_motor->setPosition(5000, 9000);
-            crane_r_servo->setAngle(140);
-            crane_r_motor->setPosition(0, 9000);
+            crane_r_servo->setAngle(PR_GRAB_POS + 10);
+            crane_r_motor->setPosition(PLIFT_SET, 10000);
+            crane_r_servo->setAngle(PR_DOWN_POS);
+            crane_r_motor->setPosition(0, 10000);
             homePickup(PICKUP_RIGHT);
             break;
-        case PICKUP_LEFT:
-            crane_l_servo->setAngle(40);
-            crane_l_motor->setPosition(5500, 9000);
-            crane_l_servo->setAngle(62);
+
+        case PICKUP_RIGHT_SHIELD:
+            crane_r_servo->setAngle(PR_DOWN_POS);
+            crane_r_motor->setPosition(PLIFT_PICKUP, 10000);
+            crane_r_servo->setAngle(PR_GRAB_POS);
             sleep_ms(200);
-            crane_l_motor->setPosition(-7000, 8000);
-            crane_l_servo->setAngle(160);
+            moveMotors(PLIFT_UNLOAD, PLIFT_UNLOAD, 10000);
+            moveServos(PR_UP_POS, PL_UP_POS, 3, 5);
             sleep_ms(800);
-            crane_l_servo->setAngle(52);
-            crane_l_motor->setPosition(5000, 9000);
-            crane_l_servo->setAngle(40);
-            crane_l_motor->setPosition(0, 9000);
+            moveServos(PR_GRAB_POS + 10, PL_HOME_POS, 5, 5);
+            moveMotors(PLIFT_SET, 0, 10000);
+            crane_r_servo->setAngle(PR_DOWN_POS);
+            crane_r_motor->setPosition(0, 10000);
+            homePickup(PICKUP_RIGHT);
+            break;
+
+        case PICKUP_RIGHT_CURVE:
+            creepDistance(0.75, BACKWARD);
+
+            crane_r_servo->setAngle(PR_DOWN_POS);
+            crane_r_motor->setPosition(PLIFT_PICKUP, 10000);
+            crane_r_servo->setAngle(PR_GRAB_POS - 5);
+            sleep_ms(200);
+            crane_r_motor->setPosition(PLIFT_UNLOAD, 10000);
+            crane_r_servo->setAngle(PR_UP_POS, 3);
+            sleep_ms(800);
+            crane_r_servo->setAngle(PR_GRAB_POS + 10 - CURVE_SET_OFFSET);
+            crane_r_motor->setPosition(PLIFT_SET + 500, 10000);
+            crane_r_servo->setAngle(PR_DOWN_POS);
+            crane_r_motor->setPosition(0, 10000);
+            homePickup(PICKUP_RIGHT);
+            break;
+
+        case PICKUP_LEFT:
+            crane_l_servo->setAngle(PL_DOWN_POS);
+            crane_l_motor->setPosition(PLIFT_PICKUP, 10000);
+            crane_l_servo->setAngle(PL_GRAB_POS);
+            sleep_ms(200);
+            crane_l_motor->setPosition(PLIFT_UNLOAD, 10000);
+            crane_l_servo->setAngle(PL_UP_POS, 3);
+            sleep_ms(800);
+            crane_l_servo->setAngle(PL_GRAB_POS - 10);
+            crane_l_motor->setPosition(PLIFT_SET, 10000);
+            crane_l_servo->setAngle(PL_DOWN_POS);
+            crane_l_motor->setPosition(0, 10000);
+            homePickup(PICKUP_LEFT);
+            break;
+
+        case PICKUP_LEFT_SHIELD:
+            crane_l_servo->setAngle(PL_DOWN_POS);
+            crane_l_motor->setPosition(PLIFT_PICKUP, 10000);
+            crane_l_servo->setAngle(PL_GRAB_POS);
+            sleep_ms(200);
+            moveMotors(PLIFT_UNLOAD, PLIFT_UNLOAD, 10000);
+            moveServos(PR_UP_POS, PL_UP_POS, 5, 3);
+            sleep_ms(800);
+            moveServos(PR_HOME_POS, PL_GRAB_POS - 10, 5, 5);
+            moveMotors(0, PLIFT_SET, 10000);
+            crane_l_servo->setAngle(PL_DOWN_POS);
+            crane_l_motor->setPosition(0, 10000);
+            homePickup(PICKUP_LEFT);
+            break;
+
+        case PICKUP_LEFT_CURVE:
+            crane_l_servo->setAngle(PL_DOWN_POS);
+            crane_l_motor->setPosition(PLIFT_PICKUP, 10000);
+            crane_l_servo->setAngle(PL_GRAB_POS + 5);
+            sleep_ms(200);
+            crane_l_motor->setPosition(PLIFT_UNLOAD, 10000);
+            crane_l_servo->setAngle(PL_UP_POS, 3);
+            sleep_ms(800);
+            crane_l_servo->setAngle(PL_GRAB_POS - 10 + CURVE_SET_OFFSET);
+            crane_l_motor->setPosition(PLIFT_SET + 500, 10000);
+            crane_l_servo->setAngle(PL_DOWN_POS);
+            crane_l_motor->setPosition(0, 10000);
             homePickup(PICKUP_LEFT);
             break;
     }
@@ -155,10 +220,50 @@ void MotorManager::homePickup(PickUpSide side) const
     switch (side)
     {
         case PICKUP_LEFT:
-            crane_l_servo->setAngle(0);
+            crane_l_servo->setAngle(PL_HOME_POS);
             break;
         case PICKUP_RIGHT:
-            crane_r_servo->setAngle(175);
+            crane_r_servo->setAngle(PR_HOME_POS);
             break;
+    }
+}
+
+void MotorManager::moveMotors(int32_t position1, int32_t position2, int32_t speed) const
+{
+    bool left_goal = false;
+    bool right_goal = false;
+
+    while (true)
+    {
+        if (!right_goal)
+            right_goal = crane_r_motor->spinSetPosition(position1, speed);
+
+        if (!left_goal)
+            left_goal = crane_l_motor->spinSetPosition(position2, speed);
+
+        if (left_goal && right_goal)
+            return;
+
+        sleep_ms(2);
+    }
+}
+
+void MotorManager::moveServos(double angle1, double angle2, uint8_t speed1, uint8_t speed2) const
+{
+    bool left_goal = false;
+    bool right_goal = false;
+
+    while (true)
+    {
+        if (!right_goal)
+            right_goal = crane_r_servo->spinSetAngle(angle1, speed1);
+
+        if (!left_goal)
+            left_goal = crane_l_servo->spinSetAngle(angle2, speed2);
+
+        if (left_goal && right_goal)
+            return;
+
+        sleep_ms(SERVO_SPEED);
     }
 }

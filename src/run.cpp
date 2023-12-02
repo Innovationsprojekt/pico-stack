@@ -39,13 +39,6 @@ int main()
     GameExecutor executor(&controller);
     controller.setExecutor(&executor);
 
-    /*
-    while(!Button::isPressed())
-        sleep_ms(50);
-        */
-
-    sleep_ms(1000);
-
     controller.start();
 
     while(true)

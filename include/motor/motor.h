@@ -12,12 +12,13 @@
 #define MIN_SPEED 0
 
 #define BASE_WRAP 10000
+#define CLK_DIV 10
 
 class Motor : MotorDriver
 {
 public:
     Motor(uint8_t step_pin, uint8_t dir_pin)
-        : MotorDriver(step_pin, 0, BASE_WRAP)
+        : MotorDriver(step_pin, CLK_DIV, BASE_WRAP)
         , dir_pin(dir_pin)
     {
         gpio_init(dir_pin);

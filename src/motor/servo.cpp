@@ -6,32 +6,46 @@
 #include <stdexcept>
 #include "servo.h"
 
-void Servo::setAngle(double angle)
+void Servo::setAngle(double angle, uint8_t speed)
 {
     if (angle > MAX_ANGLE || angle < 0)
         throw(std::invalid_argument("Angle out of bounds"));
 
     uint32_t pos = _angleToPosition(angle);
 
-    printf("pos %i, current %li", pos, getCurrentPWM());
-
     if (pos > getCurrentPWM())
     {
-        for (uint32_t i = getCurrentPWM(); i < pos; i = i+5)
+        for (uint32_t i = getCurrentPWM(); i < pos; i = i+speed)
         {
-            printf("pos %i, current %li", i, getCurrentPWM());
             writePWM(i);
-            sleep_ms(5);
+            sleep_ms(SERVO_SPEED);
         }
     } else
     {
-        for (uint32_t i = getCurrentPWM(); i > pos; i = i-5)
+        for (uint32_t i = getCurrentPWM(); i > pos; i = i-speed)
         {
-            printf("pos %i, current %li", i, getCurrentPWM());
             writePWM(i);
-            sleep_ms(5);
+            sleep_ms(SERVO_SPEED);
         }
     }
+}
+
+bool Servo::spinSetAngle(double angle, uint8_t speed)
+{
+    if (angle > MAX_ANGLE || angle < 0)
+        throw(std::invalid_argument("Angle out of bounds"));
+
+    int32_t set_pos = _angleToPosition(angle);
+
+    if (abs(set_pos - int32_t(getCurrentPWM())) < 5)
+        return true;
+
+    if (set_pos > getCurrentPWM())
+        writePWM(getCurrentPWM() + speed);
+    else
+        writePWM(getCurrentPWM() - speed);
+
+    return false;
 }
 
 void Servo::_setAngle(double angle)

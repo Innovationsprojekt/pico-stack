@@ -7,7 +7,7 @@
 #include "cl_motor.h"
 
 CLMotor::CLMotor(uint8_t step_pin, uint8_t dir_pin, std::shared_ptr<BaseEncoder> encoder)
-    : MotorDriver(step_pin, 0, BASE_WRAP)
+    : MotorDriver(step_pin, CLK_DIV, BASE_WRAP)
     , _dir_pin(dir_pin)
     , _encoder(std::move(encoder))
 
@@ -16,13 +16,11 @@ CLMotor::CLMotor(uint8_t step_pin, uint8_t dir_pin, std::shared_ptr<BaseEncoder>
     gpio_set_dir(dir_pin, GPIO_OUT);
     _setDirection(STOP);
 
-    //encoder = std::make_unique<RotaryEncoder>(enc_pin_a, enc_pin_b);
     _encoder->set_rotation(0);
 }
 
 void CLMotor::setPosition(int32_t position, int32_t speed)
 {
-    printf("pos %li\n\r", getCurrentPosition());
     _set_position = position;
     _set_speed = speed;
 
@@ -32,10 +30,26 @@ void CLMotor::setPosition(int32_t position, int32_t speed)
         sleep_ms(2);
     }
 
-    printf("pos %li\n\r", getCurrentPosition());
     _setDirection(STOP);
     _integral = 0;
 }
+
+bool CLMotor::spinSetPosition(int32_t position, int32_t speed)
+{
+    _set_position = position;
+    _set_speed = speed;
+
+    if (abs(getCurrentPosition() - _set_position) <= 30)
+    {
+        _setDirection(STOP);
+        _integral = 0;
+        return true;
+    }
+
+    spinController(2);
+    return false;
+}
+
 
 int32_t CLMotor::getCurrentPosition()
 {
@@ -44,7 +58,7 @@ int32_t CLMotor::getCurrentPosition()
 
 void CLMotor::spinController(double dt)
 {
-    if (abs(getCurrentPosition() - _set_position) > 50)
+    if (abs(getCurrentPosition() - _set_position) > 100)
     {
         _min_speed = MIN_SPEED;
         _max_speed = MAX_SPEED;
@@ -85,8 +99,6 @@ void CLMotor::_driveClosedLoop(double dt)
     _last_error = position_error;
 
     int32_t motor_out = (int32_t)output / 4;
-
-    printf("out: %li, curr_pos %li, set_pos %li\n\r", motor_out, getCurrentPosition(), _set_position);
 
     _setSpeed(abs(motor_out));
 

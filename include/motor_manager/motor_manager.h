@@ -12,11 +12,27 @@
 #include "cl_motor.h"
 #include "enum_definitions.h"
 
-#define MS_PER_CM 220
-#define CREEP_SPEED 4000
+#define US_PER_CM 146667
+#define CREEP_SPEED 6000
 
 #define TURN_SPEED 6000
 #define US_PER_DEG_PER_SPEED 3.6
+
+#define PR_HOME_POS 167
+#define PR_DOWN_POS 140
+#define PR_GRAB_POS 112
+#define PR_UP_POS 12
+
+#define PL_HOME_POS 12
+#define PL_DOWN_POS 40
+#define PL_GRAB_POS 62
+#define PL_UP_POS 178
+
+#define PLIFT_PICKUP 5500
+#define PLIFT_UNLOAD -8700
+#define PLIFT_SET 5200
+
+#define CURVE_SET_OFFSET 3
 
 class MotorManager
 {
@@ -34,6 +50,8 @@ public:
     // pickup
     void homePickup(PickUpSide side) const;
     void pickup(PickUpSide side) const;
+    void moveMotors(int32_t position1, int32_t position2, int32_t speed) const;
+    void moveServos(double angle1, double angle2, uint8_t speed1, uint8_t speed2) const;
 
     // mixer
     void setMixerDirection(MotorDirection direction) const;
@@ -49,6 +67,8 @@ public:
 
     std::unique_ptr<Servo> crane_l_servo;
     std::unique_ptr<Servo> crane_r_servo;
+
+    std::unique_ptr<Servo> unload_servo;
 };
 
 

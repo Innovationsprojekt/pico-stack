@@ -17,13 +17,16 @@ Controller::Controller()
     _motor_manager->homePickup(PICKUP_RIGHT);
 
     _motor_manager->setMixerDirection(STOP);
+
+    _motor_manager->unload_servo->setAngle(0);
 }
 
 void Controller::spin(double dt)
 {
-    #ifdef ENABLE_SENSOR_CALIB
+#ifdef ENABLE_SENSOR_CALIB
     if (_sensor_manager->isCalibrated())
     {
+        /*
         printf("FLO %li, FLI %li, FRI %li, FRO %li\n\r"
                "CLO %li, CLI %li, CRI %li, CRO %li\n\r"
                "BLO %li, BLI %li, BRI %li, BRO %li\n\r",
@@ -39,9 +42,14 @@ void Controller::spin(double dt)
                _sensor_manager->readSensor(SENSOR_BLI),
                _sensor_manager->readSensor(SENSOR_BRI),
                _sensor_manager->readSensor(SENSOR_BRO));
+               */
+        printf("POSF %li, POSC %li, POSB %li\n\r",
+               _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT),
+               _sensor_manager->getHorizontalPosition(SENSOR_ROW_CENTER),
+               _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK));
         return;
     }
-    #endif
+#endif
 
     if (_enable_drive)
         _driveClosedLoop(dt);
@@ -66,8 +74,6 @@ void Controller::_driveClosedLoop(double dt)
     int32_t motor1_out = _drive_speed + (int32_t)output / 4;
     int32_t motor2_out = _drive_speed - (int32_t)output / 4;
 
-    printf("pos_err: %li, Pout: %.2f, Dout %.2f, out %.2f, M1 %li, M2 %li\n\r", position_error, Pout, Dout, output, motor1_out, motor2_out);
-
     _motor_manager->drive_motor1->setSpeed(motor1_out);
     _motor_manager->drive_motor2->setSpeed(motor2_out);
 }
@@ -79,7 +85,7 @@ void Controller::_alignTangentialPID()
     _integral_tan = 0;
     _last_error_tan = 0;
 
-    while(abs(_sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT)) > OFFSET_ERROR_TANGENTIAL)
+    while(abs(_sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT)) > _offset)
     {
         __spinAlignTangential(1000.0 / ALIGN_TAN_FREQ);
         sleep_ms(1000 / ALIGN_TAN_FREQ);
@@ -91,13 +97,13 @@ void Controller::__spinAlignTangential(double dt)
 {
     int32_t position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT);
 
-    double Pout = ALIGN_TAN_KP * position_error;
+    double Pout = _align_kp * position_error;
 
     _integral_tan += int32_t(dt * position_error);
-    double Iout = ALIGN_TAN_KI * _integral_tan;
+    double Iout = _align_ki * _integral_tan;
 
     double derivative = (position_error - _last_error_tan) / dt;
-    double Dout = ALIGN_TAN_KD * derivative;
+    double Dout = _align_kd * derivative;
 
     double output = Pout + Dout + Iout;
 
@@ -147,7 +153,6 @@ void Controller::_detectLine()
     {
         _motor_manager->setDirection(STOP);
         _enable_drive = false;
-
         _enable_detection = false;
 
         _executor->notify(NOTIFY_LINE);
@@ -164,24 +169,81 @@ void Controller::_pickup(PickUpSide side) const
     _motor_manager->pickup(side);
 }
 
-void Controller::_unload() const
+void Controller::_unload()
 {
-    _motor_manager->creepDistance(6.5, FORWARD);
-    _motor_manager->drive_motor1->setDirection(STOP);
+    _alignHorizontal();
+    _alignTangentialPID();
 
-    _motor_manager->drive_motor2->setSpeed(6000);
-    _motor_manager->drive_motor2->setDirection(BACKWARD);
+    //GATE
+    _motor_manager->creepDistance(5.5, FORWARD);
+
+    _motor_manager->drive_motor2->setDirection(STOP);
+    _motor_manager->drive_motor1->setSpeed(8000);
+    _motor_manager->drive_motor1->setDirection(FORWARD);
     sleep_ms(800);
-    _motor_manager->drive_motor2->setDirection(STOP);
-
-    _motor_manager->creepDistance(2, BACKWARD);
     _motor_manager->drive_motor1->setDirection(STOP);
 
-    _motor_manager->drive_motor2->setSpeed(6000);
+    //CONT1
+    _motor_manager->creepDistance(8, BACKWARD);
+
+    _motor_manager->drive_motor2->setDirection(STOP);
+    _motor_manager->drive_motor1->setSpeed(8000);
+    _motor_manager->drive_motor1->setDirection(FORWARD);
+    sleep_ms(1000);
+    _motor_manager->drive_motor1->setDirection(STOP);
+
+    //FRONT
+    _motor_manager->creepDistance(8, BACKWARD);
+
+    _motor_manager->drive_motor1->setDirection(STOP);
+    _motor_manager->drive_motor2->setSpeed(8000);
     _motor_manager->drive_motor2->setDirection(BACKWARD);
-    sleep_ms(3500);
+    sleep_ms(1000);
     _motor_manager->drive_motor2->setDirection(STOP);
 
-    _motor_manager->creepDistance(7, FORWARD);
+    //SLIGHT BACK
+    _motor_manager->creepDistance(6, FORWARD);
 
+    //STRAIGHT
+    /*
+    _motor_manager->drive_motor2->setDirection(STOP);
+    _motor_manager->drive_motor1->setSpeed(8000);
+    _motor_manager->drive_motor1->setDirection(FORWARD);
+    sleep_ms(100);
+    _motor_manager->drive_motor1->setDirection(STOP);
+     */
+
+    //CONT
+    _motor_manager->creepDistance(1, FORWARD);
+    _motor_manager->drive_motor1->setDirection(STOP);
+
+    _motor_manager->unload_servo->setAngle(UNLOAD_OPEN);
+
+
+    _motor_manager->setSpeed(10000);
+    for (int i = 0; i<30; i++)
+    {
+        _motor_manager->setDirection(BACKWARD);
+        sleep_ms(150);
+        _motor_manager->setDirection(FORWARD);
+        sleep_ms(150);
+    }
+    _motor_manager->setDirection(STOP);
+
+    _motor_manager->unload_servo->setAngle(UNLOAD_CLOSE);
+
+    _motor_manager->creepDistance(7, BACKWARD);
+    _motor_manager->drive_motor1->setDirection(STOP);
+
+    _motor_manager->turn(20, RIGHT);
+
+    _motor_manager->drive_motor2->setSpeed(8000);
+    _motor_manager->drive_motor2->setDirection(FORWARD);
+    sleep_ms(2400);
+    _motor_manager->drive_motor2->setDirection(STOP);
+
+    _motor_manager->creepDistance(12.5, BACKWARD);
+    _motor_manager->drive_motor1->setDirection(STOP);
+
+    _motor_manager->turn(5, RIGHT);
 }

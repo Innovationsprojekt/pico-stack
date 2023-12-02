@@ -14,6 +14,7 @@
 #define MIN_SPEED 0
 
 #define BASE_WRAP 10000
+#define CLK_DIV 10
 
 #define CTRL_MAX_SPEED 3000
 #define CTRL_MIN_SPEED 700
@@ -27,6 +28,8 @@ public:
     CLMotor(uint8_t step_pin, uint8_t dir_pin, std::shared_ptr<BaseEncoder> encoder);
 
     void setPosition(int32_t position, int32_t speed);
+    bool spinSetPosition(int32_t position, int32_t speed);
+
     int32_t getCurrentPosition();
     void spinController(double dt);
     void stop();

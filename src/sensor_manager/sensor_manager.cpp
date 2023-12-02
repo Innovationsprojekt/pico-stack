@@ -102,7 +102,8 @@ int32_t SensorManager::readRawSensor(SensorPosition sensor)
 int32_t SensorManager::_calcHorizontalPosition(int32_t li, int32_t ri, int32_t lo, int32_t ro)
 {
     //printf("S1: %li, S2: %li, avg: %li\n\r", s1, s2, s1-s2);
-    return ri + ro - li - lo; //TODO check
+    //return ri + ro - li - lo; //TODO check
+    return ri - li; //TODO check
 }
 
 int32_t SensorManager::getHorizontalPosition(SensorRow row)
@@ -131,12 +132,14 @@ int32_t SensorManager::getHorizontalPosition(SensorRow row)
             break;
     }
 
+#ifdef ENABLE_END_OF_TRACK
     if (row == SENSOR_ROW_BACK && li > WHITE && ri > WHITE)
     {
         motor_manager->setDirection(STOP);
         printf("END OF TRACK: s1 %li, s2 %li", li, ri);
         throw std::runtime_error("END OF TRACK");
     }
+#endif
 
     if (li <= BLACK && ri <= BLACK)
         return 0;
@@ -146,6 +149,24 @@ int32_t SensorManager::getHorizontalPosition(SensorRow row)
 
 void SensorManager::calibrate()
 {
+#ifdef PRE_CALIBRATION
+    calibration = {{93, 1852},
+                   {105, 1675},
+                   {62, 1730},
+                   {108, 1049},
+
+                   {58, 1772},
+                   {97, 1848},
+                   {74, 1829},
+                   {8, 356},
+
+                   {72, 1845},
+                   {76, 1838},
+                   {80, 1845},
+                   {70, 1838}};
+#endif
+
+#ifndef PRE_CALIBRATION
     motor_manager->turn(90, LEFT);
     motor_manager->creepDistance(1, FORWARD);
 
@@ -204,6 +225,7 @@ void SensorManager::calibrate()
     printf("FLOw: %li, FLOb: %li, FLIw: %li, FLIb: %li, FRIw: %li, FRIb: %li, FROw: %li, FROb: %li\n\r", FLOw, FLOb, FLIw, FLIb, FRIw, FRIb, FROw, FROb);
     printf("CLOw: %li, CLOb: %li, CLIw: %li, CLIb: %li, CRIw: %li, CRIb: %li, CROw: %li, CROb: %li\n\r", CLOw, CLOb, CLIw, CLIb, CRIw, CRIb, CROw, CROb);
     printf("BLOw: %li, BLOb: %li, BLIw: %li, BLIb: %li, BRIw: %li, BRIb: %li, BROw: %li, BROb: %li\n\r", BLOw, BLOb, BLIw, BLIb, BRIw, BRIb, BROw, BROb);
+#endif
 
     calibrated = true;
 }

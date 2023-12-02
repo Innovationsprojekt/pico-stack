@@ -24,7 +24,8 @@ public:
         _setAngle(130);
     }
 
-    void setAngle(double angle);
+    void setAngle(double angle, uint8_t speed = SERVO_SPEED);
+    bool spinSetAngle(double angle, uint8_t speed);
     double getCurrentAngle();
 
 private:
@@ -34,6 +35,7 @@ private:
     static double _positionToAngle(uint16_t position);
 
     uint16_t current_position = 0;
+    int32_t _current_pwm = 0;
 };
 
 #endif //PICO_MOTORS_SERVO_H_

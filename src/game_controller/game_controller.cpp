@@ -36,6 +36,9 @@ void GameController::checkInbox()
         case NOTIFY_UNLOAD:
             _nextMove(message);
             break;
+        case NOTIFY_WIGGLE:
+            _nextMove(message);
+            break;
         default:
             throw(std::runtime_error("Invalid message"));
     }
@@ -53,15 +56,19 @@ void GameController::_nextMove(GameMessage message)
         case NOTIFY_READY:
             break;
         case NOTIFY_CALIBRATE:
+            /*
             if (time_passed < CALIBRATION_TIME)
                 throw(std::runtime_error("Calibration unsuccessful")); //TODO implement safe
+                */
             break;
         case NOTIFY_LINE:
+            /*
             if (time_passed < LINE_TIME)
             {
                 _game_index = _game_index - 2; //TODO implement smarter method
                 _sendMove();
             }
+             */
             break;
         case NOTIFY_ALIGN:
             break;
@@ -78,6 +85,8 @@ void GameController::_nextMove(GameMessage message)
             if (time_passed < UNLOAD_TIME)
                 throw(std::runtime_error("Unload unsuccessful")); //TODO implement safe
                 */
+            break;
+        case NOTIFY_WIGGLE:
             break;
         default:
             throw(std::runtime_error("Invalid message"));
@@ -116,7 +125,15 @@ void GameController::_sendMove()
             }
             break;
         case DRIVE_GATE:
-            //TODO
+            CommunicationManager::sendMessage(REQUEST_DRIVE_GATE);
+            if (game_plan.at(_game_index + 1) == LINE_RIGHT || game_plan.at(_game_index + 1) == LINE_LEFT)
+            {
+                _last_action_timestamp = _getTimestamp();
+                sleep_ms(LINE_WAIT_TIME);
+                _game_index++;
+                _sendMove();
+                return;
+            }
             break;
         case LINE_LEFT:
             CommunicationManager::sendMessage(REQUEST_LINE_LEFT);
@@ -139,8 +156,20 @@ void GameController::_sendMove()
         case TRASH_LEFT:
             CommunicationManager::sendMessage(REQUEST_PICKUP_LEFT);
             break;
+        case TRASH_LEFT_SHIELD:
+            CommunicationManager::sendMessage(REQUEST_PICKUP_LEFT_SHIELD);
+            break;
+        case TRASH_LEFT_CURVE:
+            CommunicationManager::sendMessage(REQUEST_PICKUP_LEFT_CURVE);
+            break;
         case TRASH_RIGHT:
             CommunicationManager::sendMessage(REQUEST_PICKUP_RIGHT);
+            break;
+        case TRASH_RIGHT_SHIELD:
+            CommunicationManager::sendMessage(REQUEST_PICKUP_RIGHT_SHIELD);
+            break;
+        case TRASH_RIGHT_CURVE:
+            CommunicationManager::sendMessage(REQUEST_PICKUP_RIGHT_CURVE);
             break;
         case RESUME_CURVE_LEFT:
             CommunicationManager::sendMessage(REQUEST_RESUME_CURVE_LEFT);
@@ -161,6 +190,14 @@ void GameController::_sendMove()
             _game_index++;
             _sendMove();
             return;
+        case WIGGLE:
+            CommunicationManager::sendMessage(REQUEST_WIGGLE);
+            break;
+        case WIGGLE_WAIT:
+            CommunicationManager::sendMessage(REQUEST_DRIVE_STRAIGHT);
+            sleep_ms(3500);
+            CommunicationManager::sendMessage(REQUEST_WIGGLE);
+            break;
     }
 
     _last_action_timestamp = _getTimestamp();

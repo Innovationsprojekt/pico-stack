@@ -10,42 +10,182 @@
 #include "communication_manager.h"
 #include "enum_definitions.h"
 
-#define LINE_WAIT_TIME 1000
+#define LINE_WAIT_TIME 1500
 
 #define CALIBRATION_TIME 2000
 #define LINE_TIME 1000
 #define PICKUP_TIME 4000
 #define UNLOAD_TIME 10000
 
+#ifdef GAME_PLAN_TEST
 const std::vector<GameItems> game_plan
-    = {CALIBRATE,
+        = {CALIBRATE,
 
-       DRIVE_STRAIGHT,
-       LINE_RIGHT,
-       ALIGN_STRAIGHT,
-       MIXER_ON,
-       TRASH_RIGHT,
+           DRIVE_STRAIGHT,
+           LINE_RIGHT,
+           ALIGN_STRAIGHT,
+           MIXER_ON,
+           TRASH_RIGHT,
 
-       DRIVE_STRAIGHT,
-       LINE_LEFT,
-       ALIGN_STRAIGHT,
-       TRASH_LEFT,
+           DRIVE_STRAIGHT,
+           LINE_LEFT,
+           ALIGN_STRAIGHT,
+           TRASH_LEFT,
 
-       DRIVE_CURVE,
-       LINE_LEFT,
-       ALIGN_CURVE_LEFT,
-       TRASH_RIGHT,
+           WIGGLE,
 
-       DRIVE_CURVE,
-       LINE_LEFT,
-       ALIGN_CURVE_LEFT,
-       TRASH_LEFT,
+           DRIVE_CURVE,
+           LINE_LEFT,
+           ALIGN_CURVE_LEFT,
+           TRASH_RIGHT_CURVE,
 
-       DRIVE_STRAIGHT,
-       LINE_UNLOAD,
-       MIXER_OFF,
-       UNLOAD
-    };
+           DRIVE_CURVE,
+           LINE_LEFT,
+           ALIGN_CURVE_LEFT,
+           TRASH_LEFT,
+
+           WIGGLE_WAIT,
+
+           DRIVE_STRAIGHT,
+           LINE_LEFT,
+           UNLOAD,
+           MIXER_OFF
+        };
+#endif
+
+#ifndef GAME_PLAN_TEST
+const std::vector<GameItems> game_plan
+        = {CALIBRATE,
+
+           //STRAIGHT 1
+           DRIVE_STRAIGHT,
+           LINE_LEFT,
+           ALIGN_STRAIGHT,
+           MIXER_ON,
+           TRASH_LEFT,
+
+           DRIVE_STRAIGHT,
+           LINE_RIGHT,
+           ALIGN_STRAIGHT,
+           TRASH_RIGHT,
+
+           WIGGLE,
+
+           DRIVE_STRAIGHT,
+           LINE_LEFT,
+           ALIGN_STRAIGHT,
+           TRASH_LEFT,
+
+           WIGGLE,
+
+           //CURVE 1
+           DRIVE_CURVE,
+           LINE_RIGHT,
+           ALIGN_CURVE_RIGHT,
+           TRASH_RIGHT,
+
+           WIGGLE_WAIT,
+           DRIVE_STRAIGHT,
+
+           //STRAIGHT 2
+           LINE_LEFT,
+           ALIGN_STRAIGHT,
+           TRASH_LEFT,
+
+           WIGGLE,
+
+           DRIVE_STRAIGHT,
+           LINE_RIGHT,
+           ALIGN_STRAIGHT,
+           TRASH_RIGHT,
+
+           WIGGLE,
+
+           DRIVE_STRAIGHT,
+           LINE_LEFT,
+           ALIGN_STRAIGHT,
+           TRASH_LEFT,
+
+           WIGGLE,
+
+           //CURVE 2
+           DRIVE_CURVE,
+           LINE_LEFT,
+           ALIGN_CURVE_LEFT,
+           TRASH_RIGHT_CURVE,
+
+           DRIVE_CURVE,
+           LINE_LEFT,
+           ALIGN_CURVE_LEFT,
+           TRASH_LEFT,
+
+           WIGGLE_WAIT,
+           DRIVE_STRAIGHT,
+           LINE_LEFT,
+
+           //UNLOAD
+           UNLOAD,
+           DRIVE_CURVE,
+           LINE_RIGHT,
+
+           //CURVE 3
+           DRIVE_CURVE,
+           LINE_RIGHT,
+           ALIGN_CURVE_RIGHT,
+           TRASH_LEFT_CURVE,
+
+           DRIVE_CURVE,
+           LINE_RIGHT,
+           ALIGN_CURVE_RIGHT,
+           TRASH_RIGHT,
+
+           DRIVE_CURVE,
+           LINE_RIGHT,
+           ALIGN_CURVE_RIGHT,
+           TRASH_LEFT_CURVE,
+
+           //STRAIGHT 3
+           DRIVE_STRAIGHT,
+           LINE_RIGHT,
+           ALIGN_STRAIGHT,
+           TRASH_LEFT,
+
+           WIGGLE,
+
+           DRIVE_STRAIGHT,
+           LINE_RIGHT,
+           ALIGN_STRAIGHT,
+           TRASH_RIGHT,
+
+           DRIVE_STRAIGHT,
+           LINE_RIGHT,
+           ALIGN_STRAIGHT,
+           TRASH_LEFT,
+
+           WIGGLE,
+
+           //CURVE 4
+           DRIVE_CURVE,
+           LINE_LEFT,
+           ALIGN_CURVE_LEFT,
+           TRASH_RIGHT_CURVE,
+
+           DRIVE_CURVE,
+           LINE_LEFT,
+           ALIGN_CURVE_LEFT,
+           TRASH_LEFT,
+
+           DRIVE_CURVE,
+           LINE_LEFT,
+           ALIGN_CURVE_LEFT,
+           TRASH_RIGHT_CURVE,
+
+           DRIVE_STRAIGHT,
+           LINE_LEFT,
+           UNLOAD,
+           MIXER_OFF
+        };
+#endif
 
 class GameController
 {

@@ -60,7 +60,7 @@ void Motor::setSpeed(int32_t speed)
     if (speed < MIN_SPEED)
         speed = MIN_SPEED;
 
-    writePWM(speed);
+    writePWM(speed*BASE_WRAP/MAX_SPEED);
 }
 
 uint32_t Motor::getCurrentSpeed()

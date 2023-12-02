@@ -29,6 +29,9 @@ void GameExecutor::checkInbox()
         case REQUEST_DRIVE_CURVE:
             _controller->drive(BACKWARD, SPEED_CURVE);
             break;
+        case REQUEST_DRIVE_GATE:
+            _controller->drive(BACKWARD, SPEED_GATE);
+            break;
         case REQUEST_LINE_LEFT:
             _controller->detectLine(DETECT_LEFT);
             break;
@@ -56,8 +59,20 @@ void GameExecutor::checkInbox()
         case REQUEST_PICKUP_LEFT:
             _controller->pickTrash(PICKUP_LEFT);
             break;
+        case REQUEST_PICKUP_LEFT_SHIELD:
+            _controller->pickTrash(PICKUP_LEFT_SHIELD);
+            break;
+        case REQUEST_PICKUP_LEFT_CURVE:
+            _controller->pickTrash(PICKUP_LEFT_CURVE);
+            break;
         case REQUEST_PICKUP_RIGHT:
             _controller->pickTrash(PICKUP_RIGHT);
+            break;
+        case REQUEST_PICKUP_RIGHT_SHIELD:
+            _controller->pickTrash(PICKUP_RIGHT_SHIELD);
+            break;
+        case REQUEST_PICKUP_RIGHT_CURVE:
+            _controller->pickTrash(PICKUP_RIGHT_CURVE);
             break;
         case REQUEST_UNLOAD:
             _controller->unload();
@@ -67,6 +82,9 @@ void GameExecutor::checkInbox()
             break;
         case REQUEST_MIXER_OFF:
             _controller->setMixer(false);
+            break;
+        case REQUEST_WIGGLE:
+            _controller->wiggle();
             break;
         default:
             throw std::runtime_error("Invalid message");

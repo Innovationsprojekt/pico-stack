@@ -10,34 +10,41 @@
 #include "motor_manager.h"
 #include "sensor_manager.h"
 #include "controller_interface.h"
-
 #include "enum_definitions.h"
 
-//#define ENABLE_SENSOR_CALIB
-#define ENABLE_PICKUP
-#define ENABLE_UNLOAD
-#define ENABLE_MIXER
-
-#define OFFSET_ERROR_TANGENTIAL 70
+#define OFFSET_ERROR_TANGENTIAL_STRAIGHT 100
+#define OFFSET_ERROR_TANGENTIAL_CURVE 70
 #define OFFSET_ERROR_HORIZONTAL 70
 
 #define ALIGN_TAN_BASE_SPEED 1000
-#define ALIGN_HOR_BASE_SPEED 1700
+#define ALIGN_HOR_BASE_SPEED 2500
 
-#define ALIGN_TAN_KD 7
-#define ALIGN_TAN_KP 8
-#define ALIGN_TAN_KI 1
 #define ALIGN_TAN_FREQ 500
 
-#define DRIVE_STRAIGHT_KD 70
-#define DRIVE_STRAIGHT_KP 85
-#define DRIVE_STRAIGHT_SPEED 7000
+#define ALIGN_ST_TAN_KD 10
+#define ALIGN_ST_TAN_KP 2
+#define ALIGN_ST_TAN_KI 1.5
+
+#define ALIGN_CUV_TAN_KD 10
+#define ALIGN_CUV_TAN_KP 1
+#define ALIGN_CUV_TAN_KI 1
+
+#define DRIVE_STRAIGHT_KD 55
+#define DRIVE_STRAIGHT_KP 90
+#define DRIVE_STRAIGHT_SPEED 8000
 
 #define DRIVE_CURVE_KD 35
-#define DRIVE_CURVE_KP 55
-#define DRIVE_CURVE_SPEED 6000
+#define DRIVE_CURVE_KP 75
+#define DRIVE_CURVE_SPEED 7000
 
-#define MIXER_SPEED 1800
+#define DRIVE_GATE_KD 50
+#define DRIVE_GATE_KP 85
+#define DRIVE_GATE_SPEED 7000
+
+#define MIXER_SPEED 4500
+
+#define UNLOAD_CLOSE 15
+#define UNLOAD_OPEN 180
 
 class Controller : public ControllerInterface
 {
@@ -52,8 +59,9 @@ public:
     void align(LineType type) override;
     void pickTrash(PickUpSide side) const override;
     void resumeDrive(TurnDirection dir) override;
-    void unload() const override;
+    void unload() override;
     void setMixer(bool enabled) override;
+    void wiggle() override;
 
 private:
     std::shared_ptr<MotorManager> _motor_manager;
@@ -81,12 +89,16 @@ private:
     // align
     int32_t _last_error_tan = 0;
     int32_t _integral_tan = 0;
+    double _align_kp = ALIGN_ST_TAN_KP;
+    double _align_kd = ALIGN_ST_TAN_KD;
+    double _align_ki = ALIGN_ST_TAN_KI;
+    uint16_t _offset = OFFSET_ERROR_TANGENTIAL_STRAIGHT;
 
     // pick trash
     void _pickup(PickUpSide side) const;
 
     // unload
-    void _unload() const;
+    void _unload();
 };
 
 
