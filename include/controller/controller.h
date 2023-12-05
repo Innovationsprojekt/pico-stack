@@ -12,8 +12,8 @@
 #include "controller_interface.h"
 #include "enum_definitions.h"
 
-#define OFFSET_ERROR_TANGENTIAL_STRAIGHT 100
-#define OFFSET_ERROR_TANGENTIAL_CURVE 70
+#define OFFSET_ERROR_TANGENTIAL_STRAIGHT 120
+#define OFFSET_ERROR_TANGENTIAL_CURVE 100
 #define OFFSET_ERROR_HORIZONTAL 70
 
 #define ALIGN_TAN_BASE_SPEED 1000
@@ -23,13 +23,18 @@
 
 #define ALIGN_ST_TAN_KD 10
 #define ALIGN_ST_TAN_KP 2
-#define ALIGN_ST_TAN_KI 1.5
-
+#define ALIGN_ST_TAN_KI 1.2
+/*
 #define ALIGN_CUV_TAN_KD 10
-#define ALIGN_CUV_TAN_KP 1
-#define ALIGN_CUV_TAN_KI 1
+#define ALIGN_CUV_TAN_KP 1.2
+#define ALIGN_CUV_TAN_KI 1.2
+ */
 
-#define DRIVE_STRAIGHT_KD 55
+#define ALIGN_CUV_TAN_KD 9
+#define ALIGN_CUV_TAN_KP 0.2
+#define ALIGN_CUV_TAN_KI 0.5
+
+#define DRIVE_STRAIGHT_KD 57
 #define DRIVE_STRAIGHT_KP 90
 #define DRIVE_STRAIGHT_SPEED 8000
 
@@ -37,7 +42,7 @@
 #define DRIVE_CURVE_KP 75
 #define DRIVE_CURVE_SPEED 7000
 
-#define DRIVE_GATE_KD 50
+#define DRIVE_GATE_KD 55
 #define DRIVE_GATE_KP 85
 #define DRIVE_GATE_SPEED 7000
 
@@ -70,7 +75,8 @@ private:
     void _alignHorizontal();
 
     void _alignTangentialPID();
-    void __spinAlignTangential(double dt);
+    void _alignFullTangentialPID();
+    void __spinAlignTangential(double dt, int32_t position_error);
 
     // drive
     void _driveClosedLoop(double dt);
@@ -99,6 +105,7 @@ private:
 
     // unload
     void _unload();
+    uint16_t _unload_counter = 30;
 };
 
 

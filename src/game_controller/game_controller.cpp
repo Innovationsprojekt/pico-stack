@@ -159,8 +159,11 @@ void GameController::_sendMove()
         case TRASH_LEFT_SHIELD:
             CommunicationManager::sendMessage(REQUEST_PICKUP_LEFT_SHIELD);
             break;
-        case TRASH_LEFT_CURVE:
-            CommunicationManager::sendMessage(REQUEST_PICKUP_LEFT_CURVE);
+        case TRASH_LEFT_OUT_CURVE:
+            CommunicationManager::sendMessage(REQUEST_PICKUP_LEFT_OUT_CURVE);
+            break;
+        case TRASH_LEFT_IN_CURVE:
+            CommunicationManager::sendMessage(REQUEST_PICKUP_LEFT_IN_CURVE);
             break;
         case TRASH_RIGHT:
             CommunicationManager::sendMessage(REQUEST_PICKUP_RIGHT);
@@ -168,8 +171,11 @@ void GameController::_sendMove()
         case TRASH_RIGHT_SHIELD:
             CommunicationManager::sendMessage(REQUEST_PICKUP_RIGHT_SHIELD);
             break;
-        case TRASH_RIGHT_CURVE:
-            CommunicationManager::sendMessage(REQUEST_PICKUP_RIGHT_CURVE);
+        case TRASH_RIGHT_OUT_CURVE:
+            CommunicationManager::sendMessage(REQUEST_PICKUP_RIGHT_OUT_CURVE);
+            break;
+        case TRASH_RIGHT_IN_CURVE:
+            CommunicationManager::sendMessage(REQUEST_PICKUP_RIGHT_IN_CURVE);
             break;
         case RESUME_CURVE_LEFT:
             CommunicationManager::sendMessage(REQUEST_RESUME_CURVE_LEFT);

@@ -62,8 +62,11 @@ void GameExecutor::checkInbox()
         case REQUEST_PICKUP_LEFT_SHIELD:
             _controller->pickTrash(PICKUP_LEFT_SHIELD);
             break;
-        case REQUEST_PICKUP_LEFT_CURVE:
-            _controller->pickTrash(PICKUP_LEFT_CURVE);
+        case REQUEST_PICKUP_LEFT_OUT_CURVE:
+            _controller->pickTrash(PICKUP_LEFT_OUT_CURVE);
+            break;
+        case REQUEST_PICKUP_LEFT_IN_CURVE:
+            _controller->pickTrash(PICKUP_LEFT_IN_CURVE);
             break;
         case REQUEST_PICKUP_RIGHT:
             _controller->pickTrash(PICKUP_RIGHT);
@@ -71,8 +74,11 @@ void GameExecutor::checkInbox()
         case REQUEST_PICKUP_RIGHT_SHIELD:
             _controller->pickTrash(PICKUP_RIGHT_SHIELD);
             break;
-        case REQUEST_PICKUP_RIGHT_CURVE:
-            _controller->pickTrash(PICKUP_RIGHT_CURVE);
+        case REQUEST_PICKUP_RIGHT_OUT_CURVE:
+            _controller->pickTrash(PICKUP_RIGHT_OUT_CURVE);
+            break;
+        case REQUEST_PICKUP_RIGHT_IN_CURVE:
+            _controller->pickTrash(PICKUP_RIGHT_IN_CURVE);
             break;
         case REQUEST_UNLOAD:
             _controller->unload();

@@ -21,12 +21,12 @@
 #define PR_HOME_POS 167
 #define PR_DOWN_POS 140
 #define PR_GRAB_POS 112
-#define PR_UP_POS 12
+#define PR_UP_POS 10
 
-#define PL_HOME_POS 12
-#define PL_DOWN_POS 40
-#define PL_GRAB_POS 62
-#define PL_UP_POS 178
+#define PL_HOME_POS (12 + 12)
+#define PL_DOWN_POS (40 + 12)
+#define PL_GRAB_POS (62 + 12)
+#define PL_UP_POS (178 + 12)
 
 #define PLIFT_PICKUP 5500
 #define PLIFT_UNLOAD -8700

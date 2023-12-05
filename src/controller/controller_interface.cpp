@@ -76,8 +76,9 @@ void Controller::align(LineType type)
             _offset = OFFSET_ERROR_TANGENTIAL_CURVE;
 
             _alignHorizontal();
-            _alignTangentialPID();
+            _alignFullTangentialPID();
             _alignHorizontal();
+            _alignFullTangentialPID();
             break;
         case CURVE_RIGHT:
             _motor_manager->turn(10, RIGHT);
@@ -88,8 +89,9 @@ void Controller::align(LineType type)
             _offset = OFFSET_ERROR_TANGENTIAL_CURVE;
 
             _alignHorizontal();
-            _alignTangentialPID();
+            _alignFullTangentialPID();
             _alignHorizontal();
+            _alignFullTangentialPID();
             break;
     }
 
@@ -119,16 +121,24 @@ void Controller::resumeDrive(TurnDirection dir)
     switch (dir)
     {
         case LEFT:
-            _motor_manager->creepDistance(2, FORWARD);
-            _motor_manager->setDirection(STOP);
             _motor_manager->turn(15, RIGHT);
-            _motor_manager->creepDistance(2, BACKWARD);
+            _motor_manager->creepDistance(8, BACKWARD);
+            _motor_manager->drive_motor1->setSpeed(7000);
+            _motor_manager->drive_motor2->setSpeed(1300);
+            _motor_manager->drive_motor1->setDirection(BACKWARD);
+            _motor_manager->drive_motor2->setDirection(BACKWARD);
+            sleep_ms(1800);
+            _motor_manager->setDirection(STOP);
             break;
         case RIGHT:
-            _motor_manager->creepDistance(2, FORWARD);
-            _motor_manager->setDirection(STOP);
             _motor_manager->turn(15, LEFT);
-            _motor_manager->creepDistance(2, BACKWARD);
+            _motor_manager->creepDistance(8, BACKWARD);
+            _motor_manager->drive_motor2->setSpeed(7000);
+            _motor_manager->drive_motor1->setSpeed(1300);
+            _motor_manager->drive_motor2->setDirection(BACKWARD);
+            _motor_manager->drive_motor1->setDirection(BACKWARD);
+            sleep_ms(1800);
+            _motor_manager->setDirection(STOP);
             break;
     }
 
@@ -144,7 +154,13 @@ void Controller::setMixer(bool enabled)
         _motor_manager->setMixerDirection(BACKWARD);
     }
     else
+    {
         _motor_manager->setMixerDirection(STOP);
+        _motor_manager->setSpeed(10000);
+        _motor_manager->setDirection(BACKWARD);
+        sleep_ms(8000);
+        _motor_manager->setDirection(STOP);
+    }
 #endif
 }
 
@@ -152,6 +168,8 @@ void Controller::wiggle()
 {
     _motor_manager->setDirection(STOP);
     _enable_drive = false;
+
+    _motor_manager->setMixerDirection(FORWARD);
 
     _motor_manager->setSpeed(10000);
     for (int i = 0; i<5; i++)
@@ -162,6 +180,8 @@ void Controller::wiggle()
         sleep_ms(150);
     }
     _motor_manager->setDirection(STOP);
+
+    _motor_manager->setMixerDirection(BACKWARD);
 
     _executor->notify(NOTIFY_WIGGLE);
 }

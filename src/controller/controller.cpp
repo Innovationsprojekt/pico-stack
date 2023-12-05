@@ -19,6 +19,18 @@ Controller::Controller()
     _motor_manager->setMixerDirection(STOP);
 
     _motor_manager->unload_servo->setAngle(0);
+    /*
+    _sensor_manager->calibrate();
+
+    while (true)
+    {
+        printf("Old Pos Error: %li, Full Pos Error: %li\n\r", _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK) -
+                                                              _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT),
+               _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_BACK) -
+               _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_FRONT));
+        sleep_ms(100);
+    }
+     */
 }
 
 void Controller::spin(double dt)
@@ -85,18 +97,40 @@ void Controller::_alignTangentialPID()
     _integral_tan = 0;
     _last_error_tan = 0;
 
-    while(abs(_sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT)) > _offset)
+    int32_t position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT);
+
+    while(abs(position_error) > _offset)
     {
-        __spinAlignTangential(1000.0 / ALIGN_TAN_FREQ);
+        position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT);
+        __spinAlignTangential(1000.0 / ALIGN_TAN_FREQ, position_error);
         sleep_ms(1000 / ALIGN_TAN_FREQ);
     }
     _motor_manager->setDirection(STOP);
 }
 
-void Controller::__spinAlignTangential(double dt)
+void Controller::_alignFullTangentialPID()
 {
-    int32_t position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT);
+    _motor_manager->setSpeed(0);
 
+    _integral_tan = 0;
+    _last_error_tan = 0;
+
+    int32_t position_error = _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_FRONT);
+
+    for (int i = 0; i < 3; i++)
+    {
+        while(abs(position_error) > _offset)
+        {
+            position_error = _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_FRONT);
+            __spinAlignTangential(1000.0 / ALIGN_TAN_FREQ, position_error);
+            sleep_ms(1000 / ALIGN_TAN_FREQ);
+        }
+    }
+    _motor_manager->setDirection(STOP);
+}
+
+void Controller::__spinAlignTangential(double dt, int32_t position_error)
+{
     double Pout = _align_kp * position_error;
 
     _integral_tan += int32_t(dt * position_error);
@@ -202,37 +236,41 @@ void Controller::_unload()
     _motor_manager->drive_motor2->setDirection(STOP);
 
     //SLIGHT BACK
-    _motor_manager->creepDistance(6, FORWARD);
+    _motor_manager->creepDistance(5, FORWARD);
 
     //STRAIGHT
-    /*
     _motor_manager->drive_motor2->setDirection(STOP);
     _motor_manager->drive_motor1->setSpeed(8000);
     _motor_manager->drive_motor1->setDirection(FORWARD);
     sleep_ms(100);
     _motor_manager->drive_motor1->setDirection(STOP);
-     */
+
 
     //CONT
-    _motor_manager->creepDistance(1, FORWARD);
+    _motor_manager->creepDistance(3, FORWARD);
     _motor_manager->drive_motor1->setDirection(STOP);
 
     _motor_manager->unload_servo->setAngle(UNLOAD_OPEN);
 
-
     _motor_manager->setSpeed(10000);
-    for (int i = 0; i<30; i++)
+    for (int n = 0; n<_unload_counter/5; n++)
     {
-        _motor_manager->setDirection(BACKWARD);
-        sleep_ms(150);
-        _motor_manager->setDirection(FORWARD);
-        sleep_ms(150);
+        _motor_manager->unload_servo->setAngle(UNLOAD_OPEN - 50);
+        for (int i = 0; i<5; i++)
+        {
+            _motor_manager->setDirection(BACKWARD);
+            sleep_ms(150);
+            _motor_manager->setDirection(FORWARD);
+            sleep_ms(150);
+        }
+        _motor_manager->unload_servo->setAngle(UNLOAD_OPEN);
     }
+
     _motor_manager->setDirection(STOP);
 
     _motor_manager->unload_servo->setAngle(UNLOAD_CLOSE);
 
-    _motor_manager->creepDistance(7, BACKWARD);
+    _motor_manager->creepDistance(6, BACKWARD);
     _motor_manager->drive_motor1->setDirection(STOP);
 
     _motor_manager->turn(20, RIGHT);
@@ -245,5 +283,9 @@ void Controller::_unload()
     _motor_manager->creepDistance(12.5, BACKWARD);
     _motor_manager->drive_motor1->setDirection(STOP);
 
-    _motor_manager->turn(5, RIGHT);
+    _motor_manager->turn(10, LEFT);
+
+#ifdef GAME_PLAN_UNLOAD
+    _unload_counter += 30;
+#endif
 }

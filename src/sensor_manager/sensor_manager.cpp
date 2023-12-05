@@ -150,6 +150,51 @@ int32_t SensorManager::getHorizontalPosition(SensorRow row)
 void SensorManager::calibrate()
 {
 #ifdef PRE_CALIBRATION
+    /*
+    calibration = {{85, 1844},
+                   {105, 1753},
+                   {60, 1709},
+                   {120, 1801},
+
+                   {58, 1771},
+                   {90, 1858},
+                   {79, 1734},
+                   {12, 384},
+
+                   {82, 1838},
+                   {80, 1843},
+                   {80, 1878},
+                   {63, 1816}};
+                   */
+
+    calibration = {{94, 1829},
+                   {105, 1854},
+                   {80, 1600},
+                   {120, 1817},
+
+                   {58, 1742},
+                   {90, 1852},
+                   {79, 1862},
+                   {12, 559},
+
+                   {82, 1838},
+                   {80, 1843},
+                   {80, 1878},
+                   {63, 1816}};
+
+    /*
+     * FLOw: 1833, FLOb: 82, FLIw: 1854, FLIb: 96, FRIw: 1608, FRIb: 75, FROw: 1436, FROb: 144
+     * CLOw: 1742, CLOb: 75, CLIw: 1852, CLIb: 86, CRIw: 1862, CRIb: 123, CROw: 559, CROb: 11
+     * BLOw: 1853, BLOb: 105, BLIw: 1843, BLIb: 94, BRIw: 1855, BRIb: 122, BROw: 1845, BROb: 96
+     */
+
+    /*
+     * FLOw: 1848, FLOb: 85, FLIw: 1854, FLIb: 105, FRIw: 1709, FRIb: 80, FROw: 901, FROb: 160
+     * CLOw: 1571, CLOb: 77, CLIw: 1858, CLIb: 90, CRIw: 1734, CRIb: 79, CROw: 384, CROb: 11
+     * BLOw: 1838, BLOb: 82, BLIw: 1643, BLIb: 80, BRIw: 1678, BRIb: 66, BROw: 1716, BROb: 63
+     */
+
+    /*
     calibration = {{93, 1852},
                    {105, 1675},
                    {62, 1730},
@@ -164,6 +209,24 @@ void SensorManager::calibrate()
                    {76, 1838},
                    {80, 1845},
                    {70, 1838}};
+    */
+    /*
+     * FLOw: 1844, FLOb: 118, FLIw: 1853, FLIb: 139, FRIw: 1832, FRIb: 76, FROw: 899, FROb: 120
+     * CLOw: 1341, CLOb: 85, CLIw: 1598, CLIb: 118, CRIw: 1653, CRIb: 89, CROw: 320, CROb: 9
+     * BLOw: 1802, BLOb: 110, BLIw: 1758, BLIb: 92, BRIw: 1719, BRIb: 95, BROw: 1606, BROb: 81
+     */
+
+    /*
+     * FLOw: 1831, FLOb: 102, FLIw: 1857, FLIb: 121, FRIw: 1382, FRIb: 90, FROw: 1863, FROb: 147
+     * CLOw: 1589, CLOb: 69, CLIw: 1851, CLIb: 104, CRIw: 1837, CRIb: 102, CROw: 375, CROb: 13
+     * BLOw: 1841, BLOb: 85, BLIw: 1806, BLIb: 92, BRIw: 1851, BRIb: 102, BROw: 1786, BROb: 85
+     */
+
+    /*
+     * FLOw: 1739, FLOb: 84, FLIw: 1853, FLIb: 96, FRIw: 1489, FRIb: 81, FROw: 1862, FROb: 140
+     * CLOw: 1312, CLOb: 66, CLIw: 1633, CLIb: 103, CRIw: 1815, CRIb: 93, CROw: 321, CROb: 12
+     * BLOw: 1859, BLOb: 80, BLIw: 1846, BLIb: 86, BRIw: 1799, BRIb: 100, BROw: 1695, BROb: 81
+     */
 #endif
 
 #ifndef PRE_CALIBRATION
@@ -225,6 +288,9 @@ void SensorManager::calibrate()
     printf("FLOw: %li, FLOb: %li, FLIw: %li, FLIb: %li, FRIw: %li, FRIb: %li, FROw: %li, FROb: %li\n\r", FLOw, FLOb, FLIw, FLIb, FRIw, FRIb, FROw, FROb);
     printf("CLOw: %li, CLOb: %li, CLIw: %li, CLIb: %li, CRIw: %li, CRIb: %li, CROw: %li, CROb: %li\n\r", CLOw, CLOb, CLIw, CLIb, CRIw, CRIb, CROw, CROb);
     printf("BLOw: %li, BLOb: %li, BLIw: %li, BLIb: %li, BRIw: %li, BRIb: %li, BROw: %li, BROb: %li\n\r", BLOw, BLOb, BLIw, BLIb, BRIw, BRIb, BROw, BROb);
+
+    while (true)
+        sleep_ms(100);
 #endif
 
     calibrated = true;
@@ -243,4 +309,45 @@ int32_t SensorManager::_mapDistance(int32_t s, std::pair<int32_t, int32_t> calib
 bool SensorManager::isCalibrated()
 {
     return calibrated;
+}
+
+int32_t SensorManager::getFullHorizontalPosition(SensorRow row)
+{
+    int32_t li, ri, lo, ro;
+
+    switch (row)
+    {
+        case SENSOR_ROW_FRONT:
+            li = readSensor(SENSOR_FLI);
+            ri = readSensor(SENSOR_FRI);
+            lo = readSensor(SENSOR_FLO);
+            ro = readSensor(SENSOR_FRO);
+            break;
+        case SENSOR_ROW_CENTER:
+            li = readSensor(SENSOR_CLI);
+            ri = readSensor(SENSOR_CRI);
+            lo = readSensor(SENSOR_CLO);
+            ro = readSensor(SENSOR_CRO);
+            break;
+        case SENSOR_ROW_BACK:
+            li = readSensor(SENSOR_BLI);
+            ri = readSensor(SENSOR_BRI);
+            lo = readSensor(SENSOR_BLO);
+            ro = readSensor(SENSOR_BRO);
+            break;
+    }
+
+#ifdef ENABLE_END_OF_TRACK
+    if (row == SENSOR_ROW_BACK && li > WHITE && ri > WHITE)
+    {
+        motor_manager->setDirection(STOP);
+        printf("END OF TRACK: s1 %li, s2 %li", li, ri);
+        throw std::runtime_error("END OF TRACK");
+    }
+#endif
+
+    if (li <= BLACK && ri <= BLACK)
+        return 0;
+    else
+        return ri + ro - li - lo;
 }

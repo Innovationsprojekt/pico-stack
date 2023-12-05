@@ -32,7 +32,7 @@
 
 #define WHITE 980
 #define BLACK 50
-#define ON_LINE 200
+#define ON_LINE 150
 
 class SensorManager
 {
@@ -41,6 +41,7 @@ public:
     int32_t readSensor(SensorPosition sensor);
     int32_t readRawSensor(SensorPosition sensor);
     int32_t getHorizontalPosition(SensorRow row);
+    int32_t getFullHorizontalPosition(SensorRow row);
     void calibrate();
     bool isCalibrated();
 

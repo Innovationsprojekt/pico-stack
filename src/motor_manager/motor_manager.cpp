@@ -124,7 +124,7 @@ void MotorManager::pickup(PickUpSide side) const
         case PICKUP_RIGHT:
             crane_r_servo->setAngle(PR_DOWN_POS);
             crane_r_motor->setPosition(PLIFT_PICKUP, 10000);
-            crane_r_servo->setAngle(PR_GRAB_POS);
+            crane_r_servo->setAngle(PR_GRAB_POS - 5);
             sleep_ms(200);
             crane_r_motor->setPosition(PLIFT_UNLOAD, 10000);
             crane_r_servo->setAngle(PR_UP_POS, 3);
@@ -151,12 +151,10 @@ void MotorManager::pickup(PickUpSide side) const
             homePickup(PICKUP_RIGHT);
             break;
 
-        case PICKUP_RIGHT_CURVE:
-            creepDistance(0.75, BACKWARD);
-
+        case PICKUP_RIGHT_OUT_CURVE:
             crane_r_servo->setAngle(PR_DOWN_POS);
             crane_r_motor->setPosition(PLIFT_PICKUP, 10000);
-            crane_r_servo->setAngle(PR_GRAB_POS - 5);
+            crane_r_servo->setAngle(PR_GRAB_POS - 10);
             sleep_ms(200);
             crane_r_motor->setPosition(PLIFT_UNLOAD, 10000);
             crane_r_servo->setAngle(PR_UP_POS, 3);
@@ -168,15 +166,30 @@ void MotorManager::pickup(PickUpSide side) const
             homePickup(PICKUP_RIGHT);
             break;
 
+        case PICKUP_RIGHT_IN_CURVE:
+            crane_r_servo->setAngle(PR_DOWN_POS);
+            crane_r_motor->setPosition(PLIFT_PICKUP, 10000);
+            crane_r_servo->setAngle(PR_GRAB_POS - 5);
+            sleep_ms(200);
+            crane_r_motor->setPosition(PLIFT_UNLOAD, 10000);
+            crane_r_servo->setAngle(PR_UP_POS, 3);
+            sleep_ms(800);
+            crane_r_servo->setAngle(PR_GRAB_POS + 13);
+            crane_r_motor->setPosition(PLIFT_SET + 500, 10000);
+            crane_r_servo->setAngle(PR_DOWN_POS);
+            crane_r_motor->setPosition(0, 10000);
+            homePickup(PICKUP_RIGHT);
+            break;
+
         case PICKUP_LEFT:
             crane_l_servo->setAngle(PL_DOWN_POS);
             crane_l_motor->setPosition(PLIFT_PICKUP, 10000);
-            crane_l_servo->setAngle(PL_GRAB_POS);
+            crane_l_servo->setAngle(PL_GRAB_POS + 5);
             sleep_ms(200);
             crane_l_motor->setPosition(PLIFT_UNLOAD, 10000);
             crane_l_servo->setAngle(PL_UP_POS, 3);
             sleep_ms(800);
-            crane_l_servo->setAngle(PL_GRAB_POS - 10);
+            crane_l_servo->setAngle(PL_GRAB_POS - 7);
             crane_l_motor->setPosition(PLIFT_SET, 10000);
             crane_l_servo->setAngle(PL_DOWN_POS);
             crane_l_motor->setPosition(0, 10000);
@@ -198,7 +211,22 @@ void MotorManager::pickup(PickUpSide side) const
             homePickup(PICKUP_LEFT);
             break;
 
-        case PICKUP_LEFT_CURVE:
+        case PICKUP_LEFT_OUT_CURVE:
+            crane_l_servo->setAngle(PL_DOWN_POS);
+            crane_l_motor->setPosition(PLIFT_PICKUP, 10000);
+            crane_l_servo->setAngle(PL_GRAB_POS + 10);
+            sleep_ms(200);
+            crane_l_motor->setPosition(PLIFT_UNLOAD, 10000);
+            crane_l_servo->setAngle(PL_UP_POS, 3);
+            sleep_ms(800);
+            crane_l_servo->setAngle(PL_GRAB_POS - 10 + CURVE_SET_OFFSET);
+            crane_l_motor->setPosition(PLIFT_SET + 500, 10000);
+            crane_l_servo->setAngle(PL_DOWN_POS);
+            crane_l_motor->setPosition(0, 10000);
+            homePickup(PICKUP_LEFT);
+            break;
+
+        case PICKUP_LEFT_IN_CURVE:
             crane_l_servo->setAngle(PL_DOWN_POS);
             crane_l_motor->setPosition(PLIFT_PICKUP, 10000);
             crane_l_servo->setAngle(PL_GRAB_POS + 5);
@@ -206,7 +234,7 @@ void MotorManager::pickup(PickUpSide side) const
             crane_l_motor->setPosition(PLIFT_UNLOAD, 10000);
             crane_l_servo->setAngle(PL_UP_POS, 3);
             sleep_ms(800);
-            crane_l_servo->setAngle(PL_GRAB_POS - 10 + CURVE_SET_OFFSET);
+            crane_l_servo->setAngle(PL_GRAB_POS - 9);
             crane_l_motor->setPosition(PLIFT_SET + 500, 10000);
             crane_l_servo->setAngle(PL_DOWN_POS);
             crane_l_motor->setPosition(0, 10000);

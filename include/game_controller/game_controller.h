@@ -53,7 +53,7 @@ const std::vector<GameItems> game_plan
         };
 #endif
 
-#ifndef GAME_PLAN_TEST
+#ifdef GAME_PLAN_GOAL
 const std::vector<GameItems> game_plan
         = {CALIBRATE,
 
@@ -69,7 +69,7 @@ const std::vector<GameItems> game_plan
            ALIGN_STRAIGHT,
            TRASH_RIGHT,
 
-           WIGGLE,
+           //WIGGLE,
 
            DRIVE_STRAIGHT,
            LINE_LEFT,
@@ -82,12 +82,11 @@ const std::vector<GameItems> game_plan
            DRIVE_CURVE,
            LINE_RIGHT,
            ALIGN_CURVE_RIGHT,
-           TRASH_RIGHT,
-
-           WIGGLE_WAIT,
-           DRIVE_STRAIGHT,
+           TRASH_RIGHT_IN_CURVE,
+           RESUME_CURVE_RIGHT,
 
            //STRAIGHT 2
+           DRIVE_STRAIGHT,
            LINE_LEFT,
            ALIGN_STRAIGHT,
            TRASH_LEFT,
@@ -96,28 +95,27 @@ const std::vector<GameItems> game_plan
 
            DRIVE_STRAIGHT,
            LINE_RIGHT,
-           ALIGN_STRAIGHT,
-           TRASH_RIGHT,
-
-           WIGGLE,
 
            DRIVE_STRAIGHT,
            LINE_LEFT,
+           /*
            ALIGN_STRAIGHT,
            TRASH_LEFT,
+            */
 
-           WIGGLE,
+           //WIGGLE,
 
            //CURVE 2
            DRIVE_CURVE,
            LINE_LEFT,
            ALIGN_CURVE_LEFT,
-           TRASH_RIGHT_CURVE,
+           TRASH_RIGHT_OUT_CURVE,
 
            DRIVE_CURVE,
            LINE_LEFT,
            ALIGN_CURVE_LEFT,
-           TRASH_LEFT,
+           TRASH_LEFT_IN_CURVE,
+           RESUME_CURVE_LEFT,
 
            WIGGLE_WAIT,
            DRIVE_STRAIGHT,
@@ -128,21 +126,23 @@ const std::vector<GameItems> game_plan
            DRIVE_CURVE,
            LINE_RIGHT,
 
+
            //CURVE 3
            DRIVE_CURVE,
            LINE_RIGHT,
            ALIGN_CURVE_RIGHT,
-           TRASH_LEFT_CURVE,
+           TRASH_LEFT_OUT_CURVE,
 
            DRIVE_CURVE,
            LINE_RIGHT,
            ALIGN_CURVE_RIGHT,
-           TRASH_RIGHT,
+           TRASH_RIGHT_IN_CURVE,
+           RESUME_CURVE_RIGHT,
 
-           DRIVE_CURVE,
-           LINE_RIGHT,
            ALIGN_CURVE_RIGHT,
-           TRASH_LEFT_CURVE,
+           TRASH_LEFT_OUT_CURVE,
+
+           WIGGLE_WAIT,
 
            //STRAIGHT 3
            DRIVE_STRAIGHT,
@@ -150,12 +150,145 @@ const std::vector<GameItems> game_plan
            ALIGN_STRAIGHT,
            TRASH_LEFT,
 
+
+           //WIGGLE,
+
+           DRIVE_STRAIGHT,
+           LINE_RIGHT,
+
+           DRIVE_STRAIGHT,
+           LINE_RIGHT,
+           /*
+           ALIGN_STRAIGHT,
+           TRASH_LEFT,
+            */
+
            WIGGLE,
+
+           //CURVE 4
+           DRIVE_CURVE,
+           LINE_LEFT,
+           ALIGN_CURVE_LEFT,
+           TRASH_RIGHT_OUT_CURVE,
+
+           DRIVE_CURVE,
+           LINE_LEFT,
+           ALIGN_CURVE_LEFT,
+           TRASH_LEFT_IN_CURVE,
+           RESUME_CURVE_LEFT,
+
+           ALIGN_CURVE_LEFT,
+           TRASH_RIGHT_OUT_CURVE,
+
+           WIGGLE_WAIT,
+
+           DRIVE_STRAIGHT,
+           LINE_LEFT,
+           UNLOAD,
+           MIXER_OFF,
+        };
+#endif
+
+#ifdef GAME_PLAN_UNLOAD
+const std::vector<GameItems> game_plan
+        = {CALIBRATE,
+
+           //STRAIGHT 1
+           DRIVE_STRAIGHT,
+           LINE_LEFT,
+           ALIGN_STRAIGHT,
+           MIXER_ON,
+           TRASH_LEFT,
 
            DRIVE_STRAIGHT,
            LINE_RIGHT,
            ALIGN_STRAIGHT,
            TRASH_RIGHT,
+
+           //WIGGLE,
+
+           DRIVE_STRAIGHT,
+           LINE_LEFT,
+           ALIGN_STRAIGHT,
+           TRASH_LEFT,
+
+           WIGGLE,
+
+           //CURVE 1
+           DRIVE_CURVE,
+           LINE_RIGHT,
+           ALIGN_CURVE_RIGHT,
+           TRASH_RIGHT_IN_CURVE,
+           RESUME_CURVE_RIGHT,
+
+           //STRAIGHT 2
+           DRIVE_STRAIGHT,
+           LINE_LEFT,
+           ALIGN_STRAIGHT,
+           TRASH_LEFT,
+
+           WIGGLE,
+
+           DRIVE_STRAIGHT,
+           LINE_RIGHT,
+
+           DRIVE_STRAIGHT,
+           LINE_LEFT,
+           ALIGN_STRAIGHT,
+           TRASH_LEFT,
+
+           //WIGGLE,
+
+           //CURVE 2
+           DRIVE_CURVE,
+           LINE_LEFT,
+           ALIGN_CURVE_LEFT,
+           TRASH_RIGHT_OUT_CURVE,
+
+           DRIVE_CURVE,
+           LINE_LEFT,
+           ALIGN_CURVE_LEFT,
+           TRASH_LEFT_IN_CURVE,
+           RESUME_CURVE_LEFT,
+
+           WIGGLE_WAIT,
+           DRIVE_STRAIGHT,
+           LINE_LEFT,
+
+           //UNLOAD
+           UNLOAD,
+           DRIVE_CURVE,
+           LINE_RIGHT,
+
+
+           //CURVE 3
+           DRIVE_CURVE,
+           LINE_LEFT,
+           ALIGN_CURVE_RIGHT,
+           TRASH_LEFT_OUT_CURVE,
+
+           DRIVE_CURVE,
+           LINE_RIGHT,
+           ALIGN_CURVE_RIGHT,
+           TRASH_RIGHT_IN_CURVE,
+           RESUME_CURVE_RIGHT,
+
+           ALIGN_CURVE_RIGHT,
+           TRASH_LEFT_OUT_CURVE,
+
+           WIGGLE_WAIT,
+
+           //STRAIGHT 3
+           DRIVE_STRAIGHT,
+           LINE_RIGHT,
+           ALIGN_STRAIGHT,
+           TRASH_LEFT,
+
+
+           //WIGGLE,
+
+           DRIVE_STRAIGHT,
+           LINE_RIGHT,
 
            DRIVE_STRAIGHT,
            LINE_RIGHT,
@@ -168,22 +301,23 @@ const std::vector<GameItems> game_plan
            DRIVE_CURVE,
            LINE_LEFT,
            ALIGN_CURVE_LEFT,
-           TRASH_RIGHT_CURVE,
+           TRASH_RIGHT_OUT_CURVE,
 
            DRIVE_CURVE,
            LINE_LEFT,
            ALIGN_CURVE_LEFT,
-           TRASH_LEFT,
+           TRASH_LEFT_IN_CURVE,
+           RESUME_CURVE_LEFT,
 
-           DRIVE_CURVE,
-           LINE_LEFT,
            ALIGN_CURVE_LEFT,
-           TRASH_RIGHT_CURVE,
+           TRASH_RIGHT_OUT_CURVE,
+
+           WIGGLE_WAIT,
 
            DRIVE_STRAIGHT,
            LINE_LEFT,
            UNLOAD,
-           MIXER_OFF
+           //MIXER_OFF,
         };
 #endif
 
