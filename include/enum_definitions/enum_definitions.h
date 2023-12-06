@@ -10,6 +10,10 @@
 
 //#define GAME_PLAN_TEST
 #define GAME_PLAN_UNLOAD
+//#define GAME_PLAN_GOAL
+//#define SAFE_MODE
+
+#define UNLOAD_DISTANCE 5
 
 //#define ENABLE_SENSOR_CALIB
 //#define ENABLE_END_OF_TRACK

@@ -88,8 +88,10 @@ const std::vector<GameItems> game_plan
            //STRAIGHT 2
            DRIVE_STRAIGHT,
            LINE_LEFT,
+#ifndef SAFE_MODE
            ALIGN_STRAIGHT,
            TRASH_LEFT,
+#endif
 
            WIGGLE,
 
@@ -129,7 +131,7 @@ const std::vector<GameItems> game_plan
 
            //CURVE 3
            DRIVE_CURVE,
-           LINE_RIGHT,
+           LINE_LEFT,
            ALIGN_CURVE_RIGHT,
            TRASH_LEFT_OUT_CURVE,
 
@@ -234,8 +236,10 @@ const std::vector<GameItems> game_plan
 
            DRIVE_STRAIGHT,
            LINE_LEFT,
+#ifndef SAFE_MODE
            ALIGN_STRAIGHT,
            TRASH_LEFT,
+#endif
 
            //WIGGLE,
 
@@ -292,8 +296,10 @@ const std::vector<GameItems> game_plan
 
            DRIVE_STRAIGHT,
            LINE_RIGHT,
+#ifndef SAFE_MODE
            ALIGN_STRAIGHT,
            TRASH_LEFT,
+#endif
 
            WIGGLE,
 

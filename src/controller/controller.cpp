@@ -236,7 +236,7 @@ void Controller::_unload()
     _motor_manager->drive_motor2->setDirection(STOP);
 
     //SLIGHT BACK
-    _motor_manager->creepDistance(5, FORWARD);
+    _motor_manager->creepDistance(UNLOAD_DISTANCE, FORWARD);
 
     //STRAIGHT
     _motor_manager->drive_motor2->setDirection(STOP);
@@ -252,25 +252,26 @@ void Controller::_unload()
 
     _motor_manager->unload_servo->setAngle(UNLOAD_OPEN);
 
-    _motor_manager->setSpeed(10000);
-    for (int n = 0; n<_unload_counter/5; n++)
+    for (int n = 0; n<_unload_counter/10; n++)
     {
-        _motor_manager->unload_servo->setAngle(UNLOAD_OPEN - 50);
-        for (int i = 0; i<5; i++)
+        _motor_manager->unload_servo->setAngle(UNLOAD_OPEN);
+        _motor_manager->setSpeed(10000);
+        for (int i = 0; i<10; i++)
         {
             _motor_manager->setDirection(BACKWARD);
             sleep_ms(150);
             _motor_manager->setDirection(FORWARD);
             sleep_ms(150);
         }
-        _motor_manager->unload_servo->setAngle(UNLOAD_OPEN);
+        _motor_manager->setDirection(STOP);
+        _motor_manager->unload_servo->setAngle(UNLOAD_OPEN - 90);
     }
 
     _motor_manager->setDirection(STOP);
 
     _motor_manager->unload_servo->setAngle(UNLOAD_CLOSE);
 
-    _motor_manager->creepDistance(6, BACKWARD);
+    _motor_manager->creepDistance(UNLOAD_DISTANCE + 1, BACKWARD);
     _motor_manager->drive_motor1->setDirection(STOP);
 
     _motor_manager->turn(20, RIGHT);
@@ -286,6 +287,6 @@ void Controller::_unload()
     _motor_manager->turn(10, LEFT);
 
 #ifdef GAME_PLAN_UNLOAD
-    _unload_counter += 30;
+    _unload_counter += 70;
 #endif
 }
