@@ -7,8 +7,7 @@
 #define PICO_MOTORS_ERROR_STACK_H_
 
 #include <numeric>
-
-#define INT_SIZE 5
+#include "enum_definitions.h"
 
 class ErrorStack
 {
@@ -17,7 +16,7 @@ public:
     {
         error.insert(error.begin(), value);
 
-        if (error.size() > INT_SIZE)
+        if (error.size() > ERROR_STACK_INTEGRAL_SIZE)
             error.pop_back();
     }
 
@@ -28,7 +27,7 @@ public:
 
     bool isFull()
     {
-        return error.size() == INT_SIZE;
+        return error.size() == ERROR_STACK_INTEGRAL_SIZE;
     }
 
     void clear()

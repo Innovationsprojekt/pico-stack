@@ -10,7 +10,9 @@
 #include "communication_manager.h"
 #include "enum_definitions.h"
 
+// ----------- PARAMETERS -----------
 #define LINE_WAIT_TIME 1500
+#define GOAL_TIMESTAMP 290000
 
 #define CALIBRATION_TIME 2000
 #define LINE_TIME 1000
@@ -185,7 +187,8 @@ const std::vector<GameItems> game_plan
 
            DRIVE_STRAIGHT,
            LINE_LEFT,
-           UNLOAD,
+           UNLOAD_STAY,
+           GOAL,
            MIXER_OFF,
         };
 #endif
@@ -329,8 +332,9 @@ const std::vector<GameItems> game_plan
 class GameController
 {
 public:
-    void checkInbox();
+    void spin();
 private:
+    void _checkInbox();
     void _nextMove(GameMessage message);
     void _sendMove();
 

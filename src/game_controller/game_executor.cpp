@@ -83,6 +83,12 @@ void GameExecutor::checkInbox()
         case REQUEST_UNLOAD:
             _controller->unload();
             break;
+        case REQUEST_UNLOAD_STAY:
+            _controller->unloadStay();
+            break;
+        case REQUEST_GOAL:
+            _controller->goal();
+            break;
         case REQUEST_MIXER_ON:
             _controller->setMixer(true);
             break;

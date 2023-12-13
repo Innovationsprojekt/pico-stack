@@ -13,15 +13,16 @@
 #include "enum_definitions.h"
 #include "error_stack.h"
 
+// ----------- PARAMETERS -----------
 #define MIXER_SPEED 4500
 
-#define UNLOAD_CLOSE_ANGLE 15
-#define UNLOAD_OPEN_ANGLE 180
 #define UNLOAD_WIGGLES 20
 
+// ----------- ALIGN HORIZONTAL -----------
 #define OFFSET_ERROR_HORIZONTAL 70
 #define ALIGN_HOR_BASE_SPEED 2500
 
+// ----------- ALIGN TANGENTIAL -----------
 #define ALIGN_TAN_FREQ 500
 
 const PIDConfiguration pid_align_st_tan = {1.5, 15, 1, 0, 120};
@@ -34,6 +35,9 @@ const PIDConfiguration pid_align_cuv_tan = {0.3, 15, 0.6, 0, 400};
  * const PIDConfiguration pid_align_cuv_tan = {1.2, 10, 1.2, 0};
  */
 
+// ----------- DRIVE PID -----------
+#define ENABLE_SLOW_MODE
+
 const PIDConfiguration pid_drive_st = {90, 57, 0, 8000, 0};
 /* only 1 sensor
  * const PIDConfiguration pid_drive_st = {100, 55, 0, 8000, 0};
@@ -44,6 +48,7 @@ const PIDConfiguration pid_drive_slow = {60, 30, 0, 4000, 500};
 const PIDConfiguration pid_drive_cuv = {75, 37, 0, 7000, 0};
 
 const PIDConfiguration pid_drive_gate = {85, 55, 0, 7000, 0};
+
 
 class Controller : public ControllerInterface
 {
@@ -59,6 +64,8 @@ public:
     void pickTrash(PickUpSide side) const override;
     void resumeDrive(TurnDirection dir) override;
     void unload() override;
+    void unloadStay() override;
+    void goal() override;
     void setMixer(bool enabled) override;
     void wiggle() override;
 
@@ -95,6 +102,7 @@ private:
 
     // unload
     void _unload();
+    bool _enable_unload = false;
     uint16_t _unload_counter = UNLOAD_WIGGLES;
 };
 

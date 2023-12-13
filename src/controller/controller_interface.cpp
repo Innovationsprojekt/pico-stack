@@ -103,6 +103,25 @@ void Controller::unload()
     _executor->notify(NOTIFY_UNLOAD);
 }
 
+void Controller::unloadStay()
+{
+    _motor_manager->driveToUnload();
+    _enable_unload = true;
+}
+
+void Controller::goal()
+{
+    _enable_unload = false;
+    _motor_manager->driveFromUnload();
+
+    _motor_manager->setSpeed(10000);
+    _motor_manager->setDirection(BACKWARD);
+    sleep_ms(8000);
+    _motor_manager->setDirection(STOP);
+
+    _executor->notify(NOTIFY_UNLOAD);
+}
+
 void Controller::resumeDrive(TurnDirection dir)
 {
     switch (dir)
@@ -149,10 +168,6 @@ void Controller::setMixer(bool enabled)
     else
     {
         _motor_manager->setMixerDirection(STOP);
-        _motor_manager->setSpeed(10000);
-        _motor_manager->setDirection(BACKWARD);
-        sleep_ms(8000);
-        _motor_manager->setDirection(STOP);
     }
 #endif
 }

@@ -24,6 +24,8 @@ public:
     virtual void pickTrash(PickUpSide side) const = 0;
     virtual void resumeDrive(TurnDirection dir) = 0;
     virtual void unload() = 0;
+    virtual void unloadStay() = 0;
+    virtual void goal() = 0;
     virtual void setMixer(bool enabled) = 0;
     virtual void wiggle() = 0;
 

@@ -18,13 +18,10 @@ extern "C" {
 
 void core1_main()
 {
-
     GameController game;
 
     while(true)
-    {
-        game.checkInbox();
-    }
+        game.spin();
 }
 
 int main()

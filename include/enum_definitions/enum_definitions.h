@@ -8,7 +8,8 @@
 
 #include <vector>
 
-#define GAME_PLAN_TEST
+// ----------- GAME PLAN -----------
+//#define GAME_PLAN_TEST
 
 #ifndef GAME_PLAN_TEST
     //#define GAME_PLAN_UNLOAD
@@ -16,8 +17,7 @@
     //#define SAFE_MODE
 #endif
 
-#define UNLOAD_DISTANCE 5
-
+// ----------- GENERAL -----------
 //#define ENABLE_SENSOR_CALIB
 //#define ENABLE_END_OF_TRACK
 #define ENABLE_PICKUP
@@ -25,7 +25,10 @@
 #define ENABLE_MIXER
 #define PRE_CALIBRATION
 
+// ----------- PARAMETERS -----------
 #define SERVO_SPEED 4
+#define UNLOAD_DISTANCE 5
+#define ERROR_STACK_INTEGRAL_SIZE 5
 
 struct PIDConfiguration
 {
@@ -113,6 +116,8 @@ enum GameMessage
     REQUEST_PICKUP_RIGHT_OUT_CURVE,
     REQUEST_PICKUP_RIGHT_IN_CURVE,
     REQUEST_UNLOAD,
+    REQUEST_UNLOAD_STAY,
+    REQUEST_GOAL,
     REQUEST_MIXER_ON,
     REQUEST_MIXER_OFF,
     REQUEST_WIGGLE
@@ -141,6 +146,8 @@ enum GameItems
     TRASH_RIGHT_OUT_CURVE,
     TRASH_RIGHT_IN_CURVE,
     UNLOAD,
+    UNLOAD_STAY,
+    GOAL,
     MIXER_ON,
     MIXER_OFF,
     WIGGLE,

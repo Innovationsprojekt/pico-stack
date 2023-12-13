@@ -295,3 +295,85 @@ void MotorManager::moveServos(double angle1, double angle2, uint8_t speed1, uint
         sleep_ms(SERVO_SPEED);
     }
 }
+
+void MotorManager::driveToUnload() const
+{
+    //GATE
+    creepDistance(5.5, FORWARD);
+    drive_motor2->setDirection(STOP);
+
+    drive_motor1->setSpeed(8000);
+    drive_motor1->setDirection(FORWARD);
+    sleep_ms(800);
+    drive_motor1->setDirection(STOP);
+
+    //CONT1
+    creepDistance(8, BACKWARD);
+
+    drive_motor2->setDirection(STOP);
+    drive_motor1->setSpeed(8000);
+    drive_motor1->setDirection(FORWARD);
+    sleep_ms(1000);
+    drive_motor1->setDirection(STOP);
+
+    //FRONT
+    creepDistance(8, BACKWARD);
+
+    drive_motor1->setDirection(STOP);
+    drive_motor2->setSpeed(8000);
+    drive_motor2->setDirection(BACKWARD);
+    sleep_ms(1000);
+    drive_motor2->setDirection(STOP);
+
+    //SLIGHT BACK
+    creepDistance(UNLOAD_DISTANCE, FORWARD);
+
+    //STRAIGHT
+    drive_motor2->setDirection(STOP);
+    drive_motor1->setSpeed(8000);
+    drive_motor1->setDirection(FORWARD);
+    sleep_ms(100);
+    drive_motor1->setDirection(STOP);
+
+    //CONT
+    creepDistance(3, FORWARD);
+    drive_motor1->setDirection(STOP);
+
+    unload_servo->setAngle(UNLOAD_OPEN_ANGLE);
+}
+
+void MotorManager::driveFromUnload() const
+{
+    setDirection(STOP);
+    unload_servo->setAngle(UNLOAD_CLOSE_ANGLE);
+
+    creepDistance(UNLOAD_DISTANCE + 1, BACKWARD);
+    drive_motor1->setDirection(STOP);
+
+    turn(20, RIGHT);
+
+    drive_motor2->setSpeed(8000);
+    drive_motor2->setDirection(FORWARD);
+    sleep_ms(2400);
+    drive_motor2->setDirection(STOP);
+
+    creepDistance(12.5, BACKWARD);
+    drive_motor1->setDirection(STOP);
+
+    turn(10, LEFT);
+}
+
+void MotorManager::spinUnload() const
+{
+    unload_servo->setAngle(UNLOAD_OPEN_ANGLE);
+    setSpeed(10000);
+    for (int i = 0; i<10; i++)
+    {
+        setDirection(BACKWARD);
+        sleep_ms(150);
+        setDirection(FORWARD);
+        sleep_ms(150);
+    }
+    setDirection(STOP);
+    unload_servo->setAngle(UNLOAD_OPEN_ANGLE - 90);
+}

@@ -68,19 +68,23 @@ void Controller::spin(double dt)
 
     if (_enable_detection)
         _detectLine();
+
+    if (_enable_unload)
+        _motor_manager->spinUnload();
 }
 
 void Controller::_driveClosedLoop(double dt)
 {
     int32_t position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT);
 
+#ifdef ENABLE_SLOW_MODE
     if (abs(position_error) > pid_drive_slow.offset)
-    {
         _last_config = pid_drive_slow;
-    } else
-    {
+    else
         _last_config = _drive_config;
-    }
+#else
+    _last_config = _drive_config;
+#endif
 
     double Pout = _last_config.kp * position_error;
 
@@ -244,85 +248,12 @@ void Controller::_unload()
     _alignHorizontal();
     _alignTangentialPID();
 
-    //GATE
-    _motor_manager->creepDistance(5.5, FORWARD);
-
-    _motor_manager->drive_motor2->setDirection(STOP);
-    _motor_manager->drive_motor1->setSpeed(8000);
-    _motor_manager->drive_motor1->setDirection(FORWARD);
-    sleep_ms(800);
-    _motor_manager->drive_motor1->setDirection(STOP);
-
-    //CONT1
-    _motor_manager->creepDistance(8, BACKWARD);
-
-    _motor_manager->drive_motor2->setDirection(STOP);
-    _motor_manager->drive_motor1->setSpeed(8000);
-    _motor_manager->drive_motor1->setDirection(FORWARD);
-    sleep_ms(1000);
-    _motor_manager->drive_motor1->setDirection(STOP);
-
-    //FRONT
-    _motor_manager->creepDistance(8, BACKWARD);
-
-    _motor_manager->drive_motor1->setDirection(STOP);
-    _motor_manager->drive_motor2->setSpeed(8000);
-    _motor_manager->drive_motor2->setDirection(BACKWARD);
-    sleep_ms(1000);
-    _motor_manager->drive_motor2->setDirection(STOP);
-
-    //SLIGHT BACK
-    _motor_manager->creepDistance(UNLOAD_DISTANCE, FORWARD);
-
-    //STRAIGHT
-    _motor_manager->drive_motor2->setDirection(STOP);
-    _motor_manager->drive_motor1->setSpeed(8000);
-    _motor_manager->drive_motor1->setDirection(FORWARD);
-    sleep_ms(100);
-    _motor_manager->drive_motor1->setDirection(STOP);
-
-
-    //CONT
-    _motor_manager->creepDistance(3, FORWARD);
-    _motor_manager->drive_motor1->setDirection(STOP);
-
-    _motor_manager->unload_servo->setAngle(UNLOAD_OPEN_ANGLE);
+    _motor_manager->driveToUnload();
 
     for (int n = 0; n<_unload_counter/10; n++)
     {
-        _motor_manager->unload_servo->setAngle(UNLOAD_OPEN_ANGLE);
-        _motor_manager->setSpeed(10000);
-        for (int i = 0; i<10; i++)
-        {
-            _motor_manager->setDirection(BACKWARD);
-            sleep_ms(150);
-            _motor_manager->setDirection(FORWARD);
-            sleep_ms(150);
-        }
-        _motor_manager->setDirection(STOP);
-        _motor_manager->unload_servo->setAngle(UNLOAD_OPEN_ANGLE - 90);
+        _motor_manager->spinUnload();
     }
 
-    _motor_manager->setDirection(STOP);
-
-    _motor_manager->unload_servo->setAngle(UNLOAD_CLOSE_ANGLE);
-
-    _motor_manager->creepDistance(UNLOAD_DISTANCE + 1, BACKWARD);
-    _motor_manager->drive_motor1->setDirection(STOP);
-
-    _motor_manager->turn(20, RIGHT);
-
-    _motor_manager->drive_motor2->setSpeed(8000);
-    _motor_manager->drive_motor2->setDirection(FORWARD);
-    sleep_ms(2400);
-    _motor_manager->drive_motor2->setDirection(STOP);
-
-    _motor_manager->creepDistance(12.5, BACKWARD);
-    _motor_manager->drive_motor1->setDirection(STOP);
-
-    _motor_manager->turn(10, LEFT);
-
-#ifdef GAME_PLAN_UNLOAD
-    _unload_counter += 70;
-#endif
+    _motor_manager->driveFromUnload();
 }

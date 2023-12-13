@@ -6,7 +6,15 @@
 #include <stdexcept>
 #include "game_controller.h"
 
-void GameController::checkInbox()
+void GameController::spin()
+{
+    if (game_plan.at(_game_index + 1) == GOAL && _getTimestamp() >= GOAL_TIMESTAMP)
+        _sendMove();
+
+    _checkInbox();
+}
+
+void GameController::_checkInbox()
 {
     GameMessage message;
     if (!CommunicationManager::checkInbox(&message))
@@ -185,6 +193,12 @@ void GameController::_sendMove()
             break;
         case UNLOAD:
             CommunicationManager::sendMessage(REQUEST_UNLOAD);
+            break;
+        case UNLOAD_STAY:
+            CommunicationManager::sendMessage(REQUEST_UNLOAD_STAY);
+            break;
+        case GOAL:
+            CommunicationManager::sendMessage(REQUEST_GOAL);
             break;
         case MIXER_ON:
             CommunicationManager::sendMessage(REQUEST_MIXER_ON);

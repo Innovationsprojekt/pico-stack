@@ -12,25 +12,34 @@
 #include "cl_motor.h"
 #include "enum_definitions.h"
 
+// ----------- CREEP -----------
 #define US_PER_CM 146667
 #define CREEP_SPEED 6000
 
+// ----------- TURN -----------
 #define TURN_SPEED 6000
 #define US_PER_DEG_PER_SPEED 3.6
 
+// ----------- PICKUP RIGHT -----------
 #define PR_HOME_POS 167
 #define PR_DOWN_POS 140
 #define PR_GRAB_POS 112
 #define PR_UP_POS 10
 
+// ----------- PICKUP LEFT -----------
 #define PL_HOME_POS (12 + 12)
 #define PL_DOWN_POS (40 + 12)
 #define PL_GRAB_POS (62 + 12)
 #define PL_UP_POS (178 + 12)
 
+// ----------- PICKUP -----------
 #define PLIFT_PICKUP 5500
 #define PLIFT_UNLOAD -8700
 #define PLIFT_SET 5200
+
+// ----------- UNLOAD -----------
+#define UNLOAD_CLOSE_ANGLE 15
+#define UNLOAD_OPEN_ANGLE 180
 
 #define CURVE_SET_OFFSET 3
 
@@ -56,6 +65,11 @@ public:
     // mixer
     void setMixerDirection(MotorDirection direction) const;
     void setMixerSpeed(int32_t speed) const;
+
+    // unload
+    void driveToUnload() const;
+    void driveFromUnload() const;
+    void spinUnload() const;
 
     std::unique_ptr<Motor> drive_motor1;
     std::unique_ptr<Motor> drive_motor2;
