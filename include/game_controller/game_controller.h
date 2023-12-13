@@ -89,10 +89,8 @@ const std::vector<GameItems> game_plan
            //STRAIGHT 2
            DRIVE_STRAIGHT,
            LINE_LEFT,
-#ifndef SAFE_MODE
            ALIGN_STRAIGHT,
            TRASH_LEFT,
-#endif
 
            WIGGLE,
 
@@ -101,10 +99,10 @@ const std::vector<GameItems> game_plan
 
            DRIVE_STRAIGHT,
            LINE_LEFT,
-           /*
+#ifndef SAFE_MODE
            ALIGN_STRAIGHT,
            TRASH_LEFT,
-            */
+#endif
 
            //WIGGLE,
 
@@ -161,10 +159,10 @@ const std::vector<GameItems> game_plan
 
            DRIVE_STRAIGHT,
            LINE_RIGHT,
-           /*
+#ifndef SAFE_MODE
            ALIGN_STRAIGHT,
            TRASH_LEFT,
-            */
+#endif
 
            WIGGLE,
 
