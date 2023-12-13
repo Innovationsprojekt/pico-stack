@@ -37,12 +37,11 @@ const std::vector<GameItems> game_plan
            DRIVE_CURVE,
            LINE_LEFT,
            ALIGN_CURVE_LEFT,
-           TRASH_RIGHT_CURVE,
+           TRASH_RIGHT_OUT_CURVE,
+           RESUME_CURVE_LEFT,
 
-           DRIVE_CURVE,
-           LINE_LEFT,
            ALIGN_CURVE_LEFT,
-           TRASH_LEFT,
+           TRASH_LEFT_IN_CURVE,
 
            WIGGLE_WAIT,
 

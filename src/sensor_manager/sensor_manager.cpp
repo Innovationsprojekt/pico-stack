@@ -169,7 +169,7 @@ void SensorManager::calibrate()
 
     calibration = {{94, 1829},
                    {105, 1854},
-                   {80, 1600},
+                   {80, 1519},
                    {120, 1817},
 
                    {58, 1742},
@@ -177,22 +177,23 @@ void SensorManager::calibrate()
                    {79, 1862},
                    {12, 559},
 
-                   {82, 1838},
-                   {80, 1843},
-                   {80, 1878},
-                   {63, 1816}};
+                   {82, 1674},
+                   {80, 1735},
+                   {80, 1809},
+                   {63, 1773}};
 
     /*
-     * FLOw: 1833, FLOb: 82, FLIw: 1854, FLIb: 96, FRIw: 1608, FRIb: 75, FROw: 1436, FROb: 144
-     * CLOw: 1742, CLOb: 75, CLIw: 1852, CLIb: 86, CRIw: 1862, CRIb: 123, CROw: 559, CROb: 11
-     * BLOw: 1853, BLOb: 105, BLIw: 1843, BLIb: 94, BRIw: 1855, BRIb: 122, BROw: 1845, BROb: 96
+     * FLOw: 1834, FLOb: 88, FLIw: 1856, FLIb: 101, FRIw: 1519, FRIb: 70, FROw: 1863, FROb: 123
+CLOw: 1300, CLOb: 66, CLIw: 1717, CLIb: 85, CRIw: 1504, CRIb: 81, CROw: 329, CROb: 10
+BLOw: 1674, BLOb: 76, BLIw: 1735, BLIb: 79, BRIw: 1809, BRIb: 83, BROw: 1773, BROb: 78
      */
 
     /*
-     * FLOw: 1848, FLOb: 85, FLIw: 1854, FLIb: 105, FRIw: 1709, FRIb: 80, FROw: 901, FROb: 160
-     * CLOw: 1571, CLOb: 77, CLIw: 1858, CLIb: 90, CRIw: 1734, CRIb: 79, CROw: 384, CROb: 11
-     * BLOw: 1838, BLOb: 82, BLIw: 1643, BLIb: 80, BRIw: 1678, BRIb: 66, BROw: 1716, BROb: 63
+     * FLOw: 1836, FLOb: 84, FLIw: 1856, FLIb: 101, FRIw: 1589, FRIb: 64, FROw: 1412, FROb: 122
+CLOw: 1456, CLOb: 64, CLIw: 1825, CLIb: 87, CRIw: 1563, CRIb: 83, CROw: 326, CROb: 10
+BLOw: 1783, BLOb: 76, BLIw: 1804, BLIb: 78, BRIw: 1838, BRIb: 84, BROw: 1797, BROb: 78
      */
+
 
     /*
     calibration = {{93, 1852},
@@ -210,23 +211,6 @@ void SensorManager::calibrate()
                    {80, 1845},
                    {70, 1838}};
     */
-    /*
-     * FLOw: 1844, FLOb: 118, FLIw: 1853, FLIb: 139, FRIw: 1832, FRIb: 76, FROw: 899, FROb: 120
-     * CLOw: 1341, CLOb: 85, CLIw: 1598, CLIb: 118, CRIw: 1653, CRIb: 89, CROw: 320, CROb: 9
-     * BLOw: 1802, BLOb: 110, BLIw: 1758, BLIb: 92, BRIw: 1719, BRIb: 95, BROw: 1606, BROb: 81
-     */
-
-    /*
-     * FLOw: 1831, FLOb: 102, FLIw: 1857, FLIb: 121, FRIw: 1382, FRIb: 90, FROw: 1863, FROb: 147
-     * CLOw: 1589, CLOb: 69, CLIw: 1851, CLIb: 104, CRIw: 1837, CRIb: 102, CROw: 375, CROb: 13
-     * BLOw: 1841, BLOb: 85, BLIw: 1806, BLIb: 92, BRIw: 1851, BRIb: 102, BROw: 1786, BROb: 85
-     */
-
-    /*
-     * FLOw: 1739, FLOb: 84, FLIw: 1853, FLIb: 96, FRIw: 1489, FRIb: 81, FROw: 1862, FROb: 140
-     * CLOw: 1312, CLOb: 66, CLIw: 1633, CLIb: 103, CRIw: 1815, CRIb: 93, CROw: 321, CROb: 12
-     * BLOw: 1859, BLOb: 80, BLIw: 1846, BLIb: 86, BRIw: 1799, BRIb: 100, BROw: 1695, BROb: 81
-     */
 #endif
 
 #ifndef PRE_CALIBRATION

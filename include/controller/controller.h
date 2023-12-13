@@ -11,45 +11,39 @@
 #include "sensor_manager.h"
 #include "controller_interface.h"
 #include "enum_definitions.h"
+#include "error_stack.h"
 
-#define OFFSET_ERROR_TANGENTIAL_STRAIGHT 120
-#define OFFSET_ERROR_TANGENTIAL_CURVE 100
+#define MIXER_SPEED 4500
+
+#define UNLOAD_CLOSE_ANGLE 15
+#define UNLOAD_OPEN_ANGLE 180
+#define UNLOAD_WIGGLES 20
+
 #define OFFSET_ERROR_HORIZONTAL 70
-
-#define ALIGN_TAN_BASE_SPEED 1000
 #define ALIGN_HOR_BASE_SPEED 2500
 
 #define ALIGN_TAN_FREQ 500
 
-#define ALIGN_ST_TAN_KD 10
-#define ALIGN_ST_TAN_KP 2
-#define ALIGN_ST_TAN_KI 1.2
-/*
-#define ALIGN_CUV_TAN_KD 10
-#define ALIGN_CUV_TAN_KP 1.2
-#define ALIGN_CUV_TAN_KI 1.2
+const PIDConfiguration pid_align_st_tan = {1.5, 15, 1, 0, 120};
+/* only inner sensors
+ * const PIDConfiguration pid_align_st_tan = {2, 10, 1.2, 0};
  */
 
-#define ALIGN_CUV_TAN_KD 9
-#define ALIGN_CUV_TAN_KP 0.2
-#define ALIGN_CUV_TAN_KI 0.5
+const PIDConfiguration pid_align_cuv_tan = {0.3, 15, 0.6, 0, 400};
+/* only inner sensors
+ * const PIDConfiguration pid_align_cuv_tan = {1.2, 10, 1.2, 0};
+ */
 
-#define DRIVE_STRAIGHT_KD 57
-#define DRIVE_STRAIGHT_KP 90
-#define DRIVE_STRAIGHT_SPEED 8000
+const PIDConfiguration pid_drive_st = {90, 57, 0, 8000, 0};
+/* only 1 sensor
+ * const PIDConfiguration pid_drive_st = {100, 55, 0, 8000, 0};
+ */
 
-#define DRIVE_CURVE_KD 35
-#define DRIVE_CURVE_KP 75
-#define DRIVE_CURVE_SPEED 7000
+const PIDConfiguration pid_drive_slow = {60, 30, 0, 4000, 500};
 
-#define DRIVE_GATE_KD 55
-#define DRIVE_GATE_KP 85
-#define DRIVE_GATE_SPEED 7000
+const PIDConfiguration pid_drive_cuv = {75, 37, 0, 7000, 0};
 
-#define MIXER_SPEED 4500
-
-#define UNLOAD_CLOSE 15
-#define UNLOAD_OPEN 180
+const PIDConfiguration pid_drive_gate = {85, 55, 0, 7000, 0};
 
 class Controller : public ControllerInterface
 {
@@ -72,40 +66,36 @@ private:
     std::shared_ptr<MotorManager> _motor_manager;
     std::shared_ptr<SensorManager> _sensor_manager;
 
+    // align horizontal
     void _alignHorizontal();
 
+    // align tangential
     void _alignTangentialPID();
     void _alignFullTangentialPID();
     void __spinAlignTangential(double dt, int32_t position_error);
+    int32_t _last_error_tan = 0;
+    int32_t _integral_tan = 0;
+    PIDConfiguration _align_config = pid_align_st_tan;
 
     // drive
     void _driveClosedLoop(double dt);
-
     bool _enable_drive = false;
-    uint16_t _drive_speed = DRIVE_STRAIGHT_SPEED;
-    uint8_t _drive_kd = DRIVE_STRAIGHT_KD;
-    uint8_t _drive_kp = DRIVE_STRAIGHT_KP;
+    PIDConfiguration _drive_config = pid_drive_st;
+    PIDConfiguration _last_config = pid_drive_st;
     int32_t _last_error_drive = 0;
+    ErrorStack _error_stack;
 
     // detect line
     void _detectLine();
     bool _enable_detection = false;
     SensorPosition _line_sensor = SENSOR_CLO;
 
-    // align
-    int32_t _last_error_tan = 0;
-    int32_t _integral_tan = 0;
-    double _align_kp = ALIGN_ST_TAN_KP;
-    double _align_kd = ALIGN_ST_TAN_KD;
-    double _align_ki = ALIGN_ST_TAN_KI;
-    uint16_t _offset = OFFSET_ERROR_TANGENTIAL_STRAIGHT;
-
     // pick trash
     void _pickup(PickUpSide side) const;
 
     // unload
     void _unload();
-    uint16_t _unload_counter = 30;
+    uint16_t _unload_counter = UNLOAD_WIGGLES;
 };
 
 

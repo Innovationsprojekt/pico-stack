@@ -8,10 +8,13 @@
 
 #include <vector>
 
-//#define GAME_PLAN_TEST
-#define GAME_PLAN_UNLOAD
-//#define GAME_PLAN_GOAL
-//#define SAFE_MODE
+#define GAME_PLAN_TEST
+
+#ifndef GAME_PLAN_TEST
+    //#define GAME_PLAN_UNLOAD
+    #define GAME_PLAN_GOAL
+    //#define SAFE_MODE
+#endif
 
 #define UNLOAD_DISTANCE 5
 
@@ -23,6 +26,15 @@
 #define PRE_CALIBRATION
 
 #define SERVO_SPEED 4
+
+struct PIDConfiguration
+{
+    double kp;
+    double kd;
+    double ki;
+    uint16_t speed;
+    uint16_t offset;
+};
 
 enum DriveSpeed
 {

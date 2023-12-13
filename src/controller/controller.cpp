@@ -74,6 +74,41 @@ void Controller::_driveClosedLoop(double dt)
 {
     int32_t position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT);
 
+    if (abs(position_error) > pid_drive_slow.offset)
+    {
+        _last_config = pid_drive_slow;
+    } else
+    {
+        _last_config = _drive_config;
+    }
+
+    double Pout = _last_config.kp * position_error;
+
+    double derivative = (position_error - _last_error_drive) / dt;
+    double Dout = _last_config.kd * derivative;
+
+    double output = Pout + Dout;
+
+    _last_error_drive = position_error;
+
+    int32_t motor1_out = _last_config.speed + (int32_t)output / 4;
+    int32_t motor2_out = _last_config.speed - (int32_t)output / 4;
+
+    _motor_manager->drive_motor1->setSpeed(motor1_out);
+    _motor_manager->drive_motor2->setSpeed(motor2_out);
+}
+
+/*
+void Controller::_driveClosedLoop(double dt)
+{
+    int32_t sensor1_val = _sensor_manager->readSensor(SENSOR_FLI);
+    int32_t sensor2_val = _sensor_manager->readSensor(SENSOR_FRI);
+
+    if (sensor1_val < BLACK && sensor2_val < BLACK)
+        sensor1_val = 500;
+
+    int32_t position_error = 500 - sensor1_val;
+
     double Pout = _drive_kp * position_error;
 
     double derivative = (position_error - _last_error_drive) / dt;
@@ -89,6 +124,7 @@ void Controller::_driveClosedLoop(double dt)
     _motor_manager->drive_motor1->setSpeed(motor1_out);
     _motor_manager->drive_motor2->setSpeed(motor2_out);
 }
+ */
 
 void Controller::_alignTangentialPID()
 {
@@ -97,9 +133,9 @@ void Controller::_alignTangentialPID()
     _integral_tan = 0;
     _last_error_tan = 0;
 
-    int32_t position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT);
+    int32_t position_error = _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_FRONT);
 
-    while(abs(position_error) > _offset)
+    while(abs(position_error) > _align_config.offset)
     {
         position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT);
         __spinAlignTangential(1000.0 / ALIGN_TAN_FREQ, position_error);
@@ -114,30 +150,30 @@ void Controller::_alignFullTangentialPID()
 
     _integral_tan = 0;
     _last_error_tan = 0;
+    _error_stack.clear();
 
-    int32_t position_error = _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_FRONT);
+    int32_t position_error;
 
-    for (int i = 0; i < 3; i++)
+    while(abs(_error_stack.get()) > _align_config.offset || !_error_stack.isFull())
     {
-        while(abs(position_error) > _offset)
-        {
-            position_error = _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_FRONT);
-            __spinAlignTangential(1000.0 / ALIGN_TAN_FREQ, position_error);
-            sleep_ms(1000 / ALIGN_TAN_FREQ);
-        }
+        position_error = _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_FRONT);
+        _error_stack.add(position_error);
+        __spinAlignTangential(1000.0 / ALIGN_TAN_FREQ, position_error);
+        sleep_ms(1000 / ALIGN_TAN_FREQ);
     }
+
     _motor_manager->setDirection(STOP);
 }
 
 void Controller::__spinAlignTangential(double dt, int32_t position_error)
 {
-    double Pout = _align_kp * position_error;
+    double Pout = _align_config.kp * position_error;
 
     _integral_tan += int32_t(dt * position_error);
-    double Iout = _align_ki * _integral_tan;
+    double Iout = _align_config.ki * _integral_tan;
 
     double derivative = (position_error - _last_error_tan) / dt;
-    double Dout = _align_kd * derivative;
+    double Dout = _align_config.kd * derivative;
 
     double output = Pout + Dout + Iout;
 
@@ -250,11 +286,11 @@ void Controller::_unload()
     _motor_manager->creepDistance(3, FORWARD);
     _motor_manager->drive_motor1->setDirection(STOP);
 
-    _motor_manager->unload_servo->setAngle(UNLOAD_OPEN);
+    _motor_manager->unload_servo->setAngle(UNLOAD_OPEN_ANGLE);
 
     for (int n = 0; n<_unload_counter/10; n++)
     {
-        _motor_manager->unload_servo->setAngle(UNLOAD_OPEN);
+        _motor_manager->unload_servo->setAngle(UNLOAD_OPEN_ANGLE);
         _motor_manager->setSpeed(10000);
         for (int i = 0; i<10; i++)
         {
@@ -264,12 +300,12 @@ void Controller::_unload()
             sleep_ms(150);
         }
         _motor_manager->setDirection(STOP);
-        _motor_manager->unload_servo->setAngle(UNLOAD_OPEN - 90);
+        _motor_manager->unload_servo->setAngle(UNLOAD_OPEN_ANGLE - 90);
     }
 
     _motor_manager->setDirection(STOP);
 
-    _motor_manager->unload_servo->setAngle(UNLOAD_CLOSE);
+    _motor_manager->unload_servo->setAngle(UNLOAD_CLOSE_ANGLE);
 
     _motor_manager->creepDistance(UNLOAD_DISTANCE + 1, BACKWARD);
     _motor_manager->drive_motor1->setDirection(STOP);
