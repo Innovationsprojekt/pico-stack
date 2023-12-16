@@ -15,8 +15,9 @@
 
 // ----------- PARAMETERS -----------
 #define MIXER_SPEED 4500
-
 #define UNLOAD_WIGGLES 20
+#define SLOW_MODE_DELAY 1500
+#define ALIGN_OFFSET 300
 
 // ----------- ALIGN HORIZONTAL -----------
 #define OFFSET_ERROR_HORIZONTAL 70
@@ -25,29 +26,33 @@
 // ----------- ALIGN TANGENTIAL -----------
 #define ALIGN_TAN_FREQ 500
 
-const PIDConfiguration pid_align_st_tan = {1.5, 15, 1, 0, 120};
+const PIDConfiguration pid_align_st_tan = {1.5, 15, 1, 0, 100};
 /* only inner sensors
  * const PIDConfiguration pid_align_st_tan = {2, 10, 1.2, 0};
  */
 
-const PIDConfiguration pid_align_cuv_tan = {0.3, 15, 0.6, 0, 400};
+const PIDConfiguration pid_align_cuv_tan = {0.4, 15, 0.6, 0, 100};
 /* only inner sensors
  * const PIDConfiguration pid_align_cuv_tan = {1.2, 10, 1.2, 0};
  */
 
 // ----------- DRIVE PID -----------
-#define ENABLE_SLOW_MODE
+//#define ENABLE_SLOW_MODE
 
-const PIDConfiguration pid_drive_st = {90, 57, 0, 8000, 0};
-/* only 1 sensor
- * const PIDConfiguration pid_drive_st = {100, 55, 0, 8000, 0};
- */
+//const PIDConfiguration pid_drive_st = {90, 57, 0, 8000, 0};
+// only 1 sensor
+const PIDConfiguration pid_drive_st = {100, 60, 0, 10000, 0};
 
-const PIDConfiguration pid_drive_slow = {60, 30, 0, 4000, 500};
+const PIDConfiguration pid_drive_slow = {70, 35, 0, 5000, 500};
 
+/*
 const PIDConfiguration pid_drive_cuv = {75, 37, 0, 7000, 0};
 
 const PIDConfiguration pid_drive_gate = {85, 55, 0, 7000, 0};
+ */
+const PIDConfiguration pid_drive_cuv = {100, 60, 0, 10000, 0};
+
+const PIDConfiguration pid_drive_gate = {100, 60, 0, 10000, 0};
 
 
 class Controller : public ControllerInterface
@@ -62,7 +67,7 @@ public:
     void detectLine(LineSide side) override;
     void align(LineType type) override;
     void pickTrash(PickUpSide side) const override;
-    void resumeDrive(TurnDirection dir) override;
+    void resumeDrive(ResumeDriveType dir) override;
     void unload() override;
     void unloadStay() override;
     void goal() override;
@@ -91,6 +96,8 @@ private:
     PIDConfiguration _last_config = pid_drive_st;
     int32_t _last_error_drive = 0;
     ErrorStack _error_stack;
+    static uint32_t _getTimestamp();
+    uint32_t _last_slow_timestamp = _getTimestamp();
 
     // detect line
     void _detectLine();

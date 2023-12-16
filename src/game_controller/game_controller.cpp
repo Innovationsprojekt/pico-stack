@@ -8,7 +8,7 @@
 
 void GameController::spin()
 {
-    if (game_plan.at(_game_index + 1) == GOAL && _getTimestamp() >= GOAL_TIMESTAMP)
+    if (game_plan.at(_game_index) == GOAL && _getTimestamp() >= GOAL_TIMESTAMP)
         _sendMove();
 
     _checkInbox();
@@ -188,8 +188,14 @@ void GameController::_sendMove()
         case RESUME_CURVE_LEFT:
             CommunicationManager::sendMessage(REQUEST_RESUME_CURVE_LEFT);
             break;
+        case RESUME_LEFT:
+            CommunicationManager::sendMessage(REQUEST_RESUME_LEFT);
+            break;
         case RESUME_CURVE_RIGHT:
             CommunicationManager::sendMessage(REQUEST_RESUME_CURVE_RIGHT);
+            break;
+        case RESUME_RIGHT:
+            CommunicationManager::sendMessage(REQUEST_RESUME_RIGHT);
             break;
         case UNLOAD:
             CommunicationManager::sendMessage(REQUEST_UNLOAD);

@@ -9,8 +9,8 @@
 
 MotorManager::MotorManager()
 {
-    drive_motor2 = std::make_unique<Motor>(0, 1);
-    drive_motor1 = std::make_unique<Motor>(2, 3);
+    drive_motor_left = std::make_unique<Motor>(0, 1);
+    drive_motor_right = std::make_unique<Motor>(2, 3);
 
     mixer_motor = std::make_unique<Motor>(10, 11);
 
@@ -28,13 +28,13 @@ MotorManager::MotorManager()
 
 void MotorManager::setSpeed(int32_t set_speed) const
 {
-    drive_motor1->setSpeed(set_speed);
-    drive_motor2->setSpeed(set_speed);
+    drive_motor_right->setSpeed(set_speed);
+    drive_motor_left->setSpeed(set_speed);
 }
 
 void MotorManager::rampSpeed(int32_t target_speed, uint16_t rate) const
 {
-    uint32_t current_speed = drive_motor1->getCurrentSpeed();
+    uint32_t current_speed = drive_motor_right->getCurrentSpeed();
     if (current_speed-target_speed == 0)
         return;
 
@@ -45,8 +45,8 @@ void MotorManager::rampSpeed(int32_t target_speed, uint16_t rate) const
     {
         for (uint32_t i = current_speed; i > target_speed; i--)
         {
-            drive_motor1->setSpeed(i);
-            drive_motor2->setSpeed(i);
+            drive_motor_right->setSpeed(i);
+            drive_motor_left->setSpeed(i);
             sleep_us(time_us);
         }
     }
@@ -54,8 +54,8 @@ void MotorManager::rampSpeed(int32_t target_speed, uint16_t rate) const
     {
         for (uint32_t i = current_speed; i <= target_speed; i++)
         {
-            drive_motor1->setSpeed(i);
-            drive_motor2->setSpeed(i);
+            drive_motor_right->setSpeed(i);
+            drive_motor_left->setSpeed(i);
             sleep_us(time_us);
         }
     }
@@ -63,10 +63,10 @@ void MotorManager::rampSpeed(int32_t target_speed, uint16_t rate) const
 
 void MotorManager::changeDirection() const
 {
-    uint32_t old_speed = drive_motor1->getCurrentSpeed();
+    uint32_t old_speed = drive_motor_right->getCurrentSpeed();
     rampSpeed(0, 200);
-    drive_motor1->changeDirection();
-    drive_motor2->changeDirection();
+    drive_motor_right->changeDirection();
+    drive_motor_left->changeDirection();
     rampSpeed(old_speed, 200);
 }
 
@@ -76,13 +76,13 @@ void MotorManager::turn(int16_t degrees, TurnDirection direction) const
 
     if (direction == LEFT)
     {
-        drive_motor1->setDirection(FORWARD);
-        drive_motor2->setDirection(BACKWARD);
+        drive_motor_right->setDirection(FORWARD);
+        drive_motor_left->setDirection(BACKWARD);
     }
     else if (direction == RIGHT)
     {
-        drive_motor1->setDirection(BACKWARD);
-        drive_motor2->setDirection(FORWARD);
+        drive_motor_right->setDirection(BACKWARD);
+        drive_motor_left->setDirection(FORWARD);
     }
     else
         throw std::runtime_error("Invalid Direction");
@@ -95,8 +95,8 @@ void MotorManager::turn(int16_t degrees, TurnDirection direction) const
 
 void MotorManager::setDirection(MotorDirection direction) const
 {
-    drive_motor1->setDirection(direction);
-    drive_motor2->setDirection(direction);
+    drive_motor_right->setDirection(direction);
+    drive_motor_left->setDirection(direction);
 }
 
 void MotorManager::creepDistance(double distance, MotorDirection direction) const
@@ -122,122 +122,122 @@ void MotorManager::pickup(PickUpSide side) const
     switch (side)
     {
         case PICKUP_RIGHT:
-            crane_r_servo->setAngle(PR_DOWN_POS);
-            crane_r_motor->setPosition(PLIFT_PICKUP, 10000);
-            crane_r_servo->setAngle(PR_GRAB_POS - 5);
+            crane_r_servo->setAngle(PR_DOWN_POS, SERVO_SPEED);
+            crane_r_motor->setPosition(PLIFT_PICKUP, PLIFT_SPEED);
+            crane_r_servo->setAngle(PR_GRAB_POS - 5, SERVO_SPEED);
             sleep_ms(200);
-            crane_r_motor->setPosition(PLIFT_UNLOAD, 10000);
-            crane_r_servo->setAngle(PR_UP_POS, 3);
+            crane_r_motor->setPosition(PLIFT_UNLOAD, PLIFT_SPEED);
+            crane_r_servo->setAngle(PR_UP_POS, SERVO_SPEED);
             sleep_ms(800);
-            crane_r_servo->setAngle(PR_GRAB_POS + 10);
-            crane_r_motor->setPosition(PLIFT_SET, 10000);
-            crane_r_servo->setAngle(PR_DOWN_POS);
-            crane_r_motor->setPosition(0, 10000);
+            crane_r_servo->setAngle(PR_GRAB_POS + 10, SERVO_SPEED);
+            crane_r_motor->setPosition(PLIFT_SET, PLIFT_SPEED);
+            crane_r_servo->setAngle(PR_DOWN_POS, SERVO_SPEED);
+            crane_r_motor->setPosition(0, PLIFT_SPEED);
             homePickup(PICKUP_RIGHT);
             break;
 
         case PICKUP_RIGHT_SHIELD:
-            crane_r_servo->setAngle(PR_DOWN_POS);
-            crane_r_motor->setPosition(PLIFT_PICKUP, 10000);
-            crane_r_servo->setAngle(PR_GRAB_POS);
+            crane_r_servo->setAngle(PR_DOWN_POS, SERVO_SPEED);
+            crane_r_motor->setPosition(PLIFT_PICKUP, PLIFT_SPEED);
+            crane_r_servo->setAngle(PR_GRAB_POS, SERVO_SPEED);
             sleep_ms(200);
-            moveMotors(PLIFT_UNLOAD, PLIFT_UNLOAD, 10000);
-            moveServos(PR_UP_POS, PL_UP_POS, 3, 5);
+            moveMotors(PLIFT_UNLOAD, PLIFT_UNLOAD, PLIFT_SPEED);
+            moveServos(PR_UP_POS, PL_UP_POS, SERVO_SPEED, SERVO_SPEED);
             sleep_ms(800);
-            moveServos(PR_GRAB_POS + 10, PL_HOME_POS, 5, 5);
-            moveMotors(PLIFT_SET, 0, 10000);
-            crane_r_servo->setAngle(PR_DOWN_POS);
-            crane_r_motor->setPosition(0, 10000);
+            moveServos(PR_GRAB_POS + 10, PL_HOME_POS, SERVO_SPEED, SERVO_SPEED);
+            moveMotors(PLIFT_SET, 0, PLIFT_SPEED);
+            crane_r_servo->setAngle(PR_DOWN_POS, SERVO_SPEED);
+            crane_r_motor->setPosition(0, PLIFT_SPEED);
             homePickup(PICKUP_RIGHT);
             break;
 
         case PICKUP_RIGHT_OUT_CURVE:
-            crane_r_servo->setAngle(PR_DOWN_POS);
-            crane_r_motor->setPosition(PLIFT_PICKUP, 10000);
-            crane_r_servo->setAngle(PR_GRAB_POS - 10);
+            crane_r_servo->setAngle(PR_DOWN_POS, SERVO_SPEED);
+            crane_r_motor->setPosition(PLIFT_PICKUP, PLIFT_SPEED);
+            crane_r_servo->setAngle(PR_GRAB_POS - 10, SERVO_SPEED);
             sleep_ms(200);
-            crane_r_motor->setPosition(PLIFT_UNLOAD, 10000);
-            crane_r_servo->setAngle(PR_UP_POS, 3);
+            crane_r_motor->setPosition(PLIFT_UNLOAD, PLIFT_SPEED);
+            crane_r_servo->setAngle(PR_UP_POS, SERVO_SPEED);
             sleep_ms(800);
-            crane_r_servo->setAngle(PR_GRAB_POS + 10 - CURVE_SET_OFFSET);
-            crane_r_motor->setPosition(PLIFT_SET + 500, 10000);
-            crane_r_servo->setAngle(PR_DOWN_POS);
-            crane_r_motor->setPosition(0, 10000);
+            crane_r_servo->setAngle(PR_GRAB_POS + 10 - CURVE_SET_OFFSET, SERVO_SPEED);
+            crane_r_motor->setPosition(PLIFT_SET + 500, PLIFT_SPEED);
+            crane_r_servo->setAngle(PR_DOWN_POS, SERVO_SPEED);
+            crane_r_motor->setPosition(0, PLIFT_SPEED);
             homePickup(PICKUP_RIGHT);
             break;
 
         case PICKUP_RIGHT_IN_CURVE:
-            crane_r_servo->setAngle(PR_DOWN_POS);
-            crane_r_motor->setPosition(PLIFT_PICKUP, 10000);
-            crane_r_servo->setAngle(PR_GRAB_POS - 5);
+            crane_r_servo->setAngle(PR_DOWN_POS, SERVO_SPEED);
+            crane_r_motor->setPosition(PLIFT_PICKUP, PLIFT_SPEED);
+            crane_r_servo->setAngle(PR_GRAB_POS - 5, SERVO_SPEED);
             sleep_ms(200);
-            crane_r_motor->setPosition(PLIFT_UNLOAD, 10000);
-            crane_r_servo->setAngle(PR_UP_POS, 3);
+            crane_r_motor->setPosition(PLIFT_UNLOAD, PLIFT_SPEED);
+            crane_r_servo->setAngle(PR_UP_POS, SERVO_SPEED);
             sleep_ms(800);
-            crane_r_servo->setAngle(PR_GRAB_POS + 13);
-            crane_r_motor->setPosition(PLIFT_SET + 500, 10000);
-            crane_r_servo->setAngle(PR_DOWN_POS);
-            crane_r_motor->setPosition(0, 10000);
+            crane_r_servo->setAngle(PR_GRAB_POS + 13, SERVO_SPEED);
+            crane_r_motor->setPosition(PLIFT_SET + 500, PLIFT_SPEED);
+            crane_r_servo->setAngle(PR_DOWN_POS, SERVO_SPEED);
+            crane_r_motor->setPosition(0, PLIFT_SPEED);
             homePickup(PICKUP_RIGHT);
             break;
 
         case PICKUP_LEFT:
-            crane_l_servo->setAngle(PL_DOWN_POS);
-            crane_l_motor->setPosition(PLIFT_PICKUP, 10000);
-            crane_l_servo->setAngle(PL_GRAB_POS + 5);
+            crane_l_servo->setAngle(PL_DOWN_POS, SERVO_SPEED);
+            crane_l_motor->setPosition(PLIFT_PICKUP, PLIFT_SPEED);
+            crane_l_servo->setAngle(PL_GRAB_POS + 5, SERVO_SPEED);
             sleep_ms(200);
-            crane_l_motor->setPosition(PLIFT_UNLOAD, 10000);
-            crane_l_servo->setAngle(PL_UP_POS, 3);
+            crane_l_motor->setPosition(PLIFT_UNLOAD, PLIFT_SPEED);
+            crane_l_servo->setAngle(PL_UP_POS, SERVO_SPEED);
             sleep_ms(800);
-            crane_l_servo->setAngle(PL_GRAB_POS - 7);
-            crane_l_motor->setPosition(PLIFT_SET, 10000);
-            crane_l_servo->setAngle(PL_DOWN_POS);
-            crane_l_motor->setPosition(0, 10000);
+            crane_l_servo->setAngle(PL_GRAB_POS - 7, SERVO_SPEED);
+            crane_l_motor->setPosition(PLIFT_SET, PLIFT_SPEED);
+            crane_l_servo->setAngle(PL_DOWN_POS, SERVO_SPEED);
+            crane_l_motor->setPosition(0, PLIFT_SPEED);
             homePickup(PICKUP_LEFT);
             break;
 
         case PICKUP_LEFT_SHIELD:
-            crane_l_servo->setAngle(PL_DOWN_POS);
-            crane_l_motor->setPosition(PLIFT_PICKUP, 10000);
-            crane_l_servo->setAngle(PL_GRAB_POS);
+            crane_l_servo->setAngle(PL_DOWN_POS, SERVO_SPEED);
+            crane_l_motor->setPosition(PLIFT_PICKUP, PLIFT_SPEED);
+            crane_l_servo->setAngle(PL_GRAB_POS, SERVO_SPEED);
             sleep_ms(200);
-            moveMotors(PLIFT_UNLOAD, PLIFT_UNLOAD, 10000);
-            moveServos(PR_UP_POS, PL_UP_POS, 5, 3);
+            moveMotors(PLIFT_UNLOAD, PLIFT_UNLOAD, PLIFT_SPEED);
+            moveServos(PR_UP_POS, PL_UP_POS, SERVO_SPEED, SERVO_SPEED);
             sleep_ms(800);
-            moveServos(PR_HOME_POS, PL_GRAB_POS - 10, 5, 5);
-            moveMotors(0, PLIFT_SET, 10000);
-            crane_l_servo->setAngle(PL_DOWN_POS);
-            crane_l_motor->setPosition(0, 10000);
+            moveServos(PR_HOME_POS, PL_GRAB_POS - 10, SERVO_SPEED, SERVO_SPEED);
+            moveMotors(0, PLIFT_SET, PLIFT_SPEED);
+            crane_l_servo->setAngle(PL_DOWN_POS, SERVO_SPEED);
+            crane_l_motor->setPosition(0, PLIFT_SPEED);
             homePickup(PICKUP_LEFT);
             break;
 
         case PICKUP_LEFT_OUT_CURVE:
-            crane_l_servo->setAngle(PL_DOWN_POS);
-            crane_l_motor->setPosition(PLIFT_PICKUP, 10000);
-            crane_l_servo->setAngle(PL_GRAB_POS + 10);
+            crane_l_servo->setAngle(PL_DOWN_POS, SERVO_SPEED);
+            crane_l_motor->setPosition(PLIFT_PICKUP, PLIFT_SPEED);
+            crane_l_servo->setAngle(PL_GRAB_POS + 10, SERVO_SPEED);
             sleep_ms(200);
-            crane_l_motor->setPosition(PLIFT_UNLOAD, 10000);
-            crane_l_servo->setAngle(PL_UP_POS, 3);
+            crane_l_motor->setPosition(PLIFT_UNLOAD, PLIFT_SPEED);
+            crane_l_servo->setAngle(PL_UP_POS, SERVO_SPEED);
             sleep_ms(800);
-            crane_l_servo->setAngle(PL_GRAB_POS - 10 + CURVE_SET_OFFSET);
-            crane_l_motor->setPosition(PLIFT_SET + 500, 10000);
-            crane_l_servo->setAngle(PL_DOWN_POS);
-            crane_l_motor->setPosition(0, 10000);
+            crane_l_servo->setAngle(PL_GRAB_POS - 10 + CURVE_SET_OFFSET, SERVO_SPEED);
+            crane_l_motor->setPosition(PLIFT_SET + 500, PLIFT_SPEED);
+            crane_l_servo->setAngle(PL_DOWN_POS, SERVO_SPEED);
+            crane_l_motor->setPosition(0, PLIFT_SPEED);
             homePickup(PICKUP_LEFT);
             break;
 
         case PICKUP_LEFT_IN_CURVE:
-            crane_l_servo->setAngle(PL_DOWN_POS);
-            crane_l_motor->setPosition(PLIFT_PICKUP, 10000);
-            crane_l_servo->setAngle(PL_GRAB_POS + 5);
+            crane_l_servo->setAngle(PL_DOWN_POS, SERVO_SPEED);
+            crane_l_motor->setPosition(PLIFT_PICKUP, PLIFT_SPEED);
+            crane_l_servo->setAngle(PL_GRAB_POS + 5, SERVO_SPEED);
             sleep_ms(200);
-            crane_l_motor->setPosition(PLIFT_UNLOAD, 10000);
-            crane_l_servo->setAngle(PL_UP_POS, 3);
+            crane_l_motor->setPosition(PLIFT_UNLOAD, PLIFT_SPEED);
+            crane_l_servo->setAngle(PL_UP_POS, SERVO_SPEED);
             sleep_ms(800);
-            crane_l_servo->setAngle(PL_GRAB_POS - 9);
-            crane_l_motor->setPosition(PLIFT_SET + 500, 10000);
-            crane_l_servo->setAngle(PL_DOWN_POS);
-            crane_l_motor->setPosition(0, 10000);
+            crane_l_servo->setAngle(PL_GRAB_POS - 9, SERVO_SPEED);
+            crane_l_motor->setPosition(PLIFT_SET + 500, PLIFT_SPEED);
+            crane_l_servo->setAngle(PL_DOWN_POS, SERVO_SPEED);
+            crane_l_motor->setPosition(0, PLIFT_SPEED);
             homePickup(PICKUP_LEFT);
             break;
     }
@@ -300,44 +300,44 @@ void MotorManager::driveToUnload() const
 {
     //GATE
     creepDistance(5.5, FORWARD);
-    drive_motor2->setDirection(STOP);
+    drive_motor_left->setDirection(STOP);
 
-    drive_motor1->setSpeed(8000);
-    drive_motor1->setDirection(FORWARD);
+    drive_motor_right->setSpeed(8000);
+    drive_motor_right->setDirection(FORWARD);
     sleep_ms(800);
-    drive_motor1->setDirection(STOP);
+    drive_motor_right->setDirection(STOP);
 
     //CONT1
     creepDistance(8, BACKWARD);
 
-    drive_motor2->setDirection(STOP);
-    drive_motor1->setSpeed(8000);
-    drive_motor1->setDirection(FORWARD);
+    drive_motor_left->setDirection(STOP);
+    drive_motor_right->setSpeed(8000);
+    drive_motor_right->setDirection(FORWARD);
     sleep_ms(1000);
-    drive_motor1->setDirection(STOP);
+    drive_motor_right->setDirection(STOP);
 
     //FRONT
     creepDistance(8, BACKWARD);
 
-    drive_motor1->setDirection(STOP);
-    drive_motor2->setSpeed(8000);
-    drive_motor2->setDirection(BACKWARD);
+    drive_motor_right->setDirection(STOP);
+    drive_motor_left->setSpeed(8000);
+    drive_motor_left->setDirection(BACKWARD);
     sleep_ms(1000);
-    drive_motor2->setDirection(STOP);
+    drive_motor_left->setDirection(STOP);
 
     //SLIGHT BACK
     creepDistance(UNLOAD_DISTANCE, FORWARD);
 
     //STRAIGHT
-    drive_motor2->setDirection(STOP);
-    drive_motor1->setSpeed(8000);
-    drive_motor1->setDirection(FORWARD);
+    drive_motor_left->setDirection(STOP);
+    drive_motor_right->setSpeed(8000);
+    drive_motor_right->setDirection(FORWARD);
     sleep_ms(100);
-    drive_motor1->setDirection(STOP);
+    drive_motor_right->setDirection(STOP);
 
     //CONT
     creepDistance(3, FORWARD);
-    drive_motor1->setDirection(STOP);
+    drive_motor_right->setDirection(STOP);
 
     unload_servo->setAngle(UNLOAD_OPEN_ANGLE);
 }
@@ -348,17 +348,17 @@ void MotorManager::driveFromUnload() const
     unload_servo->setAngle(UNLOAD_CLOSE_ANGLE);
 
     creepDistance(UNLOAD_DISTANCE + 1, BACKWARD);
-    drive_motor1->setDirection(STOP);
+    drive_motor_right->setDirection(STOP);
 
     turn(20, RIGHT);
 
-    drive_motor2->setSpeed(8000);
-    drive_motor2->setDirection(FORWARD);
+    drive_motor_left->setSpeed(8000);
+    drive_motor_left->setDirection(FORWARD);
     sleep_ms(2400);
-    drive_motor2->setDirection(STOP);
+    drive_motor_left->setDirection(STOP);
 
     creepDistance(12.5, BACKWARD);
-    drive_motor1->setDirection(STOP);
+    drive_motor_right->setDirection(STOP);
 
     turn(10, LEFT);
 }

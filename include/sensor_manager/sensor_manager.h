@@ -32,7 +32,7 @@
 
 #define WHITE 980
 #define BLACK 50
-#define ON_LINE 150
+#define ON_LINE 250
 
 class SensorManager
 {

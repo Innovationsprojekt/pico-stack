@@ -151,22 +151,54 @@ void SensorManager::calibrate()
 {
 #ifdef PRE_CALIBRATION
     /*
-    calibration = {{85, 1844},
-                   {105, 1753},
-                   {60, 1709},
-                   {120, 1801},
+    calibration = {{133, 1849},
+                   {129, 1351},
+                   {79, 1824},
+                   {167, 873},
 
-                   {58, 1771},
-                   {90, 1858},
-                   {79, 1734},
-                   {12, 384},
+                   {70, 1847},
+                   {89, 1847},
+                   {15, 1734},
+                   {12, 425},
 
-                   {82, 1838},
-                   {80, 1843},
-                   {80, 1878},
-                   {63, 1816}};
+                   {83, 1853},
+                   {89, 1851},
+                   {93, 1854},
+                   {87, 1849}};
                    */
 
+
+    /*
+ * FLOw: 1848, FLOb: 140, FLIw: 1151, FLIb: 146, FRIw: 1822, FRIb: 81, FROw: 878, FROb: 183
+CLOw: 1748, CLOb: 95, CLIw: 1858, CLIb: 111, CRIw: 1846, CRIb: 88, CROw: 496, CROb: 16
+BLOw: 1848, BLOb: 99, BLIw: 1837, BLIb: 97, BRIw: 1774, BRIb: 88, BROw: 1809, BROb: 86
+ */
+
+    /*
+     * FLOw: 1849, FLOb: 133, FLIw: 1206, FLIb: 129, FRIw: 1824, FRIb: 79, FROw: 873, FROb: 167
+CLOw: 1553, CLOb: 70, CLIw: 1847, CLIb: 89, CRIw: 1737, CRIb: 92, CROw: 425, CROb: 15
+BLOw: 1853, BLOb: 83, BLIw: 1851, BLIb: 89, BRIw: 1854, BRIb: 93, BROw: 1849, BROb: 87
+     */
+
+    /*
+     * FLOw: 1847, FLOb: 140, FLIw: 938, FLIb: 134, FRIw: 1822, FRIb: 76, FROw: 867, FROb: 164
+CLOw: 1847, CLOb: 94, CLIw: 1863, CLIb: 125, CRIw: 1819, CRIb: 79, CROw: 536, CROb: 15
+BLOw: 1860, BLOb: 123, BLIw: 1856, BLIb: 101, BRIw: 1833, BRIb: 85, BROw: 1826, BROb: 81
+     */
+
+    /*
+     * FLOw: 1822, FLOb: 134, FLIw: 914, FLIb: 138, FRIw: 1827, FRIb: 77, FROw: 859, FROb: 163
+CLOw: 1594, CLOb: 68, CLIw: 1837, CLIb: 87, CRIw: 1838, CRIb: 78, CROw: 429, CROb: 15
+BLOw: 1046, BLOb: 83, BLIw: 1833, BLIb: 89, BRIw: 1258, BRIb: 78, BROw: 1816, BROb: 78
+     */
+
+    /*
+     * FLOw: 1842, FLOb: 120, FLIw: 1028, FLIb: 124, FRIw: 1789, FRIb: 74, FROw: 874, FROb: 159
+CLOw: 1622, CLOb: 69, CLIw: 1842, CLIb: 91, CRIw: 1718, CRIb: 78, CROw: 419, CROb: 15
+BLOw: 1853, BLOb: 81, BLIw: 1854, BLIb: 83, BRIw: 1854, BRIb: 82, BROw: 1850, BROb: 84
+     */
+
+    /*
     calibration = {{94, 1829},
                    {105, 1854},
                    {80, 1519},
@@ -181,6 +213,7 @@ void SensorManager::calibrate()
                    {80, 1735},
                    {80, 1809},
                    {63, 1773}};
+                   */
 
     /*
      * FLOw: 1834, FLOb: 88, FLIw: 1856, FLIb: 101, FRIw: 1519, FRIb: 70, FROw: 1863, FROb: 123
@@ -194,23 +227,41 @@ CLOw: 1456, CLOb: 64, CLIw: 1825, CLIb: 87, CRIw: 1563, CRIb: 83, CROw: 326, CRO
 BLOw: 1783, BLOb: 76, BLIw: 1804, BLIb: 78, BRIw: 1838, BRIb: 84, BROw: 1797, BROb: 78
      */
 
+    /*
+     * FLOw: 1824, FLOb: 94, FLIw: 1853, FLIb: 111, FRIw: 1558, FRIb: 69, FROw: 1858, FROb: 136
+CLOw: 1337, CLOb: 76, CLIw: 1670, CLIb: 107, CRIw: 1576, CRIb: 89, CROw: 287, CROb: 11
+BLOw: 1653, BLOb: 92, BLIw: 1739, BLIb: 88, BRIw: 1682, BRIb: 89, BROw: 1620, BROb: 87
+     */
+
+
+
+    calibration = {{141, 1852},
+                   {141, 1854},
+                   {85, 1644},
+                   {176, 1049},
+
+                   {77, 1606},
+                   {103, 1848},
+                   {112, 1733},
+                   {16, 400},
+
+                   {104, 1564},
+                   {99, 1574},
+                   {110, 1845},
+                   {105, 1838}};
+
 
     /*
-    calibration = {{93, 1852},
-                   {105, 1675},
-                   {62, 1730},
-                   {108, 1049},
+     * FLOw: 1849, FLOb: 138, FLIw: 1853, FLIb: 141, FRIw: 1655, FRIb: 87, FROw: 991, FROb: 175
+CLOw: 1522, CLOb: 76, CLIw: 1814, CLIb: 98, CRIw: 1659, CRIb: 108, CROw: 377, CROb: 16
+BLOw: 1557, BLOb: 98, BLIw: 1573, BLIb: 95, BRIw: 1838, BRIb: 107, BROw: 1829, BROb: 104
+     */
 
-                   {58, 1772},
-                   {97, 1848},
-                   {74, 1829},
-                   {8, 356},
-
-                   {72, 1845},
-                   {76, 1838},
-                   {80, 1845},
-                   {70, 1838}};
-    */
+    /*
+     * FLOw: 1851, FLOb: 141, FLIw: 1854, FLIb: 141, FRIw: 1644, FRIb: 85, FROw: 1034, FROb: 176
+CLOw: 1606, CLOb: 77, CLIw: 1843, CLIb: 103, CRIw: 1733, CRIb: 112, CROw: 400, CROb: 16
+BLOw: 1564, BLOb: 104, BLIw: 1574, BLIb: 99, BRIw: 1845, BRIb: 110, BROw: 1838, BROb: 105
+     */
 #endif
 
 #ifndef PRE_CALIBRATION

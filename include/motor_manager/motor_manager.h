@@ -13,12 +13,22 @@
 #include "enum_definitions.h"
 
 // ----------- CREEP -----------
+/*
 #define US_PER_CM 146667
 #define CREEP_SPEED 6000
+*/
+
+#define US_PER_CM 108500
+#define CREEP_SPEED 8000
 
 // ----------- TURN -----------
+
+#define TURN_SPEED 8000
+#define US_PER_DEG_PER_SPEED 1.9
+/*
 #define TURN_SPEED 6000
 #define US_PER_DEG_PER_SPEED 3.6
+*/
 
 // ----------- PICKUP RIGHT -----------
 #define PR_HOME_POS 167
@@ -33,9 +43,10 @@
 #define PL_UP_POS (178 + 12)
 
 // ----------- PICKUP -----------
-#define PLIFT_PICKUP 5500
-#define PLIFT_UNLOAD -8700
-#define PLIFT_SET 5200
+#define PLIFT_PICKUP 4000
+#define PLIFT_UNLOAD -6500
+#define PLIFT_SET 3700
+#define PLIFT_SPEED 10000
 
 // ----------- UNLOAD -----------
 #define UNLOAD_CLOSE_ANGLE 15
@@ -71,8 +82,8 @@ public:
     void driveFromUnload() const;
     void spinUnload() const;
 
-    std::unique_ptr<Motor> drive_motor1;
-    std::unique_ptr<Motor> drive_motor2;
+    std::unique_ptr<Motor> drive_motor_right;
+    std::unique_ptr<Motor> drive_motor_left;
 
     std::unique_ptr<Motor> mixer_motor;
 

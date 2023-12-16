@@ -9,7 +9,7 @@
 #include <vector>
 
 // ----------- GAME PLAN -----------
-//#define GAME_PLAN_TEST
+#define GAME_PLAN_TEST
 
 #ifndef GAME_PLAN_TEST
     //#define GAME_PLAN_UNLOAD
@@ -26,7 +26,7 @@
 #define PRE_CALIBRATION
 
 // ----------- PARAMETERS -----------
-#define SERVO_SPEED 4
+#define SERVO_SPEED 2
 #define UNLOAD_DISTANCE 5
 #define ERROR_STACK_INTEGRAL_SIZE 5
 
@@ -71,6 +71,14 @@ enum TurnDirection
     RIGHT,
 };
 
+enum ResumeDriveType
+{
+    RESUME_IN_CURVE_LEFT,
+    RESUME_OUT_CURVE_LEFT,
+    RESUME_IN_CURVE_RIGHT,
+    RESUME_OUT_CURVE_RIGHT,
+};
+
 enum MotorDirection
 {
     FORWARD,
@@ -106,7 +114,9 @@ enum GameMessage
     REQUEST_ALIGN_CURVE_LEFT,
     REQUEST_ALIGN_CURVE_RIGHT,
     REQUEST_RESUME_CURVE_LEFT,
+    REQUEST_RESUME_LEFT,
     REQUEST_RESUME_CURVE_RIGHT,
+    REQUEST_RESUME_RIGHT,
     REQUEST_PICKUP_LEFT,
     REQUEST_PICKUP_LEFT_SHIELD,
     REQUEST_PICKUP_LEFT_OUT_CURVE,
@@ -136,7 +146,9 @@ enum GameItems
     ALIGN_CURVE_LEFT,
     ALIGN_CURVE_RIGHT,
     RESUME_CURVE_LEFT,
+    RESUME_LEFT,
     RESUME_CURVE_RIGHT,
+    RESUME_RIGHT,
     TRASH_LEFT,
     TRASH_LEFT_SHIELD,
     TRASH_LEFT_OUT_CURVE,

@@ -22,7 +22,7 @@ public:
     virtual void detectLine(LineSide side) = 0;
     virtual void align(LineType type) = 0;
     virtual void pickTrash(PickUpSide side) const = 0;
-    virtual void resumeDrive(TurnDirection dir) = 0;
+    virtual void resumeDrive(ResumeDriveType dir) = 0;
     virtual void unload() = 0;
     virtual void unloadStay() = 0;
     virtual void goal() = 0;

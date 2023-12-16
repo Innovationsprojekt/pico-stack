@@ -12,7 +12,7 @@
 
 // ----------- PARAMETERS -----------
 #define LINE_WAIT_TIME 1500
-#define GOAL_TIMESTAMP 290000
+#define GOAL_TIMESTAMP 285000
 
 #define CALIBRATION_TIME 2000
 #define LINE_TIME 1000
@@ -37,7 +37,7 @@ const std::vector<GameItems> game_plan
            WIGGLE,
 
            DRIVE_CURVE,
-           LINE_LEFT,
+           LINE_RIGHT,
            ALIGN_CURVE_LEFT,
            TRASH_RIGHT_OUT_CURVE,
            RESUME_CURVE_LEFT,
@@ -81,10 +81,10 @@ const std::vector<GameItems> game_plan
 
            //CURVE 1
            DRIVE_CURVE,
-           LINE_RIGHT,
+           LINE_LEFT,
            ALIGN_CURVE_RIGHT,
            TRASH_RIGHT_IN_CURVE,
-           RESUME_CURVE_RIGHT,
+           RESUME_RIGHT,
 
            //STRAIGHT 2
            DRIVE_STRAIGHT,
@@ -96,6 +96,8 @@ const std::vector<GameItems> game_plan
 
            DRIVE_STRAIGHT,
            LINE_RIGHT,
+           ALIGN_STRAIGHT,
+           TRASH_RIGHT,
 
            DRIVE_STRAIGHT,
            LINE_LEFT,
@@ -108,15 +110,15 @@ const std::vector<GameItems> game_plan
 
            //CURVE 2
            DRIVE_CURVE,
-           LINE_LEFT,
+           LINE_RIGHT,
            ALIGN_CURVE_LEFT,
            TRASH_RIGHT_OUT_CURVE,
 
            DRIVE_CURVE,
-           LINE_LEFT,
+           LINE_RIGHT,
            ALIGN_CURVE_LEFT,
            TRASH_LEFT_IN_CURVE,
-           RESUME_CURVE_LEFT,
+           RESUME_LEFT,
 
            WIGGLE_WAIT,
            DRIVE_STRAIGHT,
@@ -127,7 +129,6 @@ const std::vector<GameItems> game_plan
            DRIVE_CURVE,
            LINE_RIGHT,
 
-
            //CURVE 3
            DRIVE_CURVE,
            LINE_LEFT,
@@ -135,7 +136,7 @@ const std::vector<GameItems> game_plan
            TRASH_LEFT_OUT_CURVE,
 
            DRIVE_CURVE,
-           LINE_RIGHT,
+           LINE_LEFT,
            ALIGN_CURVE_RIGHT,
            TRASH_RIGHT_IN_CURVE,
            RESUME_CURVE_RIGHT,
@@ -143,19 +144,18 @@ const std::vector<GameItems> game_plan
            ALIGN_CURVE_RIGHT,
            TRASH_LEFT_OUT_CURVE,
 
-           WIGGLE_WAIT,
-
            //STRAIGHT 3
            DRIVE_STRAIGHT,
            LINE_RIGHT,
            ALIGN_STRAIGHT,
            TRASH_LEFT,
 
-
-           //WIGGLE,
+           WIGGLE,
 
            DRIVE_STRAIGHT,
            LINE_RIGHT,
+           ALIGN_STRAIGHT,
+           TRASH_RIGHT,
 
            DRIVE_STRAIGHT,
            LINE_RIGHT,
@@ -168,12 +168,12 @@ const std::vector<GameItems> game_plan
 
            //CURVE 4
            DRIVE_CURVE,
-           LINE_LEFT,
+           LINE_RIGHT,
            ALIGN_CURVE_LEFT,
            TRASH_RIGHT_OUT_CURVE,
 
            DRIVE_CURVE,
-           LINE_LEFT,
+           LINE_RIGHT,
            ALIGN_CURVE_LEFT,
            TRASH_LEFT_IN_CURVE,
            RESUME_CURVE_LEFT,

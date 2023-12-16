@@ -19,18 +19,13 @@ Controller::Controller()
     _motor_manager->setMixerDirection(STOP);
 
     _motor_manager->unload_servo->setAngle(0);
-    /*
-    _sensor_manager->calibrate();
+
+
+    _motor_manager->pickup(PICKUP_RIGHT);
+    _motor_manager->pickup(PICKUP_LEFT);
 
     while (true)
-    {
-        printf("Old Pos Error: %li, Full Pos Error: %li\n\r", _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK) -
-                                                              _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT),
-               _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_BACK) -
-               _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_FRONT));
         sleep_ms(100);
-    }
-     */
 }
 
 void Controller::spin(double dt)
@@ -78,9 +73,12 @@ void Controller::_driveClosedLoop(double dt)
     int32_t position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT);
 
 #ifdef ENABLE_SLOW_MODE
-    if (abs(position_error) > pid_drive_slow.offset)
+    if (abs(position_error) > pid_drive_slow.offset && _getTimestamp() > _last_slow_timestamp + SLOW_MODE_DELAY)
+    {
         _last_config = pid_drive_slow;
-    else
+        _last_slow_timestamp = _getTimestamp();
+    }
+    else if (_getTimestamp() > _last_slow_timestamp + SLOW_MODE_DELAY)
         _last_config = _drive_config;
 #else
     _last_config = _drive_config;
@@ -98,8 +96,8 @@ void Controller::_driveClosedLoop(double dt)
     int32_t motor1_out = _last_config.speed + (int32_t)output / 4;
     int32_t motor2_out = _last_config.speed - (int32_t)output / 4;
 
-    _motor_manager->drive_motor1->setSpeed(motor1_out);
-    _motor_manager->drive_motor2->setSpeed(motor2_out);
+    _motor_manager->drive_motor_right->setSpeed(motor1_out);
+    _motor_manager->drive_motor_left->setSpeed(motor2_out);
 }
 
 /*
@@ -137,11 +135,11 @@ void Controller::_alignTangentialPID()
     _integral_tan = 0;
     _last_error_tan = 0;
 
-    int32_t position_error = _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_FRONT);
+    int32_t position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT) - ALIGN_OFFSET;
 
     while(abs(position_error) > _align_config.offset)
     {
-        position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT);
+        position_error = _sensor_manager->getHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getHorizontalPosition(SENSOR_ROW_FRONT) - ALIGN_OFFSET;
         __spinAlignTangential(1000.0 / ALIGN_TAN_FREQ, position_error);
         sleep_ms(1000 / ALIGN_TAN_FREQ);
     }
@@ -154,6 +152,7 @@ void Controller::_alignFullTangentialPID()
 
     _integral_tan = 0;
     _last_error_tan = 0;
+
     _error_stack.clear();
 
     int32_t position_error;
@@ -166,6 +165,16 @@ void Controller::_alignFullTangentialPID()
         sleep_ms(1000 / ALIGN_TAN_FREQ);
     }
 
+    /*
+    int32_t position_error = _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_FRONT);
+
+    while(abs(position_error) > _align_config.offset)
+    {
+        position_error = _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_BACK) - _sensor_manager->getFullHorizontalPosition(SENSOR_ROW_FRONT);
+        __spinAlignTangential(1000.0 / ALIGN_TAN_FREQ, position_error);
+        sleep_ms(1000 / ALIGN_TAN_FREQ);
+    }
+    */
     _motor_manager->setDirection(STOP);
 }
 
@@ -188,13 +197,13 @@ void Controller::__spinAlignTangential(double dt, int32_t position_error)
     if (motor_out > 0)
     {
         _motor_manager->setSpeed(motor_out);
-        _motor_manager->drive_motor1->setDirection(FORWARD);
-        _motor_manager->drive_motor2->setDirection(BACKWARD);
+        _motor_manager->drive_motor_right->setDirection(FORWARD);
+        _motor_manager->drive_motor_left->setDirection(BACKWARD);
     } else
     {
         _motor_manager->setSpeed(- motor_out);
-        _motor_manager->drive_motor1->setDirection(BACKWARD);
-        _motor_manager->drive_motor2->setDirection(FORWARD);
+        _motor_manager->drive_motor_right->setDirection(BACKWARD);
+        _motor_manager->drive_motor_left->setDirection(FORWARD);
     }
 
     printf("pos_err: %li, Pout: %.2f, Dout %.2f, out %.2f\n\r", position_error, Pout, Dout, output);
@@ -202,23 +211,32 @@ void Controller::__spinAlignTangential(double dt, int32_t position_error)
 
 void Controller::_alignHorizontal()
 {
-    int32_t s_c1 = _sensor_manager->readSensor(_line_sensor);
-    printf("Sensor C1: %li\n\r", s_c1);
+    for (int i = 0; i < 3; i++)
+    {
+        int32_t sensor_left = _sensor_manager->readSensor(SENSOR_CLO);
 
-    _motor_manager->drive_motor1->setSpeed(ALIGN_HOR_BASE_SPEED);
-    _motor_manager->drive_motor2->setSpeed(ALIGN_HOR_BASE_SPEED);
+        _motor_manager->setSpeed(ALIGN_HOR_BASE_SPEED);
+        if (sensor_left < ON_LINE)
+            _motor_manager->setDirection(FORWARD);
+        else
+            _motor_manager->setDirection(BACKWARD);
 
-    if (s_c1 < ON_LINE)
-        _motor_manager->setDirection(FORWARD);
-    else
-        _motor_manager->setDirection(BACKWARD);
+        while (abs(_sensor_manager->readSensor(SENSOR_CLO) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
+            sleep_ms(2);
+        _motor_manager->setDirection(STOP);
 
-    while (abs(_sensor_manager->readSensor(_line_sensor) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
-        sleep_ms(2);
+        int32_t sensor_right = _sensor_manager->readSensor(SENSOR_CRO);
 
-    _motor_manager->setDirection(STOP);
-    s_c1 = _sensor_manager->readSensor(_line_sensor);
-    printf("Sensor C1: %li\n\r", s_c1);
+        _motor_manager->drive_motor_right->setSpeed(ALIGN_HOR_BASE_SPEED);
+        if (sensor_right < ON_LINE)
+            _motor_manager->drive_motor_right->setDirection(FORWARD);
+        else
+            _motor_manager->drive_motor_right->setDirection(BACKWARD);
+
+        while (abs(_sensor_manager->readSensor(SENSOR_CRO) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
+            sleep_ms(2);
+        _motor_manager->setDirection(STOP);
+    }
 }
 
 void Controller::_detectLine()
@@ -246,7 +264,6 @@ void Controller::_pickup(PickUpSide side) const
 void Controller::_unload()
 {
     _alignHorizontal();
-    _alignTangentialPID();
 
     _motor_manager->driveToUnload();
 
@@ -256,4 +273,10 @@ void Controller::_unload()
     }
 
     _motor_manager->driveFromUnload();
+}
+
+uint32_t Controller::_getTimestamp()
+{
+    auto time = get_absolute_time();
+    return to_ms_since_boot(time);
 }

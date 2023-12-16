@@ -55,7 +55,7 @@ void Controller::align(LineType type)
         case STRAIGHT:
             _align_config = pid_align_st_tan;
 
-            _alignTangentialPID();
+            //_alignTangentialPID();
             _alignHorizontal();
             break;
         case CURVE_LEFT:
@@ -64,9 +64,9 @@ void Controller::align(LineType type)
             _align_config = pid_align_cuv_tan;
 
             _alignHorizontal();
-            _alignFullTangentialPID();
-            _alignHorizontal();
-            _alignFullTangentialPID();
+            //_alignFullTangentialPID();
+            //_alignHorizontal();
+            //_alignFullTangentialPID();
             break;
         case CURVE_RIGHT:
             _motor_manager->turn(10, RIGHT);
@@ -74,9 +74,9 @@ void Controller::align(LineType type)
             _align_config = pid_align_cuv_tan;
 
             _alignHorizontal();
-            _alignFullTangentialPID();
-            _alignHorizontal();
-            _alignFullTangentialPID();
+            //_alignFullTangentialPID();
+            //_alignHorizontal();
+            //_alignFullTangentialPID();
             break;
     }
 
@@ -105,6 +105,8 @@ void Controller::unload()
 
 void Controller::unloadStay()
 {
+    _alignHorizontal();
+
     _motor_manager->driveToUnload();
     _enable_unload = true;
 }
@@ -122,35 +124,55 @@ void Controller::goal()
     _executor->notify(NOTIFY_UNLOAD);
 }
 
-void Controller::resumeDrive(TurnDirection dir)
+void Controller::resumeDrive(ResumeDriveType dir)
 {
     switch (dir)
     {
-        case LEFT:
-            _motor_manager->turn(15, RIGHT);
+        case RESUME_IN_CURVE_LEFT:
+            _motor_manager->turn(13, RIGHT);
             _motor_manager->creepDistance(8, BACKWARD);
-            _motor_manager->drive_motor1->setSpeed(7000);
-            _motor_manager->drive_motor2->setSpeed(1300);
-            _motor_manager->drive_motor1->setDirection(BACKWARD);
-            _motor_manager->drive_motor2->setDirection(BACKWARD);
-            sleep_ms(1800);
+            _motor_manager->drive_motor_right->setSpeed(10000);
+            _motor_manager->drive_motor_left->setSpeed(2300);
+            _motor_manager->drive_motor_right->setDirection(BACKWARD);
+            _motor_manager->drive_motor_left->setDirection(BACKWARD);
+            sleep_ms(2100);
             _motor_manager->setDirection(STOP);
-            /*
-            _motor_manager->drive_motor1->setSpeed(3000);
-            _motor_manager->drive_motor1->setDirection(FORWARD);
-            sleep_ms(500);
-            _motor_manager->drive_motor1->setDirection(STOP);
-             */
-            break;
-        case RIGHT:
             _motor_manager->turn(15, LEFT);
+            _motor_manager->creepDistance(4, FORWARD);
+            break;
+        case RESUME_OUT_CURVE_LEFT:
+            _motor_manager->turn(13, RIGHT);
             _motor_manager->creepDistance(8, BACKWARD);
-            _motor_manager->drive_motor2->setSpeed(7000);
-            _motor_manager->drive_motor1->setSpeed(1300);
-            _motor_manager->drive_motor2->setDirection(BACKWARD);
-            _motor_manager->drive_motor1->setDirection(BACKWARD);
-            sleep_ms(1800);
+            _motor_manager->drive_motor_right->setSpeed(10000);
+            _motor_manager->drive_motor_left->setSpeed(2500);
+            _motor_manager->drive_motor_right->setDirection(BACKWARD);
+            _motor_manager->drive_motor_left->setDirection(BACKWARD);
+            sleep_ms(1400);
             _motor_manager->setDirection(STOP);
+            _motor_manager->turn(15, LEFT);
+            break;
+        case RESUME_IN_CURVE_RIGHT:
+            _motor_manager->turn(13, LEFT);
+            _motor_manager->creepDistance(8, BACKWARD);
+            _motor_manager->drive_motor_left->setSpeed(10000);
+            _motor_manager->drive_motor_right->setSpeed(2300);
+            _motor_manager->drive_motor_left->setDirection(BACKWARD);
+            _motor_manager->drive_motor_right->setDirection(BACKWARD);
+            sleep_ms(2100);
+            _motor_manager->setDirection(STOP);
+            _motor_manager->turn(15, RIGHT);
+            _motor_manager->creepDistance(4, FORWARD);
+            break;
+        case RESUME_OUT_CURVE_RIGHT:
+            _motor_manager->turn(13, LEFT);
+            _motor_manager->creepDistance(8, BACKWARD);
+            _motor_manager->drive_motor_left->setSpeed(10000);
+            _motor_manager->drive_motor_right->setSpeed(2500);
+            _motor_manager->drive_motor_left->setDirection(BACKWARD);
+            _motor_manager->drive_motor_right->setDirection(BACKWARD);
+            sleep_ms(1400);
+            _motor_manager->setDirection(STOP);
+            _motor_manager->turn(15, RIGHT);
             break;
     }
 
