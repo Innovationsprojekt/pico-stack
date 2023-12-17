@@ -185,17 +185,17 @@ void GameController::_sendMove()
         case TRASH_RIGHT_IN_CURVE:
             CommunicationManager::sendMessage(REQUEST_PICKUP_RIGHT_IN_CURVE);
             break;
-        case RESUME_CURVE_LEFT:
-            CommunicationManager::sendMessage(REQUEST_RESUME_CURVE_LEFT);
+        case RESUME_IN_LEFT:
+            CommunicationManager::sendMessage(REQUEST_RESUME_IN_LEFT);
             break;
-        case RESUME_LEFT:
-            CommunicationManager::sendMessage(REQUEST_RESUME_LEFT);
+        case RESUME_OUT_LEFT:
+            CommunicationManager::sendMessage(REQUEST_RESUME_OUT_LEFT);
             break;
-        case RESUME_CURVE_RIGHT:
-            CommunicationManager::sendMessage(REQUEST_RESUME_CURVE_RIGHT);
+        case RESUME_IN_RIGHT:
+            CommunicationManager::sendMessage(REQUEST_RESUME_IN_RIGHT);
             break;
-        case RESUME_RIGHT:
-            CommunicationManager::sendMessage(REQUEST_RESUME_RIGHT);
+        case RESUME_OUT_RIGHT:
+            CommunicationManager::sendMessage(REQUEST_RESUME_OUT_RIGHT);
             break;
         case UNLOAD:
             CommunicationManager::sendMessage(REQUEST_UNLOAD);

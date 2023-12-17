@@ -40,10 +40,12 @@ const std::vector<GameItems> game_plan
            LINE_RIGHT,
            ALIGN_CURVE_LEFT,
            TRASH_RIGHT_OUT_CURVE,
-           RESUME_CURVE_LEFT,
 
+           DRIVE_CURVE,
+           LINE_RIGHT,
            ALIGN_CURVE_LEFT,
            TRASH_LEFT_IN_CURVE,
+           RESUME_OUT_LEFT,
 
            WIGGLE_WAIT,
 
@@ -84,7 +86,7 @@ const std::vector<GameItems> game_plan
            LINE_LEFT,
            ALIGN_CURVE_RIGHT,
            TRASH_RIGHT_IN_CURVE,
-           RESUME_RIGHT,
+           RESUME_OUT_RIGHT,
 
            //STRAIGHT 2
            DRIVE_STRAIGHT,
@@ -118,11 +120,12 @@ const std::vector<GameItems> game_plan
            LINE_RIGHT,
            ALIGN_CURVE_LEFT,
            TRASH_LEFT_IN_CURVE,
-           RESUME_LEFT,
+           RESUME_OUT_LEFT,
 
            WIGGLE_WAIT,
+
            DRIVE_STRAIGHT,
-           LINE_LEFT,
+           LINE_RIGHT,
 
            //UNLOAD
            UNLOAD,
@@ -139,25 +142,25 @@ const std::vector<GameItems> game_plan
            LINE_LEFT,
            ALIGN_CURVE_RIGHT,
            TRASH_RIGHT_IN_CURVE,
-           RESUME_CURVE_RIGHT,
+           RESUME_IN_RIGHT,
 
            ALIGN_CURVE_RIGHT,
            TRASH_LEFT_OUT_CURVE,
 
            //STRAIGHT 3
-           DRIVE_STRAIGHT,
-           LINE_RIGHT,
+           DRIVE_CURVE,
+           LINE_LEFT,
            ALIGN_STRAIGHT,
            TRASH_LEFT,
 
            WIGGLE,
 
-           DRIVE_STRAIGHT,
+           DRIVE_CURVE,
            LINE_RIGHT,
            ALIGN_STRAIGHT,
            TRASH_RIGHT,
 
-           DRIVE_STRAIGHT,
+           DRIVE_CURVE,
            LINE_RIGHT,
 #ifndef SAFE_MODE
            ALIGN_STRAIGHT,
@@ -176,15 +179,15 @@ const std::vector<GameItems> game_plan
            LINE_RIGHT,
            ALIGN_CURVE_LEFT,
            TRASH_LEFT_IN_CURVE,
-           RESUME_CURVE_LEFT,
+           RESUME_IN_LEFT,
 
            ALIGN_CURVE_LEFT,
            TRASH_RIGHT_OUT_CURVE,
 
            WIGGLE_WAIT,
 
-           DRIVE_STRAIGHT,
-           LINE_LEFT,
+           DRIVE_CURVE,
+           LINE_RIGHT,
            UNLOAD_STAY,
            GOAL,
            MIXER_OFF,

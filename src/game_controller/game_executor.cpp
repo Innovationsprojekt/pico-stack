@@ -50,16 +50,16 @@ void GameExecutor::checkInbox()
         case REQUEST_ALIGN_CURVE_RIGHT:
             _controller->align(CURVE_RIGHT);
             break;
-        case REQUEST_RESUME_CURVE_LEFT:
+        case REQUEST_RESUME_IN_LEFT:
             _controller->resumeDrive(RESUME_IN_CURVE_LEFT);
             break;
-        case REQUEST_RESUME_LEFT:
+        case REQUEST_RESUME_OUT_LEFT:
             _controller->resumeDrive(RESUME_OUT_CURVE_LEFT);
             break;
-        case REQUEST_RESUME_CURVE_RIGHT:
+        case REQUEST_RESUME_IN_RIGHT:
             _controller->resumeDrive(RESUME_IN_CURVE_RIGHT);
             break;
-        case REQUEST_RESUME_RIGHT:
+        case REQUEST_RESUME_OUT_RIGHT:
             _controller->resumeDrive(RESUME_OUT_CURVE_RIGHT);
             break;
         case REQUEST_PICKUP_LEFT:

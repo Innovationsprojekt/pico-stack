@@ -19,13 +19,47 @@ Controller::Controller()
     _motor_manager->setMixerDirection(STOP);
 
     _motor_manager->unload_servo->setAngle(0);
+    /*
+    _motor_manager->setMixerSpeed(MIXER_SPEED);
+    _motor_manager->setMixerDirection(BACKWARD);
 
-
-    _motor_manager->pickup(PICKUP_RIGHT);
-    _motor_manager->pickup(PICKUP_LEFT);
+    sleep_ms(1000);
 
     while (true)
-        sleep_ms(100);
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            _pickup(PICKUP_LEFT);
+            sleep_ms(5500);
+            _pickup(PICKUP_RIGHT);
+            sleep_ms(5500);
+        }
+        sleep_ms(2000);
+
+        _motor_manager->setMixerDirection(FORWARD);
+
+        _motor_manager->setSpeed(10000);
+        for (int i = 0; i<5; i++)
+        {
+            _motor_manager->setDirection(FORWARD);
+            sleep_ms(150);
+            _motor_manager->setDirection(BACKWARD);
+            sleep_ms(150);
+        }
+        _motor_manager->setDirection(STOP);
+
+        _motor_manager->setMixerDirection(BACKWARD);
+    }
+     */
+    /*
+    _sensor_manager->calibrate();
+
+    while (true)
+    {
+        printf("CLO %li, CRI %li\n\r", _sensor_manager->readSensor(SENSOR_CLO), _sensor_manager->readSensor(SENSOR_CRI));
+        sleep_ms(200);
+    }
+     */
 }
 
 void Controller::spin(double dt)
@@ -209,7 +243,7 @@ void Controller::__spinAlignTangential(double dt, int32_t position_error)
     printf("pos_err: %li, Pout: %.2f, Dout %.2f, out %.2f\n\r", position_error, Pout, Dout, output);
 }
 
-void Controller::_alignHorizontal()
+void Controller::_alignRightHorizontal()
 {
     for (int i = 0; i < 3; i++)
     {
@@ -239,8 +273,58 @@ void Controller::_alignHorizontal()
     }
 }
 
+void Controller::_alignLeftHorizontal()
+{
+    int32_t sensor_right = _sensor_manager->readSensor(SENSOR_CRO);
+
+    _motor_manager->setSpeed(ALIGN_HOR_BASE_SPEED);
+    if (sensor_right < ON_LINE)
+        _motor_manager->setDirection(FORWARD);
+    else
+        _motor_manager->setDirection(BACKWARD);
+
+    while (abs(_sensor_manager->readSensor(SENSOR_CRO) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
+        sleep_ms(2);
+    _motor_manager->setDirection(STOP);
+
+    int32_t sensor_left = _sensor_manager->readSensor(SENSOR_CLO);
+
+    _motor_manager->drive_motor_left->setSpeed(ALIGN_HOR_BASE_SPEED);
+    if (sensor_left < ON_LINE)
+        _motor_manager->drive_motor_left->setDirection(FORWARD);
+    else
+        _motor_manager->drive_motor_left->setDirection(BACKWARD);
+
+    while (abs(_sensor_manager->readSensor(SENSOR_CLO) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
+        sleep_ms(2);
+    _motor_manager->setDirection(STOP);
+}
+
 void Controller::_detectLine()
 {
+    /*
+    if (_line_sensor == SENSOR_CLO)
+    {
+        if (_sensor_manager->readSensor(SENSOR_CLO) < BLACK && _sensor_manager->readSensor(SENSOR_CRI) < BLACK)
+        {
+            _motor_manager->setDirection(STOP);
+            _enable_drive = false;
+            _enable_detection = false;
+
+            _executor->notify(NOTIFY_LINE);
+        }
+    } else
+    {
+        if (_sensor_manager->readSensor(SENSOR_CRO) < BLACK && _sensor_manager->readSensor(SENSOR_CLI) < BLACK)
+        {
+            _motor_manager->setDirection(STOP);
+            _enable_drive = false;
+            _enable_detection = false;
+
+            _executor->notify(NOTIFY_LINE);
+        }
+    }
+    */
     if (_sensor_manager->readSensor(_line_sensor) < BLACK)
     {
         _motor_manager->setDirection(STOP);
@@ -263,7 +347,7 @@ void Controller::_pickup(PickUpSide side) const
 
 void Controller::_unload()
 {
-    _alignHorizontal();
+    _alignRightHorizontal();
 
     _motor_manager->driveToUnload();
 

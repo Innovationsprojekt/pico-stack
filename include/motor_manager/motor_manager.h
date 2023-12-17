@@ -43,10 +43,11 @@
 #define PL_UP_POS (178 + 12)
 
 // ----------- PICKUP -----------
-#define PLIFT_PICKUP 4000
+#define PLIFT_PICKUP 3800
 #define PLIFT_UNLOAD -6500
 #define PLIFT_SET 3700
 #define PLIFT_SPEED 10000
+#define TOP_WAIT 500
 
 // ----------- UNLOAD -----------
 #define UNLOAD_CLOSE_ANGLE 15

@@ -55,28 +55,24 @@ void Controller::align(LineType type)
         case STRAIGHT:
             _align_config = pid_align_st_tan;
 
-            //_alignTangentialPID();
-            _alignHorizontal();
+            _alignRightHorizontal();
+            _alignLeftHorizontal();
             break;
         case CURVE_LEFT:
             _motor_manager->turn(10, LEFT);
 
             _align_config = pid_align_cuv_tan;
 
-            _alignHorizontal();
-            //_alignFullTangentialPID();
-            //_alignHorizontal();
-            //_alignFullTangentialPID();
+            _alignRightHorizontal();
+            _alignRightHorizontal();
             break;
         case CURVE_RIGHT:
             _motor_manager->turn(10, RIGHT);
 
             _align_config = pid_align_cuv_tan;
 
-            _alignHorizontal();
-            //_alignFullTangentialPID();
-            //_alignHorizontal();
-            //_alignFullTangentialPID();
+            _alignLeftHorizontal();
+            _alignLeftHorizontal();
             break;
     }
 
@@ -105,7 +101,7 @@ void Controller::unload()
 
 void Controller::unloadStay()
 {
-    _alignHorizontal();
+    _alignRightHorizontal();
 
     _motor_manager->driveToUnload();
     _enable_unload = true;
@@ -132,10 +128,10 @@ void Controller::resumeDrive(ResumeDriveType dir)
             _motor_manager->turn(13, RIGHT);
             _motor_manager->creepDistance(8, BACKWARD);
             _motor_manager->drive_motor_right->setSpeed(10000);
-            _motor_manager->drive_motor_left->setSpeed(2300);
+            _motor_manager->drive_motor_left->setSpeed(2600);
             _motor_manager->drive_motor_right->setDirection(BACKWARD);
             _motor_manager->drive_motor_left->setDirection(BACKWARD);
-            sleep_ms(2100);
+            sleep_ms(2000);
             _motor_manager->setDirection(STOP);
             _motor_manager->turn(15, LEFT);
             _motor_manager->creepDistance(4, FORWARD);
@@ -144,21 +140,21 @@ void Controller::resumeDrive(ResumeDriveType dir)
             _motor_manager->turn(13, RIGHT);
             _motor_manager->creepDistance(8, BACKWARD);
             _motor_manager->drive_motor_right->setSpeed(10000);
-            _motor_manager->drive_motor_left->setSpeed(2500);
+            _motor_manager->drive_motor_left->setSpeed(2800);
             _motor_manager->drive_motor_right->setDirection(BACKWARD);
             _motor_manager->drive_motor_left->setDirection(BACKWARD);
             sleep_ms(1400);
             _motor_manager->setDirection(STOP);
-            _motor_manager->turn(15, LEFT);
+            //_motor_manager->turn(8, LEFT);
             break;
         case RESUME_IN_CURVE_RIGHT:
             _motor_manager->turn(13, LEFT);
             _motor_manager->creepDistance(8, BACKWARD);
             _motor_manager->drive_motor_left->setSpeed(10000);
-            _motor_manager->drive_motor_right->setSpeed(2300);
+            _motor_manager->drive_motor_right->setSpeed(2600);
             _motor_manager->drive_motor_left->setDirection(BACKWARD);
             _motor_manager->drive_motor_right->setDirection(BACKWARD);
-            sleep_ms(2100);
+            sleep_ms(2000);
             _motor_manager->setDirection(STOP);
             _motor_manager->turn(15, RIGHT);
             _motor_manager->creepDistance(4, FORWARD);
@@ -167,12 +163,12 @@ void Controller::resumeDrive(ResumeDriveType dir)
             _motor_manager->turn(13, LEFT);
             _motor_manager->creepDistance(8, BACKWARD);
             _motor_manager->drive_motor_left->setSpeed(10000);
-            _motor_manager->drive_motor_right->setSpeed(2500);
+            _motor_manager->drive_motor_right->setSpeed(2800);
             _motor_manager->drive_motor_left->setDirection(BACKWARD);
             _motor_manager->drive_motor_right->setDirection(BACKWARD);
             sleep_ms(1400);
             _motor_manager->setDirection(STOP);
-            _motor_manager->turn(15, RIGHT);
+            //_motor_manager->turn(8, RIGHT);
             break;
     }
 
@@ -199,19 +195,17 @@ void Controller::wiggle()
     _motor_manager->setDirection(STOP);
     _enable_drive = false;
 
-    _motor_manager->setMixerDirection(FORWARD);
-
     _motor_manager->setSpeed(10000);
     for (int i = 0; i<5; i++)
     {
+        //_motor_manager->setMixerDirection(FORWARD);
         _motor_manager->setDirection(FORWARD);
         sleep_ms(150);
+        //_motor_manager->setMixerDirection(BACKWARD);
         _motor_manager->setDirection(BACKWARD);
         sleep_ms(150);
     }
     _motor_manager->setDirection(STOP);
-
-    _motor_manager->setMixerDirection(BACKWARD);
 
     _executor->notify(NOTIFY_WIGGLE);
 }

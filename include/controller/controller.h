@@ -14,9 +14,9 @@
 #include "error_stack.h"
 
 // ----------- PARAMETERS -----------
-#define MIXER_SPEED 4500
-#define UNLOAD_WIGGLES 20
-#define SLOW_MODE_DELAY 1500
+#define MIXER_SPEED 5000
+#define UNLOAD_WIGGLES 30
+#define SLOW_MODE_DELAY 1000
 #define ALIGN_OFFSET 300
 
 // ----------- ALIGN HORIZONTAL -----------
@@ -37,20 +37,20 @@ const PIDConfiguration pid_align_cuv_tan = {0.4, 15, 0.6, 0, 100};
  */
 
 // ----------- DRIVE PID -----------
-//#define ENABLE_SLOW_MODE
+#define ENABLE_SLOW_MODE
 
 //const PIDConfiguration pid_drive_st = {90, 57, 0, 8000, 0};
 // only 1 sensor
 const PIDConfiguration pid_drive_st = {100, 60, 0, 10000, 0};
 
-const PIDConfiguration pid_drive_slow = {70, 35, 0, 5000, 500};
+const PIDConfiguration pid_drive_slow = {85, 45, 0, 7000, 500};
 
 /*
 const PIDConfiguration pid_drive_cuv = {75, 37, 0, 7000, 0};
 
 const PIDConfiguration pid_drive_gate = {85, 55, 0, 7000, 0};
  */
-const PIDConfiguration pid_drive_cuv = {100, 60, 0, 10000, 0};
+const PIDConfiguration pid_drive_cuv = {85, 45, 0, 7000, 0};
 
 const PIDConfiguration pid_drive_gate = {100, 60, 0, 10000, 0};
 
@@ -79,7 +79,8 @@ private:
     std::shared_ptr<SensorManager> _sensor_manager;
 
     // align horizontal
-    void _alignHorizontal();
+    void _alignRightHorizontal();
+    void _alignLeftHorizontal();
 
     // align tangential
     void _alignTangentialPID();
