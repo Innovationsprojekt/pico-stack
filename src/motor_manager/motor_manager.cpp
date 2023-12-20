@@ -124,7 +124,7 @@ void MotorManager::pickup(PickUpSide side) const
         case PICKUP_RIGHT:
             crane_r_servo->setAngle(PR_DOWN_POS, SERVO_SPEED);
             crane_r_motor->setPosition(PLIFT_PICKUP, PLIFT_SPEED);
-            crane_r_servo->setAngle(PR_GRAB_POS - 5, SERVO_SPEED);
+            crane_r_servo->setAngle(PR_GRAB_POS - 10, SERVO_SPEED);
             setMixerDirection(FORWARD);
             crane_r_motor->setPosition(PLIFT_UNLOAD, PLIFT_SPEED);
             setMixerDirection(BACKWARD);
@@ -156,7 +156,7 @@ void MotorManager::pickup(PickUpSide side) const
         case PICKUP_RIGHT_IN_CURVE:
             crane_r_servo->setAngle(PR_DOWN_POS, SERVO_SPEED);
             crane_r_motor->setPosition(PLIFT_PICKUP, PLIFT_SPEED);
-            crane_r_servo->setAngle(PR_GRAB_POS - 5, SERVO_SPEED);
+            crane_r_servo->setAngle(PR_GRAB_POS - 10, SERVO_SPEED);
             setMixerDirection(FORWARD);
             crane_r_motor->setPosition(PLIFT_UNLOAD, PLIFT_SPEED);
             setMixerDirection(BACKWARD);
@@ -172,7 +172,7 @@ void MotorManager::pickup(PickUpSide side) const
         case PICKUP_LEFT:
             crane_l_servo->setAngle(PL_DOWN_POS, SERVO_SPEED);
             crane_l_motor->setPosition(PLIFT_PICKUP, PLIFT_SPEED);
-            crane_l_servo->setAngle(PL_GRAB_POS + 5, SERVO_SPEED);
+            crane_l_servo->setAngle(PL_GRAB_POS + 10, SERVO_SPEED);
             setMixerDirection(FORWARD);
             crane_l_motor->setPosition(PLIFT_UNLOAD, PLIFT_SPEED);
             setMixerDirection(BACKWARD);
@@ -204,7 +204,7 @@ void MotorManager::pickup(PickUpSide side) const
         case PICKUP_LEFT_IN_CURVE:
             crane_l_servo->setAngle(PL_DOWN_POS, SERVO_SPEED);
             crane_l_motor->setPosition(PLIFT_PICKUP, PLIFT_SPEED);
-            crane_l_servo->setAngle(PL_GRAB_POS + 5, SERVO_SPEED);
+            crane_l_servo->setAngle(PL_GRAB_POS + 10, SERVO_SPEED);
             setMixerDirection(FORWARD);
             crane_l_motor->setPosition(PLIFT_UNLOAD, PLIFT_SPEED);
             setMixerDirection(BACKWARD);

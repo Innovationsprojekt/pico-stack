@@ -12,7 +12,7 @@
 
 // ----------- PARAMETERS -----------
 #define LINE_WAIT_TIME 1500
-#define GOAL_TIMESTAMP 285000
+#define GOAL_TIMESTAMP 280000
 
 #define CALIBRATION_TIME 2000
 #define LINE_TIME 1000

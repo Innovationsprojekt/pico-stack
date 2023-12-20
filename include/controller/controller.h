@@ -20,8 +20,8 @@
 #define ALIGN_OFFSET 300
 
 // ----------- ALIGN HORIZONTAL -----------
-#define OFFSET_ERROR_HORIZONTAL 70
-#define ALIGN_HOR_BASE_SPEED 2500
+#define OFFSET_ERROR_HORIZONTAL 100
+#define ALIGN_HOR_BASE_SPEED 2000
 
 // ----------- ALIGN TANGENTIAL -----------
 #define ALIGN_TAN_FREQ 500

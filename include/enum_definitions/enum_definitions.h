@@ -26,7 +26,7 @@
 #define PRE_CALIBRATION
 
 // ----------- PARAMETERS -----------
-#define SERVO_SPEED 2
+#define SERVO_SPEED 4
 #define UNLOAD_DISTANCE 5
 #define ERROR_STACK_INTEGRAL_SIZE 5
 

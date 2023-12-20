@@ -135,6 +135,7 @@ void Controller::resumeDrive(ResumeDriveType dir)
             _motor_manager->setDirection(STOP);
             _motor_manager->turn(15, LEFT);
             _motor_manager->creepDistance(4, FORWARD);
+            _motor_manager->turn(5, RIGHT);
             break;
         case RESUME_OUT_CURVE_LEFT:
             _motor_manager->turn(13, RIGHT);
@@ -145,7 +146,6 @@ void Controller::resumeDrive(ResumeDriveType dir)
             _motor_manager->drive_motor_left->setDirection(BACKWARD);
             sleep_ms(1400);
             _motor_manager->setDirection(STOP);
-            //_motor_manager->turn(8, LEFT);
             break;
         case RESUME_IN_CURVE_RIGHT:
             _motor_manager->turn(13, LEFT);
@@ -158,6 +158,7 @@ void Controller::resumeDrive(ResumeDriveType dir)
             _motor_manager->setDirection(STOP);
             _motor_manager->turn(15, RIGHT);
             _motor_manager->creepDistance(4, FORWARD);
+            _motor_manager->turn(5, LEFT);
             break;
         case RESUME_OUT_CURVE_RIGHT:
             _motor_manager->turn(13, LEFT);
@@ -168,7 +169,6 @@ void Controller::resumeDrive(ResumeDriveType dir)
             _motor_manager->drive_motor_right->setDirection(BACKWARD);
             sleep_ms(1400);
             _motor_manager->setDirection(STOP);
-            //_motor_manager->turn(8, RIGHT);
             break;
     }
 
@@ -194,6 +194,10 @@ void Controller::wiggle()
 {
     _motor_manager->setDirection(STOP);
     _enable_drive = false;
+
+    _motor_manager->setMixerDirection(FORWARD);
+    sleep_ms(1000);
+    _motor_manager->setMixerDirection(BACKWARD);
 
     _motor_manager->setSpeed(10000);
     for (int i = 0; i<5; i++)

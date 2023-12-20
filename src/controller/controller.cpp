@@ -60,6 +60,18 @@ Controller::Controller()
         sleep_ms(200);
     }
      */
+    /*
+    sleep_ms(2000);
+
+    while (true)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            _pickup(PICKUP_RIGHT_OUT_CURVE);
+            _pickup(PICKUP_LEFT_OUT_CURVE);
+        }
+    }
+    */
 }
 
 void Controller::spin(double dt)
@@ -256,8 +268,9 @@ void Controller::_alignRightHorizontal()
             _motor_manager->setDirection(BACKWARD);
 
         while (abs(_sensor_manager->readSensor(SENSOR_CLO) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
-            sleep_ms(2);
+            sleep_ms(1);
         _motor_manager->setDirection(STOP);
+        printf("Align straight");
 
         int32_t sensor_right = _sensor_manager->readSensor(SENSOR_CRO);
 
@@ -268,36 +281,42 @@ void Controller::_alignRightHorizontal()
             _motor_manager->drive_motor_right->setDirection(BACKWARD);
 
         while (abs(_sensor_manager->readSensor(SENSOR_CRO) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
-            sleep_ms(2);
+            sleep_ms(1);
         _motor_manager->setDirection(STOP);
+        printf("Align right");
     }
 }
 
 void Controller::_alignLeftHorizontal()
 {
-    int32_t sensor_right = _sensor_manager->readSensor(SENSOR_CRO);
+    for (int i = 0; i < 3; i++)
+    {
+        int32_t sensor_right = _sensor_manager->readSensor(SENSOR_CRO);
 
-    _motor_manager->setSpeed(ALIGN_HOR_BASE_SPEED);
-    if (sensor_right < ON_LINE)
-        _motor_manager->setDirection(FORWARD);
-    else
-        _motor_manager->setDirection(BACKWARD);
+        _motor_manager->setSpeed(ALIGN_HOR_BASE_SPEED);
+        if (sensor_right < ON_LINE)
+            _motor_manager->setDirection(FORWARD);
+        else
+            _motor_manager->setDirection(BACKWARD);
 
-    while (abs(_sensor_manager->readSensor(SENSOR_CRO) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
-        sleep_ms(2);
-    _motor_manager->setDirection(STOP);
+        while (abs(_sensor_manager->readSensor(SENSOR_CRO) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
+            sleep_ms(1);
+        _motor_manager->setDirection(STOP);
+        printf("Align straight");
 
-    int32_t sensor_left = _sensor_manager->readSensor(SENSOR_CLO);
+        int32_t sensor_left = _sensor_manager->readSensor(SENSOR_CLO);
 
-    _motor_manager->drive_motor_left->setSpeed(ALIGN_HOR_BASE_SPEED);
-    if (sensor_left < ON_LINE)
-        _motor_manager->drive_motor_left->setDirection(FORWARD);
-    else
-        _motor_manager->drive_motor_left->setDirection(BACKWARD);
+        _motor_manager->drive_motor_left->setSpeed(ALIGN_HOR_BASE_SPEED);
+        if (sensor_left < ON_LINE)
+            _motor_manager->drive_motor_left->setDirection(FORWARD);
+        else
+            _motor_manager->drive_motor_left->setDirection(BACKWARD);
 
-    while (abs(_sensor_manager->readSensor(SENSOR_CLO) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
-        sleep_ms(2);
-    _motor_manager->setDirection(STOP);
+        while (abs(_sensor_manager->readSensor(SENSOR_CLO) - ON_LINE) > OFFSET_ERROR_HORIZONTAL)
+            sleep_ms(1);
+        _motor_manager->setDirection(STOP);
+        printf("Align left");
+    }
 }
 
 void Controller::_detectLine()

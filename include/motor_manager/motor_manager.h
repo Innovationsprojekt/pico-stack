@@ -34,7 +34,7 @@
 #define PR_HOME_POS 167
 #define PR_DOWN_POS 140
 #define PR_GRAB_POS 112
-#define PR_UP_POS 10
+#define PR_UP_POS 8
 
 // ----------- PICKUP LEFT -----------
 #define PL_HOME_POS (12 + 12)
@@ -44,10 +44,10 @@
 
 // ----------- PICKUP -----------
 #define PLIFT_PICKUP 3800
-#define PLIFT_UNLOAD -6500
+#define PLIFT_UNLOAD -6200
 #define PLIFT_SET 3700
 #define PLIFT_SPEED 10000
-#define TOP_WAIT 500
+#define TOP_WAIT 700
 
 // ----------- UNLOAD -----------
 #define UNLOAD_CLOSE_ANGLE 15

@@ -26,8 +26,8 @@ void CLMotor::setPosition(int32_t position, int32_t speed)
 
     while(abs(getCurrentPosition() - _set_position) > 30)
     {
-        spinController(2);
-        sleep_ms(2);
+        spinController(1);
+        sleep_ms(1);
     }
 
     _setDirection(STOP);
@@ -58,7 +58,8 @@ int32_t CLMotor::getCurrentPosition()
 
 void CLMotor::spinController(double dt)
 {
-    if (abs(getCurrentPosition() - _set_position) > 100)
+    printf("pos: %li\n\r", getCurrentPosition());
+    if (abs(getCurrentPosition() - _set_position) > 500)
     {
         _min_speed = MIN_SPEED;
         _max_speed = MAX_SPEED;
@@ -66,6 +67,8 @@ void CLMotor::spinController(double dt)
     }
     else
     {
+        _setDirection(STOP);
+        _setSpeed(0);
         _min_speed = CTRL_MIN_SPEED;
         _max_speed = CTRL_MAX_SPEED;
         _driveClosedLoop(dt);
